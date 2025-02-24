@@ -1,7 +1,4 @@
-import { useState } from "react";
-import "./App.css";
-
-function App(): JSX.Element {
+function App() {
   return <></>;
 }
 
