@@ -1,8 +1,8 @@
-import { JSX, useState } from "react";
-import "./App.css";
+import { JSX } from 'react';
+import './App.css';
 
 function App(): JSX.Element {
-	return <></>;
+  return <></>;
 }
 
 export default App;
