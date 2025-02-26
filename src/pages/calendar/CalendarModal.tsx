@@ -31,10 +31,15 @@ const ModalContent = styled.div`
 `;
 
 const ModalHeader = styled.div`
-  font-weight: bold;
-  margin-bottom: 16px;
-  font-size: 1.1rem;
-  color: #333;
+  text-align: 'left'
+  font-feature-settings:
+    'liga' off,
+    'clig' off;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 133%;
+  letter-spacing: -0.24px;
 `;
 
 const MemoHeader = styled.div`
@@ -43,18 +48,17 @@ const MemoHeader = styled.div`
   font-weight: 700;
   line-height: 140%;
   letter-spacing: -0.1px;
-  margin-bottom: 5px;
+  width: 360px;
+  height: 22px;
 `;
 
 const MemoTextarea = styled.textarea`
   display: flex;
   width: 360px;
   height: 40px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 10px;
-  align-self: stretch;
+  padding: 4px 16px;
+  align-items: center;
+  gap: 4px;
   border-radius: 8px;
 `;
 
@@ -62,6 +66,25 @@ const ModalActions = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+`;
+
+const DateContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-sizing: border-box;
+`;
+
+const StyledInput = styled.input`
+  width: 176px;
+  height: 34px;
+  display: flex;
+  padding: 8px 12px;
+  justify-content: center;
+  align-items: flex-start;
+  align-self: stretch;
+  border-radius: 8px;
+  border: 1px solid #b2b2b2;
 `;
 
 interface MemoModalProps {
@@ -104,23 +127,28 @@ const CalendarModal: React.FC<MemoModalProps> = ({
             { label: '휴가', value: '4' },
             { label: '회의', value: '5' },
           ]}
-          width="360px"
+          width="395px"
+          height="40px"
+          border-radius="4px"
         />
 
         <MemoHeader>내용</MemoHeader>
         <MemoTextarea
+          style={{ width: '360px', height: '90px' }}
           value={memoText}
           onChange={(e) => onTextChange(e.target.value)}
           placeholder="업무 내용을 입력하세요"
         />
-        <label>
-          시작일
-          <input type="date" />
-        </label>
-        <label>
-          종료일
-          <input type="date" />
-        </label>
+        <DateContainer>
+          <label>
+            StyledInput시작일
+            <StyledInput type="date" />
+          </label>
+          <label style={{ marginLeft: '16px' }}>
+            종료일
+            <StyledInput type="date" />
+          </label>
+        </DateContainer>
         <ModalActions>
           <Button onClick={onClose}>삭제</Button>
 
