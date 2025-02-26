@@ -1,7 +1,7 @@
 // MemoModal.tsx
 import React from 'react';
 import styled from 'styled-components';
-import DropdownSample from '../../widgets/dropdown/dropdownSample';
+import DropdownSample from '../../widgets/dropdown';
 
 // Styled Components
 const ModalOverlay = styled.div`
@@ -125,7 +125,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
         />
         <MemoHeader>일정 유형</MemoHeader>
         <label>
-          <DropdownSample />
+          <Dropdown />
         </label>
         <MemoHeader>내용</MemoHeader>
         <MemoTextarea

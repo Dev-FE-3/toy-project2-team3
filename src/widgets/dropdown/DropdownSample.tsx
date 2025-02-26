@@ -1,6 +1,6 @@
 import Dropdown from './Dropdown';
 
-const dropdownSample = () => {
+const DropdownSample = () => {
   const options = [
     { label: '1', value: 1 },
     { label: '2', value: 2 },
@@ -18,4 +18,4 @@ const dropdownSample = () => {
   );
 };
 
-export default dropdownSample;
+export default DropdownSample;
