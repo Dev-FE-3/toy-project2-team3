@@ -1,10 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import 'reset-css';
-import Dropdown from './widgets/dropdown/dropdownSample';
+import App from './App';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Dropdown />
+    <App />
   </StrictMode>
 );
