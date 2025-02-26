@@ -19,8 +19,12 @@ export interface DropdownTextProps {
   hasSelected: boolean;
 }
 
-// 드롭다운 공통 style 정의
+// 드롭다운 아이콘 색상 변경
+interface DropdownIconProps {
+  isMint?: boolean;
+}
 
+// 드롭다운 공통 style 정의
 const fontStyles = css`
   font-family: 'Noto Sans';
   font-size: 16px;
@@ -42,14 +46,6 @@ const itemBaseStyles = css`
   display: flex;
   align-items: center;
   cursor: pointer;
-`;
-
-// 드롭다운 icon 회전
-const RotatableIcon = styled.div<{ isOpen: boolean }>`
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(0deg)' : 'rotate(180deg)')};
-  transition: transform 0.3s ease;
-  display: flex;
-  align-items: center;
 `;
 
 // 드롭다운 container
@@ -111,6 +107,37 @@ const DropdownItem = styled.li`
   }
   ${fontStyles}
 `;
+
+// 드롭다운 icon 회전
+const RotatableIcon = styled.div<{ isOpen: boolean }>`
+  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+`;
+
+// DropdownIcon 컴포넌트
+const DropdownIcon: React.FC<DropdownIconProps> = ({ isMint = false }) => {
+  const fillColor = isMint ? '#2ac1bc' : 'white';
+
+  return (
+    <svg
+      width={18}
+      height={12}
+      viewBox="0 0 18 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g id="Frame 2608833">
+        <path
+          id="Vector"
+          d="M2.115 0.5L9 7.29892L15.885 0.5L18 2.59312L9 11.5L0 2.59312L2.115 0.5Z"
+          fill={fillColor}
+        />
+      </g>
+    </svg>
+  );
+};
 
 const DropdownText = styled.span<{
   hasPlaceHolder: boolean;
@@ -185,32 +212,10 @@ const Dropdown: React.FC<DropdownProps> = ({
           {selectedOption ? selectedOption.label : placeholder || title}
         </DropdownText>
 
-        {/* 선택 옵션에 따른 아이콘 회전과 색상변화 */}
+        {/* 선택 옵션에 따른 아이콘 회전과 색상 변경 */}
         <RotatableIcon isOpen={showDropDown}>
-          <div
-            style={{
-              filter: selectedOption
-                ? 'invert(64%) sepia(75%) saturate(380%) hue-rotate(121deg) brightness(94%) contrast(89%)'
-                : 'none',
-            }}
-          >
-            {/* SVG 코드 */}
-            <svg
-              width="18"
-              height="12"
-              viewBox="0 0 18 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g id="Frame 2608833">
-                <path
-                  id="Vector"
-                  d="M2.115 0.5L9 7.29892L15.885 0.5L18 2.59312L9 11.5L0 2.59312L2.115 0.5Z"
-                  fill="white"
-                />
-              </g>
-            </svg>
-          </div>
+          {/* 상태에 따라 다른 아이콘 색상 적용 */}
+          <DropdownIcon isMint={!!selectedOption} />
         </RotatableIcon>
       </DropdownHeader>
 
