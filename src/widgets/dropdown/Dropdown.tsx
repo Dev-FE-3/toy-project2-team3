@@ -12,7 +12,6 @@ export interface DropdownProps {
   onSelect?: (option: OptionType) => void;
   defaultValue?: OptionType;
   placeholder?: string;
-  icon?: React.ReactNode;
 }
 
 export interface DropdownTextProps {
@@ -45,7 +44,7 @@ const itemBaseStyles = css`
   cursor: pointer;
 `;
 
-// 드롭다운 icon
+// 드롭다운 icon 회전
 const RotatableIcon = styled.div<{ isOpen: boolean }>`
   transform: ${({ isOpen }) => (isOpen ? 'rotate(0deg)' : 'rotate(180deg)')};
   transition: transform 0.3s ease;
@@ -132,31 +131,12 @@ export {
   itemBaseStyles,
 };
 
-export const ArrowUpIcon = () => (
-  <svg
-    width="18"
-    height="12"
-    viewBox="0 0 18 12"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <g id="Frame 2608833">
-      <path
-        id="Vector"
-        d="M15.885 11.5L9 4.70108L2.115 11.5L0 9.40688L9 0.5L18 9.40688L15.885 11.5Z"
-        fill="white"
-      />
-    </g>
-  </svg>
-);
-
 const Dropdown: React.FC<DropdownProps> = ({
   title,
   options,
   onSelect,
   defaultValue = undefined,
   placeholder,
-  icon,
 }) => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [selectedOption, setSelectedOption] = useState<OptionType | undefined>(
@@ -205,20 +185,33 @@ const Dropdown: React.FC<DropdownProps> = ({
           {selectedOption ? selectedOption.label : placeholder || title}
         </DropdownText>
 
-        {/* // 아이콘 회전과 색상변화 */}
-        {icon && (
-          <RotatableIcon isOpen={showDropDown}>
-            <div
-              style={{
-                filter: selectedOption
-                  ? 'invert(64%) sepia(75%) saturate(380%) hue-rotate(121deg) brightness(94%) contrast(89%)'
-                  : 'none',
-              }}
+        {/* 선택 옵션에 따른 아이콘 회전과 색상변화 */}
+        <RotatableIcon isOpen={showDropDown}>
+          <div
+            style={{
+              filter: selectedOption
+                ? 'invert(64%) sepia(75%) saturate(380%) hue-rotate(121deg) brightness(94%) contrast(89%)'
+                : 'none',
+            }}
+          >
+            {/* SVG 코드 */}
+            <svg
+              width="18"
+              height="12"
+              viewBox="0 0 18 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              {icon}
-            </div>
-          </RotatableIcon>
-        )}
+              <g id="Frame 2608833">
+                <path
+                  id="Vector"
+                  d="M2.115 0.5L9 7.29892L15.885 0.5L18 2.59312L9 11.5L0 2.59312L2.115 0.5Z"
+                  fill="white"
+                />
+              </g>
+            </svg>
+          </div>
+        </RotatableIcon>
       </DropdownHeader>
 
       {showDropDown && (
