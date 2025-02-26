@@ -49,7 +49,7 @@ const itemBaseStyles = css`
 `;
 
 // 드롭다운 container
-const DropdownContainer = styled.div`
+const DropdownContainer = styled.nav`
   ${baseBoxStyles}
   position: relative;
   ${fontStyles}
@@ -62,12 +62,14 @@ const DropdownContainer = styled.div`
 `;
 
 // 드롭다운 header
-const DropdownHeader = styled.div<{ hasSelected?: boolean }>`
+const DropdownHeader = styled.button<{ hasSelected?: boolean }>`
   ${baseBoxStyles}
   ${itemBaseStyles}
   justify-content: space-between;
   border-radius: 4px;
   flex-shrink: 0;
+  width: 100%;
+  text-align: left;
 
   background: ${(props) => (props.hasSelected ? '#fff' : '#2ac1bc')};
   color: ${(props) => (props.hasSelected ? '#2ac1bc' : '#fff')};
@@ -85,8 +87,12 @@ const DropdownList = styled.ul`
   z-index: 1;
   box-sizing: border-box;
   ${fontStyles}
+  padding: 0;
+  margin: 0;
+  list-style: none;
 `;
 
+// 드롭다운 item
 const DropdownItem = styled.li`
   width: 100%;
   box-sizing: border-box;
@@ -96,7 +102,6 @@ const DropdownItem = styled.li`
   cursor: pointer;
   align-items: center;
   border-bottom: 0.8px solid #b2b2b2;
-
   &:hover {
     background: rgba(42, 193, 188, 0.2);
     color: #2ac1bc;
@@ -109,11 +114,12 @@ const DropdownItem = styled.li`
 `;
 
 // 드롭다운 icon 회전
-const RotatableIcon = styled.div<{ isOpen: boolean }>`
+const RotatableIcon = styled.figure<{ isOpen: boolean }>`
   transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
   transition: transform 0.3s ease;
   display: flex;
   align-items: center;
+  margin: 0;
 `;
 
 // DropdownIcon 컴포넌트
@@ -139,7 +145,8 @@ const DropdownIcon: React.FC<DropdownIconProps> = ({ isMint = false }) => {
   );
 };
 
-const DropdownText = styled.span<{
+// 텍스트 부분 -
+const DropdownText = styled.strong<{
   hasPlaceHolder: boolean;
   hasSelected: boolean;
 }>`
@@ -170,7 +177,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     defaultValue
   );
   // div 요소를 참조할 수 있는 객체를 만들고, 초기값은 null로 설정
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLElement>(null);
 
   // 드롭다운 외부영역 클릭시 드롭다운 닫기
   useEffect(() => {
