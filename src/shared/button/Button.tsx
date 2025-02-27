@@ -15,10 +15,11 @@ const StyledButton = styled.button<ButtonProps>`
   padding: 0 40px;
   width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
   font-weight: ${({ typeStyle }) =>
-    typeStyle === 'rounded' ? 'bold' : 'normal'};
+    typeStyle === 'rounded'
+      ? ({ theme }) => theme.typography.menu1
+      : ({ theme }) => theme.typography.body2};
   border-radius: ${({ typeStyle }) =>
     typeStyle === 'rounded' ? '8px' : '4px'};
-  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,25 +31,26 @@ const StyledButton = styled.button<ButtonProps>`
   // variant에 따른 스타일 변화
   ${({ variant }) =>
     variant === 'filled'
-      ? `
-      background-color: green;
-      color: white;
-      border: green 1px;
+      ? ({ theme }) => `
+      background-color: ${theme.colors.point1} ;
+      color: ${theme.colors.white};
+      border: ${theme.colors.point1} 1px solid;
 
       &:hover {
-        background-color: white;
-        color : green;
-        border : none;
+        background-color: ${theme.colors.white};
+        color : ${theme.colors.point1};
+        border : ${theme.colors.point1} 1px solid;
       }
     `
-      : `
-      background-color: white;
-      color: green;
-      border: green 1px;
+      : ({ theme }) => `
+      background-color: ${theme.colors.white};
+      color: ${theme.colors.point1};
+      border: ${theme.colors.point1} 1px solid;
 
       &:hover {
-        background-color: green;
-        color: white;
+        background-color: ${theme.colors.point1};
+        color: ${theme.colors.white};
+        border: ${theme.colors.point1} 1px solid;
       }
     `}
 `;
