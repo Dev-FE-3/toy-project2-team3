@@ -1,14 +1,11 @@
 import { JSX } from 'react';
-import ThemeProvider from './providers/ThemeProvider';
 import './App.css';
-import MyPage from './pages/mypage/MyPage';
+import MyPage from './pages/mypage';
 
 function App(): JSX.Element {
   return (
     <>
-      <ThemeProvider>
-        <MyPage />
-      </ThemeProvider>
+      <MyPage />
     </>
   );
 }

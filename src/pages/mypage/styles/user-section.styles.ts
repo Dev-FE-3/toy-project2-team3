@@ -1,28 +1,5 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
-  width: 100%;
-  min-height: 100vh;
-  background-color: ${({ theme }) => theme.colors.white};
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-export const Header = styled.header`
-  width: 100%;
-  min-height: 50px;
-  display: flex;
-  border-bottom: 2px solid ${({ theme }) => theme.colors.point1};
-`;
-
-export const ContentWrapper = styled.div`
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  margin-top: 10rem;
-`;
-
 export const Button = styled.button`
   height: 40px;
   background-color: ${({ theme }) => theme.colors.point1};
@@ -38,8 +15,7 @@ export const Button = styled.button`
 
 export const InfoSection = styled.section`
   width: 100%;
-  min-height: 200px;
-  padding: 1.5rem;
+  min-height: 260px;
   border-top: 2px solid ${({ theme }) => theme.colors.point1};
   border-bottom: 2px solid ${({ theme }) => theme.colors.point1};
   margin-bottom: 3rem;
@@ -47,18 +23,6 @@ export const InfoSection = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: center;
-`;
-
-export const SalarySection = styled.section`
-  width: 100%;
-  min-height: 220px;
-  padding-top: 2rem;
-  position: relative;
-  margin-bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;
 `;
 
 export const ProfileContainer = styled.div`
@@ -76,7 +40,7 @@ export const ProfileImage = styled.div`
   border-radius: 16px;
   position: absolute;
   top: -150px;
-  right: 20px;
+  right: 1.25rem;
   border: 1px solid ${({ theme }) => theme.colors.grey2};
 `;
 
@@ -90,7 +54,7 @@ export const ProfileEditButton = styled.button`
   align-items: center;
   justify-content: center;
   position: absolute;
-  bottom: 60px;
+  bottom: 3.75rem;
   right: -1px;
   cursor: pointer;
 
@@ -103,62 +67,27 @@ export const ProfileEditButton = styled.button`
 export const InfoWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
+  gap: 30px;
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
   padding: 30px;
 `;
 
 export const InfoItem = styled.p`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   ${({ theme }) => theme.typography.body1}
-  padding: 8px 12px;
+  padding: 0.5rem 0.75rem;
 
   strong {
     font-weight: 700;
     font-size: 22px;
   }
 `;
-
 export const Title = styled.h2`
   ${({ theme }) => theme.typography.heading2}
   margin-bottom: 1rem;
   position: absolute;
   top: -50px;
   left: 0;
-`;
-
-export const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
-`;
-
-export const TableRow = styled.tr`
-  height: 50px;
-`;
-
-export const TableHeader = styled.th`
-  padding: 0.75rem;
-  ${({ theme }) => theme.typography.body2}
-  font-weight: bold;
-  vertical-align: middle;
-  text-align: center;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.black};
-`;
-
-export const TableData = styled.td`
-  padding: 0.75rem;
-  ${({ theme }) => theme.typography.body2}
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey2};
-`;
-
-export const SalaryControls = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
 `;

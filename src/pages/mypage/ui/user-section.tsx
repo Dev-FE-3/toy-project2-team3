@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  InfoSection,
-  Title,
-  ProfileContainer,
-  InfoWrapper,
-  InfoItem,
-  ProfileImage,
-  ProfileEditButton,
-} from '../MyPage.styles';
+import * as S from '../styles/user-section.styles';
 import profileDefault from '../../../assets/images/profile-default.png';
 
 const EditIcon: React.FC = () => {
@@ -37,39 +29,39 @@ const UserInfoSection: React.FC = () => {
   };
 
   return (
-    <InfoSection>
-      <Title>
+    <S.InfoSection>
+      <S.Title>
         안녕하세요, <span style={{ color: '#14b8a6' }}>{userData.name}</span>님!
-      </Title>
-      <ProfileContainer>
+      </S.Title>
+      <S.ProfileContainer>
         <div>
-          <InfoWrapper>
-            <InfoItem>
+          <S.InfoWrapper>
+            <S.InfoItem>
               <strong>직책</strong> {userData.position}
-            </InfoItem>
-            <InfoItem>
+            </S.InfoItem>
+            <S.InfoItem>
               <strong>입사</strong> {userData.joinedDate}
-            </InfoItem>
-            <InfoItem>
+            </S.InfoItem>
+            <S.InfoItem>
               <strong>부서</strong> {userData.department}
-            </InfoItem>
-            <InfoItem>
+            </S.InfoItem>
+            <S.InfoItem>
               <strong>메일</strong> {userData.email}
-            </InfoItem>
-          </InfoWrapper>
+            </S.InfoItem>
+          </S.InfoWrapper>
         </div>
-        <ProfileImage>
+        <S.ProfileImage>
           <img
             src={profileDefault}
             alt="Profile"
             style={{ width: '100%', height: '100%' }}
           />
-        </ProfileImage>
-        <ProfileEditButton>
+        </S.ProfileImage>
+        <S.ProfileEditButton>
           <EditIcon />
-        </ProfileEditButton>
-      </ProfileContainer>
-    </InfoSection>
+        </S.ProfileEditButton>
+      </S.ProfileContainer>
+    </S.InfoSection>
   );
 };
 

@@ -1,6 +1,7 @@
 // CalendarHeader.tsx 수정
 import React from 'react';
 import styled from 'styled-components';
+import Button from '../../widgets/button/Button';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -44,27 +45,27 @@ const ButtonGroup = styled.div`
   gap: 10px;
 `;
 
-const ActionButton = styled.button`
-  background-color: #2ac1bc;
-  color: white;
-  border: none;
-  padding: 0px 40px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 133%;
-  letter-spacing: -0.24px;
-  display: flex;
-  height: 40px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  &:hover {
-    background-color: rgba(42, 193, 188, 0.8);
-  }
-`;
+// const ActionButton = styled.button`
+//   background-color: #2ac1bc;
+//   color: white;
+//   border: none;
+//   padding: 0px 40px;
+//   border-radius: 8px;
+//   cursor: pointer;
+//   font-size: 18px;
+//   font-style: normal;
+//   font-weight: 400;
+//   line-height: 133%;
+//   letter-spacing: -0.24px;
+//   display: flex;
+//   height: 40px;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+//   &:hover {
+//     background-color: rgba(42, 193, 188, 0.8);
+//   }
+// `;
 
 interface CalendarHeaderProps {
   currentDate: Date;
@@ -88,8 +89,8 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
       </TitleGroup>
 
       <ButtonGroup>
-        <ActionButton>일정추가</ActionButton>
-        <ActionButton>전체삭제</ActionButton>
+        <Button>일정추가</Button>
+        <Button>전체삭제</Button>
       </ButtonGroup>
     </HeaderContainer>
   );
