@@ -1,4 +1,89 @@
-const theme = {
+import 'styled-components';
+import { DefaultTheme } from 'styled-components';
+
+declare module 'styled-components' {
+  export interface DefaultTheme {
+    colors: {
+      point1: string;
+      point2: string;
+      point3: string;
+      white: string;
+      black: string;
+      grey1: string;
+      grey2: string;
+      orange: string;
+      red: string;
+      green: string;
+    };
+    typography: {
+      heading1: {
+        fontSize: string;
+        fontWeight: number;
+        fontFamily: string;
+        letterSpacing: string;
+        lineHeight: string;
+      };
+      heading2: {
+        fontSize: string;
+        fontWeight: number;
+        fontFamily: string;
+        letterSpacing: string;
+        lineHeight: string;
+      };
+      heading3: {
+        fontSize: string;
+        fontWeight: number;
+        fontFamily: string;
+        letterSpacing: string;
+        lineHeight: string;
+      };
+      heading4: {
+        fontSize: string;
+        fontWeight: number;
+        fontFamily: string;
+        letterSpacing: string;
+        lineHeight: string;
+      };
+      menu1: {
+        fontSize: string;
+        fontWeight: number;
+        fontFamily: string;
+        letterSpacing: string;
+        lineHeight: string;
+      };
+      body1: {
+        fontSize: string;
+        fontWeight: number;
+        fontFamily: string;
+        letterSpacing: string;
+        lineHeight: string;
+      };
+      body2: {
+        fontSize: string;
+        fontWeight: number;
+        fontFamily: string;
+        letterSpacing: string;
+        lineHeight: string;
+      };
+      body3: {
+        fontSize: string;
+        fontWeight: number;
+        fontFamily: string;
+        letterSpacing: string;
+        lineHeight: string;
+      };
+      body4: {
+        fontSize: string;
+        fontWeight: number;
+        fontFamily: string;
+        letterSpacing: string;
+        lineHeight: string;
+      };
+    };
+  }
+}
+
+export const theme: DefaultTheme = {
   colors: {
     point1: '#2AC1BC',
     point2: '#D4F3F2',
@@ -77,4 +162,3 @@ const theme = {
     },
   },
 };
-export default theme;
