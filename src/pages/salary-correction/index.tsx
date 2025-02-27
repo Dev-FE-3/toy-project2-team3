@@ -7,7 +7,7 @@ interface SalaryCorrectionPageProps {
 const SalaryCorrectionPage = ({
   children,
 }: SalaryCorrectionPageProps): JSX.Element => {
-  return <></>;
+  return <>salarycorrectin</>;
 };
 
 export default SalaryCorrectionPage;

@@ -5,7 +5,7 @@ interface NotFoundPageProps {
 }
 
 const NotFoundPage = ({ children }: NotFoundPageProps): JSX.Element => {
-  return <></>;
+  return <>notfound</>;
 };
 
 export default NotFoundPage;

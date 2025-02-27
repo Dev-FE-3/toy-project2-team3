@@ -5,7 +5,7 @@ interface MyPageProps {
 }
 
 const MyPage = ({ children }: MyPageProps): JSX.Element => {
-  return <></>;
+  return <>mypage</>;
 };
 
 export default MyPage;

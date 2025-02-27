@@ -5,7 +5,7 @@ interface WorkCalendarPageProps {
 }
 
 const WorkCalendarPage = ({ children }: WorkCalendarPageProps): JSX.Element => {
-  return <></>;
+  return <>workcalendar</>;
 };
 
 export default WorkCalendarPage;
