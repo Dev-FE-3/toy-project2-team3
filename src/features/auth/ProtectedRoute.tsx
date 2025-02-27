@@ -11,7 +11,7 @@ export const ProtectedRoute = ({
   children,
 }: ProtectedRouteType): JSX.Element => {
   // const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const isLoggedIn = false;
+  const isLoggedIn = true;
 
   return isLoggedIn ? <>{children}</> : <Navigate to="/login" replace />;
 };
