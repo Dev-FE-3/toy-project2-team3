@@ -62,7 +62,7 @@ const CalendarGrid = styled.div`
   gap: 2px;
 `;
 
-const Calendar: React.FC = () => {
+const CalendarMain: React.FC = () => {
   // 상태 관리
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -264,4 +264,4 @@ const Calendar: React.FC = () => {
   );
 };
 
-export default Calendar;
+export default CalendarMain;
