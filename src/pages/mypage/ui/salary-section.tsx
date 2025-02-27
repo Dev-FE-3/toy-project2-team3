@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import * as S from '../styles/salary-section.styles';
 import Modal from './salary-modal';
-import Dropdown from '../../../widgets/dropdown/Dropdown';
+import Dropdown from '../../../shared/dropdown/Dropdown';
+import Button from '../../../shared/button/Button';
 
 // 🔹 급여 내역 더미 데이터
 const salaryData = [
@@ -40,10 +41,10 @@ const SalaryInfoSection: React.FC = () => {
       <S.Title style={{ position: 'relative', top: '0' }}>급여 내역</S.Title>
       <S.SalaryControls>
         <Dropdown title="급여 일자를 선택해주세요" options={options} />
-        <div>
-          <S.Button>Excel</S.Button>
-          <S.Button>CSV</S.Button>
-        </div>
+        <S.ButtonGroup>
+          <Button>Excel</Button>
+          <Button>CSV</Button>
+        </S.ButtonGroup>
       </S.SalaryControls>
       <S.Table>
         <thead>
@@ -67,7 +68,9 @@ const SalaryInfoSection: React.FC = () => {
               </S.TableData>
               <S.TableData>{salary.actualPayment}</S.TableData>
               <S.TableData>
-                <S.Button onClick={handleModalOpen}>급여 명세서 확인</S.Button>
+                <S.ButtonWrapper>
+                  <Button onClick={handleModalOpen}>급여 명세서 확인</Button>
+                </S.ButtonWrapper>
               </S.TableData>
             </S.TableRow>
           ))}

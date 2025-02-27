@@ -54,7 +54,7 @@ export const ProfileEditButton = styled.button`
   align-items: center;
   justify-content: center;
   position: absolute;
-  bottom: 3.75rem;
+  bottom: 3.1rem;
   right: -1px;
   cursor: pointer;
 

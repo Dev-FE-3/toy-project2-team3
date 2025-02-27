@@ -1,18 +1,5 @@
 import styled from 'styled-components';
 
-export const Button = styled.button`
-  height: 2.5rem;
-  background-color: ${({ theme }) => theme.colors.point1};
-  color: ${({ theme }) => theme.colors.white};
-  padding: 0.5rem 1rem;
-  margin-right: 1rem;
-  border-radius: 0.25rem;
-  border: 2px solid ${({ theme }) => theme.colors.point1};
-  cursor: pointer;
-  font-size: ${({ theme }) => theme.typography.body2.fontSize};
-  font-weight: ${({ theme }) => theme.typography.body2.fontWeight};
-`;
-
 export const SalarySection = styled.section`
   width: 100%;
   min-height: 220px;
@@ -58,6 +45,7 @@ export const TableData = styled.td`
   ${({ theme }) => theme.typography.body2}
   border-bottom: 1px solid ${({ theme }) => theme.colors.grey2};
   width: 25%;
+  text-align: center;
 `;
 
 export const SalaryControls = styled.div`
@@ -65,4 +53,15 @@ export const SalaryControls = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+`;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
 `;

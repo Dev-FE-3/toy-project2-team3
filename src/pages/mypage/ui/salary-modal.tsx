@@ -1,6 +1,6 @@
 import React from 'react';
 import * as S from '../styles/salary-modal.styles';
-import Button from '../../../widgets/button/Button';
+import Button from '../../../shared/button/Button';
 
 interface ModalProps {
   isOpen: boolean;

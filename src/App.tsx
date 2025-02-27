@@ -1,11 +1,11 @@
 import { JSX } from 'react';
 import './App.css';
-import MyPage from './pages/mypage';
+import AppRouter from './providers/RouterProvider';
 
 function App(): JSX.Element {
   return (
     <>
-      <MyPage />
+      <AppRouter />
     </>
   );
 }
