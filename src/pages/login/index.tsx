@@ -23,8 +23,13 @@ const Login = () => {
   } = useForm<LoginType>();
   const handleLogin = async (data: LoginType) => {
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      alert('로그인 성공!');
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+      console.log(userCredential.user); // 추후 저장 필요
+      alert('로그인 성공!'); // 임시
     } catch (error) {
       const firebaseError = error as FirebaseError;
 
