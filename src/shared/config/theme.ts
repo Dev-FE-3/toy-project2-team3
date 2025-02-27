@@ -1,4 +1,4 @@
-const theme = {
+const rawTheme = {
   colors: {
     point1: '#2AC1BC',
     point2: '#D4F3F2',
@@ -77,4 +77,7 @@ const theme = {
     },
   },
 };
+
+type ThemeType = typeof rawTheme;
+const theme: ThemeType = rawTheme;
 export default theme;
