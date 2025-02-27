@@ -1,11 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
-import Button from '../../widgets/button/Button';
+import Button from '../../../widgets/button/Button';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const salaryData = {
+  date: '2025년 01월 25일',
+  month: '1월',
+  pay: {
+    base: '3,000,000원',
+    bonus: '3,000,000원',
+    position: '3,000,000원',
+    overtime: '3,000,000원',
+    night: '3,000,000원',
+  },
+  deduct: {
+    health: '-3,000,000원',
+    care: '-3,000,000원',
+    job: '-3,000,000원',
+    tax: '-3,000,000원',
+  },
+  total: {
+    pay: '563,443,234원',
+    deduct: '-1,231,500원',
+    net: '562,211,734원',
+  },
+};
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
@@ -13,18 +36,15 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   return (
     <ModalOverlay>
       <ModalContent>
-        {/* 상단 헤더 */}
         <ModalHeader>
           <Title>
-            <span>1월</span> 급여 명세서
+            <span>{salaryData.month}</span> 급여 명세서
           </Title>
-          <DateText>2025년 01월 25일</DateText>
+          <DateText>{salaryData.date}</DateText>
         </ModalHeader>
 
-        {/* 급여 명세서 내용 */}
         <ModalBody>
           <SalaryDetails>
-            {/* 지급 항목 테이블 */}
             <SalaryTable>
               <thead>
                 <tr>
@@ -35,28 +55,27 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               <tbody>
                 <TableRow>
                   <TableData>기본급</TableData>
-                  <TableDataRight>3,000,000원</TableDataRight>
+                  <TableDataRight>{salaryData.pay.base}</TableDataRight>
                 </TableRow>
                 <TableRow>
                   <TableData>상여금</TableData>
-                  <TableDataRight>3,000,000원</TableDataRight>
+                  <TableDataRight>{salaryData.pay.bonus}</TableDataRight>
                 </TableRow>
                 <TableRow>
                   <TableData>직책수당</TableData>
-                  <TableDataRight>3,000,000원</TableDataRight>
+                  <TableDataRight>{salaryData.pay.position}</TableDataRight>
                 </TableRow>
                 <TableRow>
                   <TableData>특근수당</TableData>
-                  <TableDataRight>3,000,000원</TableDataRight>
+                  <TableDataRight>{salaryData.pay.overtime}</TableDataRight>
                 </TableRow>
                 <TableRow>
                   <TableData>야근수당</TableData>
-                  <TableDataRight>3,000,000원</TableDataRight>
+                  <TableDataRight>{salaryData.pay.night}</TableDataRight>
                 </TableRow>
               </tbody>
             </SalaryTable>
 
-            {/* 공제 항목 테이블 */}
             <SalaryTable>
               <thead>
                 <tr>
@@ -67,42 +86,42 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               <tbody>
                 <TableRow>
                   <TableData>건강보험</TableData>
-                  <TableDataRight>-3,000,000원</TableDataRight>
+                  <TableDataRight>{salaryData.deduct.health}</TableDataRight>
                 </TableRow>
                 <TableRow>
                   <TableData>장기요양보험</TableData>
-                  <TableDataRight>-3,000,000원</TableDataRight>
+                  <TableDataRight>{salaryData.deduct.care}</TableDataRight>
                 </TableRow>
                 <TableRow>
                   <TableData>고용보험</TableData>
-                  <TableDataRight>-3,000,000원</TableDataRight>
+                  <TableDataRight>{salaryData.deduct.job}</TableDataRight>
                 </TableRow>
                 <TableRow>
                   <TableData>소득세</TableData>
-                  <TableDataRight>-3,000,000원</TableDataRight>
+                  <TableDataRight>{salaryData.deduct.tax}</TableDataRight>
                 </TableRow>
               </tbody>
             </SalaryTable>
           </SalaryDetails>
 
-          {/* 지급/공제 합계 및 실지급액 */}
           <TotalSection>
             <TotalRow>
               <TotalText>지급합계</TotalText>
-              <TotalAmount>563,443,234원</TotalAmount>
+              <TotalAmount>{salaryData.total.pay}</TotalAmount>
             </TotalRow>
             <TotalRow>
               <TotalText>공제합계</TotalText>
-              <TotalAmount>-1,231,500원</TotalAmount>
+              <TotalAmount>{salaryData.total.deduct}</TotalAmount>
             </TotalRow>
             <TotalRow>
               <TotalText>실지급액</TotalText>
-              <TotalAmount className="highlight">562,211,734원</TotalAmount>
+              <TotalAmount className="highlight">
+                {salaryData.total.net}
+              </TotalAmount>
             </TotalRow>
           </TotalSection>
         </ModalBody>
 
-        {/* 하단 버튼 */}
         <ModalFooter>
           <Button onClick={onClose} variant="outlined">
             닫기
@@ -132,7 +151,7 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
   width: 1000px;
   height: 670px;
-  background: white;
+  background: ${({ theme }) => theme.colors.white};
   border-radius: 16px;
   padding: 40px;
   position: relative;
@@ -148,18 +167,17 @@ const ModalHeader = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 32px;
-  font-weight: 600;
+  ${({ theme }) => theme.typography.heading2}
   margin-top: 20px;
   margin-bottom: 8px;
   span {
-    color: #14b8a6;
+    color: ${({ theme }) => theme.colors.point1};
   }
 `;
 
 const DateText = styled.p`
-  font-size: 16px;
-  color: #555;
+  ${({ theme }) => theme.typography.body2}
+  color: ${({ theme }) => theme.colors.grey1};
   margin-top: 20px;
   margin-bottom: 8px;
 `;
@@ -167,7 +185,7 @@ const DateText = styled.p`
 const ModalBody = styled.div`
   width: 920px;
   height: 480px;
-  background: #eaf8f8;
+  background: ${({ theme }) => theme.colors.point3};
   padding: 40px;
   border-radius: 10px;
   flex-grow: 1;
@@ -189,8 +207,7 @@ const SalaryTable = styled.table`
 `;
 
 const TableHeader = styled.th`
-  font-size: 24px;
-  font-weight: bold;
+  ${({ theme }) => theme.typography.heading3}
   text-align: left;
   padding-top: 80px;
   padding-bottom: 36px;
@@ -202,12 +219,12 @@ const TableRow = styled.tr`
 `;
 
 const TableData = styled.td`
-  font-size: 16px;
+  ${({ theme }) => theme.typography.body2}
   text-align: left;
 `;
 
 const TableDataRight = styled.td`
-  font-size: 16px;
+  ${({ theme }) => theme.typography.body2}
   font-weight: bold;
   padding-left: 40px;
 `;
@@ -222,21 +239,21 @@ const TotalSection = styled.div`
 const TotalRow = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 220px;
-  line-height: 140%; /* 22.4px */
+  width: 240px;
+  line-height: 140%;
   margin-top: 4px;
 `;
 
 const TotalText = styled.p`
-  font-size: 16px;
+  ${({ theme }) => theme.typography.body2}
   font-weight: bold;
 `;
 
 const TotalAmount = styled.p`
-  font-size: 16px;
+  ${({ theme }) => theme.typography.body2}
   text-align: right;
   &.highlight {
-    color: #14b8a6;
+    color: ${({ theme }) => theme.colors.point1};
   }
 `;
 

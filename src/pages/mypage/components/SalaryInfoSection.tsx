@@ -8,10 +8,28 @@ import {
   TableRow,
   TableHeader,
   TableData,
-} from './MaPageStyles';
+} from '../MyPage.styles';
 import Modal from './SalaryModal';
-import Dropdown from '../../widgets/dropdown/Dropdown';
-//import Button from '../../widgets/button/Button';
+import Dropdown from '../../../widgets/dropdown/Dropdown';
+
+// 🔹 급여 내역 더미 데이터
+const salaryData = [
+  {
+    date: '2025/02/25',
+    totalPayment: '5,000,000',
+    actualPayment: '4,480,000',
+  },
+  {
+    date: '2025/01/25',
+    totalPayment: '5,200,000',
+    actualPayment: '4,650,000',
+  },
+  {
+    date: '2024/12/25',
+    totalPayment: '5,000,000',
+    actualPayment: '4,480,000',
+  },
+];
 
 const SalaryInfoSection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,11 +67,13 @@ const SalaryInfoSection: React.FC = () => {
           </TableRow>
         </thead>
         <tbody>
-          {[1, 2, 3].map((_, index) => (
+          {salaryData.map((salary, index) => (
             <TableRow key={index}>
-              <TableData>2025/02/25</TableData>
-              <TableData style={{ color: '#14b8a6' }}>5,000,000</TableData>
-              <TableData>4,480,000</TableData>
+              <TableData>{salary.date}</TableData>
+              <TableData style={{ color: '#14b8a6' }}>
+                {salary.totalPayment}
+              </TableData>
+              <TableData>{salary.actualPayment}</TableData>
               <TableData>
                 <Button onClick={openModal}>급여 명세서 확인</Button>
               </TableData>

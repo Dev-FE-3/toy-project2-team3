@@ -7,8 +7,8 @@ import {
   InfoItem,
   ProfileImage,
   ProfileEditButton,
-} from './MaPageStyles';
-import profileDefault from '../../assets/profile-default.png';
+} from '../MyPage.styles';
+import profileDefault from '../../../assets/images/profile-default.png';
 
 const EditIcon: React.FC = () => {
   return (
@@ -28,25 +28,33 @@ const EditIcon: React.FC = () => {
 };
 
 const UserInfoSection: React.FC = () => {
+  const userData = {
+    name: '백지헌',
+    position: 'Security Engineer',
+    joinedDate: '2024.04.17',
+    department: '인프라보안팀',
+    email: 'jiheonbaek@gmail.com',
+  };
+
   return (
     <InfoSection>
       <Title>
-        안녕하세요, <span style={{ color: '#14b8a6' }}>백지헌</span>님!
+        안녕하세요, <span style={{ color: '#14b8a6' }}>{userData.name}</span>님!
       </Title>
       <ProfileContainer>
         <div>
           <InfoWrapper>
             <InfoItem>
-              <strong>직책</strong> Security Engineer
+              <strong>직책</strong> {userData.position}
             </InfoItem>
             <InfoItem>
-              <strong>입사</strong> 2024.04.17 (310일째)
+              <strong>입사</strong> {userData.joinedDate}
             </InfoItem>
             <InfoItem>
-              <strong>부서</strong> 인프라보안팀
+              <strong>부서</strong> {userData.department}
             </InfoItem>
             <InfoItem>
-              <strong>메일</strong> jiheonbaek@gmail.com
+              <strong>메일</strong> {userData.email}
             </InfoItem>
           </InfoWrapper>
         </div>
