@@ -1,8 +1,16 @@
-// MemoModal.tsx
 import React from 'react';
-import styled from 'styled-components';
+import ReactDOM from 'react-dom';
+import styled, { createGlobalStyle } from 'styled-components';
 import Dropdown from '../../widgets/dropdown/Dropdown';
 import Button from '../../widgets/button/Button';
+
+// 전역 스타일 적용
+const ModalGlobalStyle = createGlobalStyle`
+  body.modal-open {
+    overflow: hidden;
+    padding-right: var(--scrollbar-width, 0px); // 스크롤바 너비만큼 패딩 추가
+  }
+`;
 
 // Styled Components
 const ModalOverlay = styled.div`
@@ -18,80 +26,128 @@ const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
-const ModalContent = styled.div`
+const ModalContent = styled.article`
   background-color: #fff;
   border-radius: 12px;
   width: 400px;
+  height: 550px;
   display: flex;
-  width: 400px;
-  padding: 32px 20px;
+  padding: 20px;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 20px;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
 `;
 
-const ModalHeader = styled.div`
-  text-align: 'left'
-  font-feature-settings:
-    'liga' off,
-    'clig' off;
+const ModalTitle = styled.h2`
   font-size: 24px;
-  font-style: normal;
   font-weight: 700;
   line-height: 133%;
   letter-spacing: -0.24px;
+  margin: 0 0 10px 0;
+  width: 100%;
+  text-align: center;
 `;
 
-const MemoHeader = styled.div`
+const FormRow = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+`;
+
+const FormLabel = styled.label`
   font-size: 16px;
-  font-style: normal;
   font-weight: 700;
-  line-height: 140%;
-  letter-spacing: -0.1px;
-  width: 360px;
-  height: 22px;
+  margin-bottom: 10px;
+  width: 100%;
+  text-align: left;
+`;
+
+const MemoInput = styled.input`
+  width: 100%;
+  height: 40px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 16px;
+  border: 1px solid #b2b2b2;
+  box-sizing: border-box;
+  &::placeholder {
+    vertical-align: middle;
+  }
 `;
 
 const MemoTextarea = styled.textarea`
-  display: flex;
-  width: 360px;
+  width: 100%;
   height: 40px;
-  padding: 4px 16px;
-  align-items: center;
-  gap: 4px;
+  padding: 10px 16px;
   border-radius: 8px;
+  font-size: 16px;
+  border: 1px solid #b2b2b2;
+  resize: none;
+  line-height: 20px;
+  box-sizing: border-box;
+  &::placeholder {
+    vertical-align: middle;
+  }
+  appearance: none;
 `;
 
-const ModalActions = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
+const LargerTextarea = styled(MemoTextarea)`
+  height: 90px;
 `;
 
 const DateContainer = styled.div`
   display: flex;
-  align-items: center;
-  gap: 16px;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`;
+
+const DateWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 48%;
+`;
+
+const DateLabel = styled.label`
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+  margin-bottom: 5px;
+`;
+
+const DateInput = styled.input`
+  width: 100%;
+  height: 36px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #b2b2b2;
   box-sizing: border-box;
 `;
 
-const StyledInput = styled.input`
-  width: 176px;
-  height: 34px;
+const ButtonContainer = styled.div`
   display: flex;
-  padding: 8px 12px;
   justify-content: center;
-  align-items: flex-start;
-  align-self: stretch;
-  border-radius: 8px;
-  border: 1px solid #b2b2b2;
+  gap: 10px;
+  width: 100%;
+  margin-top: 10px;
+`;
+
+const ActionButton = styled(Button)`
+  width: 120px;
+  height: 40px;
+  border-radius: 4px;
 `;
 
 interface MemoModalProps {
   isOpen: boolean;
   selectedDate: Date | null;
-  memoText: string;
-  onTextChange: (text: string) => void;
+  titleText: string;
+  contentText: string;
+  onTitleChange: (text: string) => void;
+  onContentChange: (text: string) => void;
   onSave: () => void;
   onClose: () => void;
 }
@@ -99,63 +155,106 @@ interface MemoModalProps {
 const CalendarModal: React.FC<MemoModalProps> = ({
   isOpen,
   selectedDate,
-  memoText,
-  onTextChange,
+  titleText,
+  contentText,
+  onTitleChange,
+  onContentChange,
   onSave,
   onClose,
 }) => {
+  // 모달이 열릴 때 스크롤바 너비를 계산하고 body 클래스 추가
+  React.useEffect(() => {
+    if (isOpen) {
+      const scrollbarWidth =
+        window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.setProperty(
+        '--scrollbar-width',
+        `${scrollbarWidth}px`
+      );
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+
+    // 컴포넌트 언마운트 시 클래스 제거
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [isOpen]);
+
   if (!isOpen || !selectedDate) return null;
 
-  return (
-    <ModalOverlay>
-      <ModalContent>
-        <ModalHeader>업무추가</ModalHeader>
-        <MemoHeader>일정 제목</MemoHeader>
-        <MemoTextarea
-          value={memoText}
-          onChange={(e) => onTextChange(e.target.value)}
-          placeholder="업무 제목을 입력하세요"
-        />
-        <MemoHeader>일정 유형</MemoHeader>
+  // 모달 요소를 document.body에 포탈로 렌더링
+  return ReactDOM.createPortal(
+    <>
+      <ModalGlobalStyle />
+      <ModalOverlay role="dialog" aria-modal="true" onClick={onClose}>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <ModalTitle>업무추가</ModalTitle>
 
-        <Dropdown
-          title="일정 유형을 선택 해주세요"
-          options={[
-            { label: '회의', value: '1' },
-            { label: '출장', value: '2' },
-            { label: '회식', value: '3' },
-            { label: '휴가', value: '4' },
-            { label: '회의', value: '5' },
-          ]}
-          width="395px"
-          height="40px"
-          border-radius="4px"
-        />
+          <FormRow>
+            <FormLabel htmlFor="title">일정 제목</FormLabel>
+            <MemoInput
+              id="title"
+              type="text"
+              value={titleText}
+              onChange={(e) => onTitleChange(e.target.value)}
+              placeholder="업무 제목을 입력하세요"
+            />
+          </FormRow>
 
-        <MemoHeader>내용</MemoHeader>
-        <MemoTextarea
-          style={{ width: '360px', height: '90px' }}
-          value={memoText}
-          onChange={(e) => onTextChange(e.target.value)}
-          placeholder="업무 내용을 입력하세요"
-        />
-        <DateContainer>
-          <label>
-            StyledInput시작일
-            <StyledInput type="date" />
-          </label>
-          <label style={{ marginLeft: '16px' }}>
-            종료일
-            <StyledInput type="date" />
-          </label>
-        </DateContainer>
-        <ModalActions>
-          <Button onClick={onClose}>삭제</Button>
+          <FormRow>
+            <FormLabel>일정 유형</FormLabel>
+            <Dropdown
+              title="일정 유형을 선택 해주세요"
+              options={[
+                { label: '회의', value: '1' },
+                { label: '출장', value: '2' },
+                { label: '회식', value: '3' },
+                { label: '휴가', value: '4' },
+                { label: '회의', value: '5' },
+              ]}
+              width="100%"
+              height="40px"
+              border-radius="4px"
+            />
+          </FormRow>
 
-          <Button onClick={onSave}>저장</Button>
-        </ModalActions>
-      </ModalContent>
-    </ModalOverlay>
+          <FormRow>
+            <FormLabel htmlFor="content">내용</FormLabel>
+            <LargerTextarea
+              id="content"
+              value={contentText}
+              onChange={(e) => onContentChange(e.target.value)}
+              placeholder="업무 내용을 입력하세요"
+            />
+          </FormRow>
+
+          <DateContainer>
+            <DateWrapper>
+              <DateLabel htmlFor="startDate">시작일</DateLabel>
+              <DateInput id="startDate" type="date" />
+            </DateWrapper>
+            <DateWrapper>
+              <DateLabel htmlFor="endDate">종료일</DateLabel>
+              <DateInput id="endDate" type="date" />
+            </DateWrapper>
+          </DateContainer>
+
+          <ButtonContainer>
+            <ActionButton
+              typeStyle="rounded"
+              variant="outlined"
+              onClick={onClose}
+            >
+              삭제
+            </ActionButton>
+            <ActionButton onClick={onSave}>저장</ActionButton>
+          </ButtonContainer>
+        </ModalContent>
+      </ModalOverlay>
+    </>,
+    document.body // 모달을 body에 직접 렌더링
   );
 };
 
