@@ -12,7 +12,7 @@ interface LoginType {
   password: string;
 }
 
-const Login = () => {
+const LoginPage = () => {
   const auth = getAuth(app);
 
   const {
@@ -104,4 +104,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;
