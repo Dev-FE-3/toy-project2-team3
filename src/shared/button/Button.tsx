@@ -15,7 +15,7 @@ const StyledButton = styled.button<ButtonProps>`
   height: 40px;
   padding: 0 40px;
   width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
-  font-weight: ${({ typeStyle }) =>
+  font: ${({ typeStyle }) =>
     typeStyle === 'rounded'
       ? ({ theme }) => theme.typography.menu1
       : ({ theme }) => theme.typography.body2};
