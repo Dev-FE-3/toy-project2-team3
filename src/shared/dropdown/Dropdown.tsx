@@ -12,6 +12,8 @@ export interface DropdownProps {
   onSelect?: (option: OptionType) => void;
   defaultValue?: OptionType;
   placeholder?: string;
+  width?: string;
+  height?: string;
 }
 
 export interface DropdownTextProps {
@@ -35,8 +37,6 @@ const fontStyles = css`
 
 const baseBoxStyles = css`
   box-sizing: border-box;
-  width: 260px;
-  height: 40px;
   align-items: center;
 `;
 
@@ -48,9 +48,10 @@ const itemBaseStyles = css`
   cursor: pointer;
 `;
 
-// 드롭다운 container
-const DropdownContainer = styled.nav`
+const DropdownContainer = styled.nav<{ width?: string; height?: string }>`
   ${baseBoxStyles}
+  width: ${(props) => props.width || '260px'};
+  height: ${(props) => props.height || '40px'};
   position: relative;
   ${fontStyles}
 
@@ -61,14 +62,18 @@ const DropdownContainer = styled.nav`
   }
 `;
 
-// 드롭다운 header
-const DropdownHeader = styled.button<{ hasSelected?: boolean }>`
+const DropdownHeader = styled.button<{
+  hasSelected?: boolean;
+  width?: string;
+  height?: string;
+}>`
   ${baseBoxStyles}
   ${itemBaseStyles}
+  width: ${(props) => props.width || '100%'};
+  height: ${(props) => props.height || '40px'};
   justify-content: space-between;
   border-radius: 4px;
   flex-shrink: 0;
-  width: 100%;
   text-align: left;
 
   background: ${(props) => (props.hasSelected ? '#fff' : '#2ac1bc')};
@@ -145,7 +150,6 @@ const DropdownIcon: React.FC<DropdownIconProps> = ({ isMint = false }) => {
   );
 };
 
-// 텍스트 부분 -
 const DropdownText = styled.strong<{
   hasPlaceHolder: boolean;
   hasSelected: boolean;
@@ -171,6 +175,8 @@ const Dropdown: React.FC<DropdownProps> = ({
   onSelect,
   defaultValue = undefined,
   placeholder,
+  width,
+  height,
 }) => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [selectedOption, setSelectedOption] = useState<OptionType | undefined>(
@@ -210,8 +216,13 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   return (
-    <DropdownContainer ref={dropdownRef}>
-      <DropdownHeader onClick={dropDownHandler} hasSelected={!!selectedOption}>
+    <DropdownContainer ref={dropdownRef} width={width} height={height}>
+      <DropdownHeader
+        onClick={dropDownHandler}
+        hasSelected={!!selectedOption}
+        width={width}
+        height={height}
+      >
         <DropdownText
           hasPlaceHolder={!selectedOption}
           hasSelected={!!selectedOption}
