@@ -12,6 +12,8 @@ export interface DropdownProps {
   onSelect?: (option: OptionType) => void;
   defaultValue?: OptionType;
   placeholder?: string;
+  width?: string;
+  height?: string;
 }
 
 export interface DropdownTextProps {

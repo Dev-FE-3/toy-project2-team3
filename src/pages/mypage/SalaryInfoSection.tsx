@@ -10,6 +10,8 @@ import {
   TableData,
 } from './MaPageStyles';
 import Modal from './SalaryModal';
+import Dropdown from '../../widgets/dropdown/Dropdown';
+//import Button from '../../widgets/button/Button';
 
 const SalaryInfoSection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,11 +19,21 @@ const SalaryInfoSection: React.FC = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  const options = [
+    { label: '1', value: 1 },
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+    { label: '4', value: 4 },
+    { label: '5', value: 5 },
+    { label: '6', value: 6 },
+    { label: '7', value: 7 },
+  ];
+
   return (
     <SalarySection>
       <Title style={{ position: 'relative', top: '0' }}>급여 내역</Title>
       <SalaryControls>
-        <Button>급여 일자를 선택해주세요 ▼</Button>
+        <Dropdown title="급여 일자를 선택해주세요" options={options} />
         <div>
           <Button>Excel</Button>
           <Button>CSV</Button>

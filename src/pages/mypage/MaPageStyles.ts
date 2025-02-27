@@ -28,6 +28,7 @@ export const Button = styled.button`
   background-color: #14b8a6; /* 기본 배경색 */
   color: white; /* 기본 글자색 */
   padding: 0.5rem 1rem;
+  margin-right: 1rem;
   border-radius: 4px;
   border: 2px solid #14b8a6;
   cursor: pointer;
@@ -51,6 +52,7 @@ export const SalarySection = styled.section`
   min-height: 220px;
   padding-top: 2rem;
   position: relative;
+  margin-bottom: 2rem;
 `;
 
 export const ProfileContainer = styled.div`

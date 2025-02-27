@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Button from '../../widgets/button/Button';
 
 interface ModalProps {
   isOpen: boolean;
@@ -103,8 +104,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
         {/* 하단 버튼 */}
         <ModalFooter>
-          <Button onClick={onClose}>닫기</Button>
-          <Button primary>정정 신청하기</Button>
+          <Button onClick={onClose} variant="outlined">
+            닫기
+          </Button>
+          <Button>정정 신청하기</Button>
         </ModalFooter>
       </ModalContent>
     </ModalOverlay>
@@ -244,14 +247,14 @@ const ModalFooter = styled.div`
   margin-top: 20px;
 `;
 
-const Button = styled.button<{ primary?: boolean }>`
-  width: 150px;
-  height: 40px;
-  background-color: ${({ primary }) => (primary ? '#14b8a6' : 'white')};
-  color: ${({ primary }) => (primary ? 'white' : '#14b8a6')};
-  border: 2px solid #14b8a6;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-`;
+// const Button = styled.button<{ primary?: boolean }>`
+//   width: 150px;
+//   height: 40px;
+//   background-color: ${({ primary }) => (primary ? '#14b8a6' : 'white')};
+//   color: ${({ primary }) => (primary ? 'white' : '#14b8a6')};
+//   border: 2px solid #14b8a6;
+//   border-radius: 4px;
+//   cursor: pointer;
+//   font-size: 16px;
+//   font-weight: bold;
+// `;
