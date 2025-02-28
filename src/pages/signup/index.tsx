@@ -1,9 +1,13 @@
-import { JSX } from 'react';
+import { JSX, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { FirebaseError } from 'firebase/app';
-import app from '../../fireBase';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import app from '../../firebase';
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  updateProfile,
+} from 'firebase/auth';
 
 import * as S from './style';
 
@@ -16,7 +20,9 @@ interface SignUpPageProps {
 
 interface SignUpType {
   email: string;
+  name: string;
   password: string;
+  pwdCheck: string;
 }
 
 const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
@@ -27,7 +33,13 @@ const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm<SignUpType>();
+    watch,
+  } = useForm<SignUpType>({
+    mode: 'onChange',
+  });
+
+  const [name, setName] = useState('');
+
   const handleSignUp = async (data: SignUpType) => {
     try {
       const createdUser = await createUserWithEmailAndPassword(
@@ -35,8 +47,17 @@ const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
         data.email,
         data.password
       );
+
+      // 회원가입 후 displayName 업데이트
+      if (createdUser.user) {
+        await updateProfile(createdUser.user, {
+          displayName: data.name,
+        });
+      }
+
       alert('회원가입 성공!'); // 임시
       console.log(createdUser);
+      // home으로 이동
     } catch (error) {
       const firebaseError = error as FirebaseError;
 
@@ -85,10 +106,26 @@ const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
               )}
             </S.InputBox>
             <S.InputBox>
+              <S.Label>이름</S.Label>
+              <S.Input
+                {...register('name', {
+                  required: '이름을 입력하세요.',
+                })}
+                placeholder="이름을 입력하세요"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              {errors.name && <S.ErrorText>{errors.name.message}</S.ErrorText>}
+            </S.InputBox>
+            <S.InputBox>
               <S.Label>비밀번호</S.Label>
               <S.Input
                 {...register('password', {
                   required: '비밀번호를 입력하세요.',
+                  minLength: {
+                    value: 8,
+                    message: '비밀번호는 8자리 이상이어야 합니다.',
+                  },
                 })}
                 type="password"
                 placeholder="사용할 비밀번호를 입력하세요(8자리 이상, 특수문자 포함)"
@@ -96,6 +133,23 @@ const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
               />
               {errors.password && (
                 <S.ErrorText>{errors.password.message}</S.ErrorText>
+              )}
+            </S.InputBox>
+            <S.InputBox>
+              <S.Label>비밀번호 확인</S.Label>
+              <S.Input
+                {...register('pwdCheck', {
+                  required: '비밀번호를 다시 입력하세요.',
+                  validate: (value) =>
+                    value === watch('password') ||
+                    '비밀번호가 일치하지 않습니다.',
+                })}
+                type="password"
+                placeholder="비밀번호를 다시 입력하세요(8자리 이상, 특수문자 포함)"
+                hasError={!!errors.pwdCheck}
+              />
+              {errors.pwdCheck && (
+                <S.ErrorText>{errors.pwdCheck.message}</S.ErrorText>
               )}
             </S.InputBox>
           </S.InputContainer>
