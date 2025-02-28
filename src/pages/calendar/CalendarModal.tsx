@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import styled, { createGlobalStyle } from 'styled-components';
-import Dropdown, { OptionType } from '../../widgets/dropdown/Dropdown';
-import Button from '../../widgets/button/Button';
+import Dropdown, { OptionType } from '../../shared/dropdown/Dropdown';
+import Button from '../../shared/button/Button';
 
 // 전역 스타일 적용
 const ModalGlobalStyle = createGlobalStyle`
@@ -179,9 +179,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
     const options = [
       { label: '회의', value: '1' },
       { label: '출장', value: '2' },
-      { label: '회식', value: '3' },
-      { label: '휴가', value: '4' },
-      { label: '회의', value: '5' },
+      { label: '휴가', value: '3' },
     ];
 
     if (!eventType) return undefined;
@@ -236,9 +234,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
               options={[
                 { label: '회의', value: '1' },
                 { label: '출장', value: '2' },
-                { label: '회식', value: '3' },
-                { label: '휴가', value: '4' },
-                { label: '회의', value: '5' },
+                { label: '휴가', value: '3' },
               ]}
               width="100%"
               height="40px"

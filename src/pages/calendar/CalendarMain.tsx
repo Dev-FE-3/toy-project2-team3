@@ -187,6 +187,7 @@ const CalendarMain: React.FC = () => {
   const handleDateClick = (date: Date): void => {
     setSelectedDate(date);
     const dateKey = formatDateKey(date);
+    const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
     // memoText 대신 titleText와 contentText 사용
     const memoData = memos[dateKey] || '';
@@ -201,8 +202,9 @@ const CalendarMain: React.FC = () => {
     } else {
       setContentText('');
       setEventType('');
-      setStartDate('');
-      setEndDate('');
+      // 새 일정 추가 시 선택한 날짜를 시작일과 종료일의 기본값으로 설정
+      setStartDate(formattedDate);
+      setEndDate(formattedDate);
     }
 
     setModalOpen(true);
@@ -242,10 +244,20 @@ const CalendarMain: React.FC = () => {
     setEndDate(date);
   };
 
-  // 메모 저장 핸들러
   const saveMemo = (): void => {
     if (selectedDate) {
-      const dateKey = formatDateKey(selectedDate);
+      // 선택된 날짜 대신 시작일을 기준으로 dateKey 생성
+      let dateKey;
+
+      if (startDate) {
+        // 시작일이 있으면 그 날짜의 키를 생성
+        const startDateObj = new Date(startDate);
+        dateKey = formatDateKey(startDateObj);
+      } else {
+        // 시작일이 없으면 선택된 날짜의 키를 사용
+        dateKey = formatDateKey(selectedDate);
+      }
+
       const updatedMemos = { ...memos };
       const updatedEvents = { ...events };
 
@@ -356,28 +368,68 @@ const CalendarMain: React.FC = () => {
             const currentDate = dayData.date;
 
             // 현재 날짜가 포함된 이벤트 찾기
-            let isInEvent = false;
+            let isInEventRange = false;
             let isEventStart = false;
+            let isEventEnd = false;
             let eventTypeName = '';
+            let eventColor = '';
+            let foundEventInfo = null;
 
             Object.values(events).forEach((event) => {
-              if (!event.startDate || !event.endDate) return;
+              if (!event.startDate || !event.endDate || !event.type) return;
 
-              const startDate = new Date(event.startDate);
-              const endDate = new Date(event.endDate);
+              // 시간 정보를 제거한 날짜 객체 생성
+              const [startYear, startMonth, startDay] = event.startDate
+                .split('-')
+                .map(Number);
+              const [endYear, endMonth, endDay] = event.endDate
+                .split('-')
+                .map(Number);
 
-              // 시작일과 종료일 사이에 있는지 확인
-              if (currentDate >= startDate && currentDate <= endDate) {
-                isInEvent = true;
+              // 월은 0부터 시작하므로 1을 빼줍니다
+              const startDate = new Date(startYear, startMonth - 1, startDay);
+              const endDate = new Date(endYear, endMonth - 1, endDay);
+
+              // 현재 날짜도 시간 정보 제거
+              const currentDateNoTime = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth(),
+                currentDate.getDate()
+              );
+
+              // 시작일과 종료일 사이에 있는지 확인 (시간 정보 없이)
+              const isInRange =
+                currentDateNoTime.getTime() >= startDate.getTime() &&
+                currentDateNoTime.getTime() <= endDate.getTime();
+
+              if (isInRange) {
+                isInEventRange = true;
+                foundEventInfo = event;
 
                 // 이벤트의 시작일인지 확인
-                if (
-                  currentDate.getDate() === startDate.getDate() &&
-                  currentDate.getMonth() === startDate.getMonth() &&
-                  currentDate.getFullYear() === startDate.getFullYear()
-                ) {
+                if (currentDateNoTime.getTime() === startDate.getTime()) {
                   isEventStart = true;
-                  eventTypeName = getEventTypeName(event.type);
+                }
+
+                // 종료일 확인
+                if (currentDateNoTime.getTime() === endDate.getTime()) {
+                  isEventEnd = true;
+                }
+
+                eventTypeName = getEventTypeName(event.type);
+
+                switch (event.type) {
+                  case '1':
+                    eventColor = 'lightpink';
+                    break;
+                  case '2':
+                    eventColor = 'lightblue';
+                    break;
+                  case '3':
+                    eventColor = 'lightgreen';
+                    break;
+                  default:
+                    eventColor = 'grey';
                 }
               }
             });
@@ -389,9 +441,14 @@ const CalendarMain: React.FC = () => {
                 isCurrentMonth={dayData.isCurrentMonth}
                 isToday={isToday(dayData.date)}
                 memo={memos[dateKey]}
-                event={isInEvent ? ({ type: 'event' } as EventData) : undefined}
+                event={
+                  isEventStart && foundEventInfo ? foundEventInfo : undefined
+                }
                 isEventStart={isEventStart}
+                isEventEnd={isEventEnd}
+                isInEventRange={isInEventRange}
                 eventTypeName={eventTypeName}
+                eventColor={eventColor}
                 onDateClick={handleDateClick}
               />
             );

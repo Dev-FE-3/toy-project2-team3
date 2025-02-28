@@ -8,7 +8,10 @@ interface CalendarCellProps {
   memo?: string;
   event?: EventData;
   isEventStart?: boolean;
+  isEventEnd?: boolean;
+  isInEventRange?: boolean;
   eventTypeName?: string;
+  eventColor?: string;
   onDateClick: (date: Date) => void;
 }
 
@@ -25,25 +28,37 @@ interface CalendarCellStyledProps {
   isToday: boolean;
 }
 
-const EventMarker = styled.div`
+// 이벤트 범위 표시자 (선) - 시작일에는 텍스트 표시
+const EventRangeIndicator = styled.div<{
+  isStart: boolean;
+  isEnd: boolean;
+  color: string;
+  hasText: boolean;
+}>`
+  height: ${(props) => (props.hasText ? '15px' : '15px')};
+  background-color: ${(props) => props.color || 'pink'};
   width: 100%;
-  height: 10px;
-  background-color: red;
+  position: relative;
   margin-top: 2px;
-  display: flex;
+  display: ${(props) => (props.hasText ? 'flex' : 'block')};
   align-items: center;
-  font-size: 10px;
+  font-size: 12px;
   color: white;
-  padding-left: 4px;
+  padding-left: ${(props) => (props.hasText ? '6px' : '0')};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+
+  border-top-left-radius: ${(props) => (props.isStart ? '5px' : '0')};
+  border-bottom-left-radius: ${(props) => (props.isStart ? '5px' : '0')};
+  border-top-right-radius: ${(props) => (props.isEnd ? '5px' : '0')};
+  border-bottom-right-radius: ${(props) => (props.isEnd ? '5px' : '0')};
 `;
 
 const CalendarCellStyled = styled.div<CalendarCellStyledProps>`
   display: flex;
   height: 80px;
-  width: auto; // min-width 제거하고 width: auto로 변경
+  width: auto;
   padding: 6px;
   flex-direction: column;
   align-items: flex-start;
@@ -56,7 +71,6 @@ const CalendarCellStyled = styled.div<CalendarCellStyledProps>`
   color: ${(props) => (props.isToday ? '#2AC1BC' : 'inherit')};
   font-weight: ${(props) => (props.isToday ? 'bold' : 'normal')};
 
-  // 셀이 그리드 내에서 자동으로 크기 조정되도록 설정
   box-sizing: border-box;
   overflow: hidden;
 
@@ -64,6 +78,13 @@ const CalendarCellStyled = styled.div<CalendarCellStyledProps>`
     background-color: ${(props) =>
       props.isCurrentMonth ? 'rgba(42, 193, 188, 0.2)' : '#e0e0e0 '};
   }
+`;
+
+const DateContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 4px;
 `;
 
 const DateNumber = styled.div`
@@ -83,14 +104,15 @@ const DateNumber = styled.div`
 const MemoPreview = styled.div`
   font-size: 0.8rem;
   color: #666;
-  margin-top: 4px;
+  margin-top: 1px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  background-color: #b2b2b2;
+  background-color: rgba(42, 193, 188, 0.2);
   padding: 2px 4px;
   border-radius: 4px;
   width: 100%;
+  flex: 1;
 `;
 
 const formatMemoPreview = (text: string): string => {
@@ -104,7 +126,10 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
   memo,
   event,
   isEventStart,
+  isEventEnd,
+  isInEventRange,
   eventTypeName,
+  eventColor = 'pink',
   onDateClick,
 }) => {
   const handleCellClick = (): void => {
@@ -119,9 +144,22 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
       isToday={isToday}
       onClick={handleCellClick}
     >
-      <DateNumber>{date.getDate()}</DateNumber>
-      {memo && <MemoPreview>{formatMemoPreview(memo)}</MemoPreview>}
-      {event && <EventMarker>{isEventStart && eventTypeName}</EventMarker>}
+      <DateContainer>
+        <DateNumber>{date.getDate()}</DateNumber>
+        {memo && <MemoPreview>{formatMemoPreview(memo)}</MemoPreview>}
+      </DateContainer>
+
+      {/* 이벤트 기간 표시 - 시작일에는 선 안에 텍스트 포함 */}
+      {isInEventRange && (
+        <EventRangeIndicator
+          isStart={!!isEventStart}
+          isEnd={!!isEventEnd}
+          color={eventColor}
+          hasText={!!isEventStart && !!eventTypeName}
+        >
+          {isEventStart && eventTypeName ? eventTypeName : ''}
+        </EventRangeIndicator>
+      )}
     </CalendarCellStyled>
   );
 };

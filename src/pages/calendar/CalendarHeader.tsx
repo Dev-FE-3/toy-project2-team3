@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Button from '../../widgets/button/Button';
+import Button from '../../shared/button/Button';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -49,7 +49,7 @@ interface CalendarHeaderProps {
   onPrevMonth: () => void;
   onNextMonth: () => void;
   onAddTask: (date: Date) => void;
-  onClearAll: () => void; // 전체삭제 기능을 위한 prop 추가
+  onClearAll: () => void;
 }
 
 const CalendarHeader: React.FC<CalendarHeaderProps> = ({
@@ -57,7 +57,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   onPrevMonth,
   onNextMonth,
   onAddTask,
-  onClearAll, // 추가된 prop
+  onClearAll,
 }) => {
   return (
     <HeaderContainer>
