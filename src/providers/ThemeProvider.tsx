@@ -1,6 +1,6 @@
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { JSX } from 'react';
-import { theme } from '../shared/config/theme';
+import theme from '../shared/config/theme';
 import { ReactNode } from 'react';
 
 interface ThemeProviderProps {
