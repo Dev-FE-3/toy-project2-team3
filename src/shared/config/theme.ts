@@ -1,6 +1,7 @@
 import { DefaultTheme } from 'styled-components';
 
 const theme: DefaultTheme = {
+
   colors: {
     point1: '#2AC1BC',
     point2: '#D4F3F2',
@@ -79,4 +80,3 @@ const theme: DefaultTheme = {
     },
   },
 };
-export default theme;
