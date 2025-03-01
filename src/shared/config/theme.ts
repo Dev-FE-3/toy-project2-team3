@@ -128,7 +128,7 @@ export const theme: DefaultTheme = {
     menu1: {
       fontSize: '18px',
       fontWeight: 400, // Regular = 400
-      fontFamily: "'BM HANNA 11yrs old OTF', sans-serif",
+      fontFamily: "'Hanna 11yrs', sans-serif",
       letterSpacing: '-0.24px',
       lineHeight: '133%',
     },
