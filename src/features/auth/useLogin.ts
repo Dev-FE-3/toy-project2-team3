@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import app from '../../firebase';
+import {  signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { auth } from '@/firebase';
 
 interface LoginType {
   email: string;
@@ -10,7 +10,6 @@ interface LoginType {
 }
 
 export const useLogin = () => {
-  const auth = getAuth(app);
   const {
     register,
     handleSubmit,
