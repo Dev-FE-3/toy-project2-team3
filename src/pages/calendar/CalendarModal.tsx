@@ -149,6 +149,7 @@ interface MemoModalProps {
   eventType: string;
   startDate: string;
   endDate: string;
+  isNewEvent: boolean;
   onTitleChange: (text: string) => void;
   onContentChange: (text: string) => void;
   onEventTypeChange: (type: string) => void;
@@ -156,6 +157,7 @@ interface MemoModalProps {
   onEndDateChange: (date: string) => void;
   onSave: () => void;
   onClose: () => void;
+  onDelete: () => void;
 }
 
 const CalendarModal: React.FC<MemoModalProps> = ({
@@ -166,6 +168,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
   eventType,
   startDate,
   endDate,
+  isNewEvent,
   onTitleChange,
   onContentChange,
   onEventTypeChange,
@@ -173,6 +176,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
   onEndDateChange,
   onSave,
   onClose,
+  onDelete,
 }) => {
   // 이벤트 타입에 해당하는 OptionType 찾기
   const getSelectedOption = (): OptionType | undefined => {
@@ -280,9 +284,9 @@ const CalendarModal: React.FC<MemoModalProps> = ({
             <ActionButton
               typeStyle="rounded"
               variant="outlined"
-              onClick={onClose}
+              onClick={isNewEvent ? onClose : onDelete}
             >
-              삭제
+              {isNewEvent ? '닫기' : '삭제'}
             </ActionButton>
             <ActionButton onClick={onSave}>저장</ActionButton>
           </ButtonContainer>

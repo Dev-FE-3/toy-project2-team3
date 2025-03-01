@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import CalendarCell from './CalendarCell';
 import CalendarModal from './CalendarModal';
 import CalendarHeader from './CalendarHeader';
-import { json } from 'stream/consumers';
 
 // 타입 정의
 interface EventData {
@@ -95,6 +94,7 @@ const CalendarMain: React.FC = () => {
   const [eventType, setEventType] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
+  const [isNewEvent, setIsNewEvent] = useState<boolean>(true);
 
   // 달력 데이터 계산
   const getDaysInMonth = (year: number, month: number): number => {
@@ -183,23 +183,44 @@ const CalendarMain: React.FC = () => {
     });
   };
 
-  // 날짜 클릭 핸들러(모달 열기)
+  // 새 일정 추가 버튼 핸들러 - 항상 새 일정 모드로 설정
+  const handleAddTask = (date: Date): void => {
+    setSelectedDate(date);
+    const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+    // 항상 새 일정 모드로 설정
+    setIsNewEvent(true);
+
+    // 폼 초기화
+    setTitleText('');
+    setContentText('');
+    setEventType('');
+    setStartDate(formattedDate);
+    setEndDate(formattedDate);
+
+    setModalOpen(true);
+  };
+
+  // 날짜 클릭 핸들러(모달 열기) - 기존 일정이 있으면 수정 모드, 없으면 새 일정 모드
   const handleDateClick = (date: Date): void => {
     setSelectedDate(date);
     const dateKey = formatDateKey(date);
     const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-    // memoText 대신 titleText와 contentText 사용
     const memoData = memos[dateKey] || '';
     setTitleText(memoData);
 
     const eventData = events[dateKey];
     if (eventData) {
+      setIsNewEvent(false);
+      setTitleText(eventData.title || '');
       setContentText(eventData.content || '');
       setEventType(eventData.type || '');
       setStartDate(eventData.startDate || '');
       setEndDate(eventData.endDate || '');
     } else {
+      setIsNewEvent(true);
+      setTitleText('');
       setContentText('');
       setEventType('');
       // 새 일정 추가 시 선택한 날짜를 시작일과 종료일의 기본값으로 설정
@@ -309,6 +330,25 @@ const CalendarMain: React.FC = () => {
     }
   }, []);
 
+  const deleteMemo = (): void => {
+    if (selectedDate) {
+      const datekey = formatDateKey(selectedDate);
+      const updatedMemos = { ...memos };
+      const updatedEvents = { ...events };
+
+      delete updatedMemos[datekey];
+      delete updatedEvents[datekey];
+
+      setMemos(updatedMemos);
+      setEvents(updatedEvents);
+
+      localStorage.setItem('calendarMemos', JSON.stringify(updatedMemos));
+      localStorage.setItem('calendarEvents', JSON.stringify(updatedEvents));
+
+      setModalOpen(false);
+    }
+  };
+
   // 요일 이름 배열
   const weekdays: string[] = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -352,7 +392,7 @@ const CalendarMain: React.FC = () => {
           currentDate={currentDate}
           onPrevMonth={prevMonth}
           onNextMonth={nextMonth}
-          onAddTask={handleDateClick}
+          onAddTask={handleAddTask} // 일정 추가 버튼은 handleAddTask 함수를 사용
           onClearAll={clearAllData}
         />
 
@@ -449,7 +489,7 @@ const CalendarMain: React.FC = () => {
                 isInEventRange={isInEventRange}
                 eventTypeName={eventTypeName}
                 eventColor={eventColor}
-                onDateClick={handleDateClick}
+                onDateClick={handleDateClick} // 달력 셀 클릭은 handleDateClick 함수를 사용
               />
             );
           })}
@@ -473,6 +513,8 @@ const CalendarMain: React.FC = () => {
           onEndDateChange={handleEndDateChange}
           onSave={saveMemo}
           onClose={closeModal}
+          isNewEvent={isNewEvent}
+          onDelete={deleteMemo}
         />
       )}
     </PageContainer>

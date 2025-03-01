@@ -6,21 +6,19 @@ interface CalendarCellProps {
   isCurrentMonth: boolean;
   isToday: boolean;
   memo?: string;
-  event?: EventData;
+  event?: {
+    title: string;
+    type: string;
+    content: string;
+    startDate: string;
+    endDate: string;
+  };
   isEventStart?: boolean;
   isEventEnd?: boolean;
   isInEventRange?: boolean;
   eventTypeName?: string;
   eventColor?: string;
   onDateClick: (date: Date) => void;
-}
-
-interface EventData {
-  title: string;
-  type: string;
-  content: string;
-  startDate: string;
-  endDate: string;
 }
 
 interface CalendarCellStyledProps {
@@ -33,9 +31,9 @@ const EventRangeIndicator = styled.div<{
   isStart: boolean;
   isEnd: boolean;
   color: string;
-  hasText: boolean;
+  hasText: boolean; // styled-components에서 boolean을 사용할 수 있도록 타입 수정
 }>`
-  height: ${(props) => (props.hasText ? '15px' : '15px')};
+  height: 15px;
   background-color: ${(props) => props.color || 'pink'};
   width: 100%;
   position: relative;
@@ -115,6 +113,15 @@ const MemoPreview = styled.div`
   flex: 1;
 `;
 
+const EventsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 2px;
+  overflow: hidden;
+  max-height: 50px; // 이벤트가 너무 많아도 셀 크기를 유지
+`;
+
 const formatMemoPreview = (text: string): string => {
   return text.length > 15 ? text.substring(0, 15) + '...' : text;
 };
@@ -129,7 +136,7 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
   isEventEnd,
   isInEventRange,
   eventTypeName,
-  eventColor = 'pink',
+  eventColor,
   onDateClick,
 }) => {
   const handleCellClick = (): void => {
@@ -137,6 +144,9 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
       onDateClick(date);
     }
   };
+
+  // 텍스트를 표시해야 하는지 여부를 명시적으로 계산
+  const showEventText = Boolean(isEventStart && eventTypeName);
 
   return (
     <CalendarCellStyled
@@ -149,16 +159,17 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
         {memo && <MemoPreview>{formatMemoPreview(memo)}</MemoPreview>}
       </DateContainer>
 
-      {/* 이벤트 기간 표시 - 시작일에는 선 안에 텍스트 포함 */}
-      {isInEventRange && (
-        <EventRangeIndicator
-          isStart={!!isEventStart}
-          isEnd={!!isEventEnd}
-          color={eventColor}
-          hasText={!!isEventStart && !!eventTypeName}
-        >
-          {isEventStart && eventTypeName ? eventTypeName : ''}
-        </EventRangeIndicator>
+      {isInEventRange && eventColor && (
+        <EventsContainer>
+          <EventRangeIndicator
+            isStart={Boolean(isEventStart)}
+            isEnd={Boolean(isEventEnd)}
+            color={eventColor}
+            hasText={showEventText}
+          >
+            {showEventText ? eventTypeName : ''}
+          </EventRangeIndicator>
+        </EventsContainer>
       )}
     </CalendarCellStyled>
   );
