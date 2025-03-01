@@ -1,7 +1,7 @@
 import { JSX, ReactNode, useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import app from '@/firebase';
+import {  onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from '@/firebase';
 
 interface ProtectedRouteType {
   children: ReactNode;
@@ -10,7 +10,6 @@ interface ProtectedRouteType {
 export const ProtectedRoute = ({
   children,
 }: ProtectedRouteType): JSX.Element => {
-  const auth = getAuth(app);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
 
