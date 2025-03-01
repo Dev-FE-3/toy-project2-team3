@@ -1,7 +1,7 @@
-import { JSX, ReactNode } from 'react';
+import { JSX, ReactNode, useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-// import { RootState } from '@/app/store';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import app from '@/firebase';
 
 interface ProtectedRouteType {
   children: ReactNode;
@@ -10,8 +10,22 @@ interface ProtectedRouteType {
 export const ProtectedRoute = ({
   children,
 }: ProtectedRouteType): JSX.Element => {
-  // const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const isLoggedIn = true;
+  const auth = getAuth(app);
+  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
-  return isLoggedIn ? <Outlet /> : <Navigate to="/login" replace />;
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [auth]);
+
+  if (isLoading) {
+    return <div>Loading...</div>; // 임시 로딩
+  }
+
+  return user ? <Outlet /> : <Navigate to="/login" replace />;
 };
