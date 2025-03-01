@@ -9,7 +9,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 // 기본 스타일
-const StyledButton = styled.button<ButtonProps>`
+const StyledButton = styled.button<{
+  $typeStyle?: 'rounded' | 'square';
+  width?: number | string;
+  variant?: 'filled' | 'outlined';
+}>`
   box-sizing: border-box;
   white-space: nowrap;
   height: 40px;
@@ -96,7 +100,6 @@ const Button: React.FC<ButtonProps> = ({
       width={width}
       variant={variant}
       typeStyle={typeStyle}
-      isDelete={isDelete}
       {...props}
     >
       {children}
