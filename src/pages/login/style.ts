@@ -82,7 +82,7 @@ export const ErrorText = styled.p`
   letter-spacing: 0.1px;
 `;
 
-export const FindAccountWrapper = styled.div`
+export const FindSwitcher = styled.div`
   ${({ theme }) => theme.typography.body4}
 
   display: flex;
@@ -97,7 +97,7 @@ export const FindAccountLink = styled.p`
   color: ${({ theme }) => theme.colors.point1};
 `;
 
-export const SignUpWrapper = styled.div`
+export const Switcher = styled.div`
   display: flex;
   justify-content: center;
   gap: 2px;
@@ -106,10 +106,6 @@ export const SignUpWrapper = styled.div`
 
   ${({ theme }) => theme.typography.body4}
   color: ${({ theme }) => theme.colors.grey1};
-`;
-
-export const AuthWrapper = styled.div`
-  width: 100%;
 `;
 
 export const SignUpLink = styled(Link)`
