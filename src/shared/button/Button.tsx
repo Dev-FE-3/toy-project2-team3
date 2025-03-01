@@ -8,16 +8,20 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 // 기본 스타일
-const StyledButton = styled.button<ButtonProps>`
+const StyledButton = styled.button<{
+  $typeStyle?: 'rounded' | 'square';
+  width?: number | string;
+  variant?: 'filled' | 'outlined';
+}>`
   box-sizing: border-box;
   white-space: nowrap;
   height: 40px;
   padding: 0 40px;
   width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
-  font-weight: ${({ typeStyle }) =>
-    typeStyle === 'rounded' ? 'bold' : 'normal'};
-  border-radius: ${({ typeStyle }) =>
-    typeStyle === 'rounded' ? '8px' : '4px'};
+  font-weight: ${({ $typeStyle }) =>
+    $typeStyle === 'rounded' ? 'bold' : 'normal'};
+  border-radius: ${({ $typeStyle }) =>
+    $typeStyle === 'rounded' ? '8px' : '4px'};
   font-size: 16px;
   display: flex;
   align-items: center;
@@ -65,7 +69,7 @@ const Button: React.FC<ButtonProps> = ({
     <StyledButton
       width={width}
       variant={variant}
-      typeStyle={typeStyle}
+      $typeStyle={typeStyle}
       {...props}
     >
       {children}
