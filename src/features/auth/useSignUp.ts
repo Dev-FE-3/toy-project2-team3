@@ -1,4 +1,6 @@
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+
 import { FirebaseError } from 'firebase/app';
 import {
   createUserWithEmailAndPassword,
@@ -6,7 +8,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import app from '../../firebase';
-import { useNavigate } from 'react-router-dom';
+import { doc, getFirestore, setDoc } from 'firebase/firestore';
 
 interface SignUpType {
   email: string;
@@ -17,6 +19,8 @@ interface SignUpType {
 
 const useSignUp = () => {
   const auth = getAuth(app);
+  const db = getFirestore(app);
+
   const navigate = useNavigate();
 
   const {
@@ -41,8 +45,20 @@ const useSignUp = () => {
         await updateProfile(createdUser.user, { displayName: data.name });
       }
 
-      alert('회원가입 성공!'); // 임시
-      console.log(createdUser);
+      const user = createdUser.user;
+
+      // 임시 데이터
+      const userData = {
+        name: user.displayName,
+        email: user.email,
+        position: 'Frontend', // 직책
+        department: '개발팀', // 부서
+        joinDate: new Date(), // 입사일
+      };
+
+      // Firestore에 유저 정보 저장
+      await setDoc(doc(db, 'users', user.uid), userData);
+
       navigate('/');
     } catch (error) {
       const firebaseError = error as FirebaseError;
