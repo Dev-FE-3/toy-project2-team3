@@ -5,6 +5,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   width?: number | string; // 버튼 너비 (숫자 또는 "100px" 문자열 가능)
   variant?: 'filled' | 'outlined'; // 버튼 스타일
   typeStyle?: 'rounded' | 'square'; // 버튼 모양
+  isDelete?: boolean;
 }
 
 // 기본 스타일
@@ -12,17 +13,19 @@ const StyledButton = styled.button<{
   $typeStyle?: 'rounded' | 'square';
   width?: number | string;
   variant?: 'filled' | 'outlined';
+  isDelete?: boolean;
 }>`
   box-sizing: border-box;
   white-space: nowrap;
   height: 40px;
   padding: 0 40px;
   width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
-  font-weight: ${({ $typeStyle }) =>
-    $typeStyle === 'rounded' ? 'bold' : 'normal'};
+  font: ${({ $typeStyle }) =>
+    $typeStyle === 'rounded'
+      ? ({ theme }) => theme.typography.menu1
+      : ({ theme }) => theme.typography.body2};
   border-radius: ${({ $typeStyle }) =>
     $typeStyle === 'rounded' ? '8px' : '4px'};
-  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,25 +37,52 @@ const StyledButton = styled.button<{
   // variant에 따른 스타일 변화
   ${({ variant }) =>
     variant === 'filled'
-      ? `
-      background-color: green;
-      color: white;
-      border: green 1px;
+      ? ({ theme, isDelete }) =>
+          isDelete
+            ? `
+      background-color: ${theme.colors.red} ;
+      color: ${theme.colors.white};
+      border: ${theme.colors.red} 1px solid;
 
       &:hover {
-        background-color: white;
-        color : green;
-        border : none;
+        background-color: ${theme.colors.white};
+        color : ${theme.colors.red};
+        border : ${theme.colors.red} 1px solid;
       }
     `
-      : `
-      background-color: white;
-      color: green;
-      border: green 1px;
+            : `
+      background-color: ${theme.colors.point1} ;
+      color: ${theme.colors.white};
+      border: ${theme.colors.point1} 1px solid;
 
       &:hover {
-        background-color: green;
-        color: white;
+        background-color: ${theme.colors.white};
+        color : ${theme.colors.point1};
+        border : ${theme.colors.point1} 1px solid;
+      }
+    `
+      : ({ theme, isDelete }) =>
+          isDelete
+            ? `
+      background-color: ${theme.colors.white};
+      color: ${theme.colors.red};
+      border: ${theme.colors.red} 1px solid;
+
+      &:hover {
+        background-color: ${theme.colors.red};
+        color: ${theme.colors.white};
+        border: ${theme.colors.red} 1px solid;
+      }
+    `
+            : `
+      background-color: ${theme.colors.white};
+      color: ${theme.colors.point1};
+      border: ${theme.colors.point1} 1px solid;
+
+      &:hover {
+        background-color: ${theme.colors.point1};
+        color: ${theme.colors.white};
+        border: ${theme.colors.point1} 1px solid;
       }
     `}
 `;
@@ -63,6 +93,7 @@ const Button: React.FC<ButtonProps> = ({
   width = 'auto',
   variant = 'filled',
   typeStyle = 'rounded',
+  isDelete = false,
   ...props
 }) => {
   return (
@@ -70,6 +101,7 @@ const Button: React.FC<ButtonProps> = ({
       width={width}
       variant={variant}
       $typeStyle={typeStyle}
+      isDelete={isDelete}
       {...props}
     >
       {children}
