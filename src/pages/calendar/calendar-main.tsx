@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import CalendarCell from './CalendarCell';
-import CalendarModal from './CalendarModal';
-import CalendarHeader from './CalendarHeader';
+import CalendarCell from './calendar-Cell';
+import CalendarModal from './calendar-modal';
+import CalendarHeader from './calendar-header';
+
+import {
+  PageContainer,
+  Title,
+  CalendarContainer,
+  WeekdaysContainer,
+  Weekday,
+  CalendarGrid,
+} from './calendar-main.styles';
 
 // 타입 정의
 interface EventData {
@@ -20,67 +28,6 @@ interface MemoData {
 interface EventsData {
   [dateKey: string]: EventData;
 }
-
-// Styled Components
-const PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  margin-top: 200px;
-`;
-
-// 업무관리 타이틀
-const Title = styled.h1`
-  width: 100%;
-  position: relative;
-  padding: 10px 0;
-  margin-bottom: 10px;
-  font-size: 32px;
-  font-style: normal;
-  margin-right: 1100px;
-  font-weight: 700;
-  line-height: 125%;
-  letter-spacing: -0.64px;
-`;
-
-const CalendarContainer = styled.div`
-  width: 1240px;
-  margin: 0 auto;
-  border: 1px solid #2ac1bc;
-  padding: 20px;
-  border-radius: 8px;
-  overflow: hidden; // 다시 hidden으로 변경 (모든 셀 크기가 수정된 후)
-  box-sizing: border-box;
-  position: relative;
-`;
-const WeekdaysContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  background-color: rgba(42, 193, 188, 0.2);
-  border-bottom: 1px solid #e0e0e0;
-`;
-
-const Weekday = styled.div`
-  padding: 10px;
-  text-align: center;
-  font-weight: bold;
-`;
-
-const CalendarGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  background-color: white;
-  gap: 2px;
-
-  // 그리드 셀이 동일한 크기로 정렬되도록 설정
-  & > div {
-    min-width: 0; // 셀이 너무 넓어지는 것을 방지
-    width: 100%; // 부모 컨테이너 내에서 동일한 너비
-  }
-`;
 
 const CalendarMain: React.FC = () => {
   // 상태 관리
@@ -186,7 +133,9 @@ const CalendarMain: React.FC = () => {
   // 새 일정 추가 버튼 핸들러 - 항상 새 일정 모드로 설정
   const handleAddTask = (date: Date): void => {
     setSelectedDate(date);
-    const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    const formattedDate = `${date.getFullYear()}-${String(
+      date.getMonth() + 1
+    ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
     // 항상 새 일정 모드로 설정
     setIsNewEvent(true);
@@ -203,32 +152,37 @@ const CalendarMain: React.FC = () => {
 
   // 날짜 클릭 핸들러(모달 열기) - 기존 일정이 있으면 수정 모드, 없으면 새 일정 모드
   const handleDateClick = (date: Date): void => {
-    setSelectedDate(date);
     const dateKey = formatDateKey(date);
-    const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-    const memoData = memos[dateKey] || '';
-    setTitleText(memoData);
+    // 해당 날짜에 메모나 이벤트가 있는지 확인
+    const hasEvent = events[dateKey];
+    const hasMemo = memos[dateKey];
 
-    const eventData = events[dateKey];
-    if (eventData) {
+    // 메모나 이벤트가 있는 경우에만 모달 열기
+    if (hasEvent || hasMemo) {
+      setSelectedDate(date);
+      const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
       setIsNewEvent(false);
-      setTitleText(eventData.title || '');
-      setContentText(eventData.content || '');
-      setEventType(eventData.type || '');
-      setStartDate(eventData.startDate || '');
-      setEndDate(eventData.endDate || '');
-    } else {
-      setIsNewEvent(true);
-      setTitleText('');
-      setContentText('');
-      setEventType('');
-      // 새 일정 추가 시 선택한 날짜를 시작일과 종료일의 기본값으로 설정
-      setStartDate(formattedDate);
-      setEndDate(formattedDate);
-    }
 
-    setModalOpen(true);
+      if (hasEvent) {
+        setTitleText(hasEvent.title || '');
+        setContentText(hasEvent.content || '');
+        setEventType(hasEvent.type || '');
+        setStartDate(hasEvent.startDate || '');
+        setEndDate(hasEvent.endDate || '');
+      } else {
+        // 메모만 있는 경우
+        setTitleText(hasMemo || '');
+        setContentText('');
+        setEventType('');
+        setStartDate(formattedDate);
+        setEndDate(formattedDate);
+      }
+
+      setModalOpen(true);
+    }
+    // 메모나 이벤트가 없는 경우는 아무 동작도 하지 않음
   };
 
   const closeModal = (): void => {
@@ -426,7 +380,6 @@ const CalendarMain: React.FC = () => {
                 .split('-')
                 .map(Number);
 
-              // 월은 0부터 시작하므로 1을 빼줍니다
               const startDate = new Date(startYear, startMonth - 1, startDay);
               const endDate = new Date(endYear, endMonth - 1, endDay);
 
@@ -460,13 +413,13 @@ const CalendarMain: React.FC = () => {
 
                 switch (event.type) {
                   case '1':
-                    eventColor = 'lightpink';
+                    eventColor = '#FFB74D';
                     break;
                   case '2':
-                    eventColor = 'lightblue';
+                    eventColor = '#E57373';
                     break;
                   case '3':
-                    eventColor = 'lightgreen';
+                    eventColor = '#4DB6AC';
                     break;
                   default:
                     eventColor = 'grey';

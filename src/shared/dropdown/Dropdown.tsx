@@ -63,7 +63,7 @@ const DropdownContainer = styled.nav<{ width?: string; height?: string }>`
 `;
 
 const DropdownHeader = styled.button<{
-  hasSelected?: boolean;
+  $hasSelected?: boolean;
   width?: string;
   height?: string;
 }>`
@@ -76,9 +76,9 @@ const DropdownHeader = styled.button<{
   flex-shrink: 0;
   text-align: left;
 
-  background: ${(props) => (props.hasSelected ? '#fff' : '#2ac1bc')};
-  color: ${(props) => (props.hasSelected ? '#2ac1bc' : '#fff')};
-  border: ${(props) => (props.hasSelected ? '1px solid #2ac1bc' : 'none')};
+  background: ${(props) => (props.$hasSelected ? '#fff' : '#2ac1bc')};
+  color: ${(props) => (props.$hasSelected ? '#2ac1bc' : '#fff')};
+  border: ${(props) => (props.$hasSelected ? '1px solid #2ac1bc' : 'none')};
 `;
 
 // 드롭다운 list
@@ -119,8 +119,8 @@ const DropdownItem = styled.li`
 `;
 
 // 드롭다운 icon 회전
-const RotatableIcon = styled.figure<{ isOpen: boolean }>`
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+const RotatableIcon = styled.figure<{ $isOpen: boolean }>`
+  transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
   transition: transform 0.3s ease;
   display: flex;
   align-items: center;
@@ -151,10 +151,10 @@ const DropdownIcon: React.FC<DropdownIconProps> = ({ isMint = false }) => {
 };
 
 const DropdownText = styled.strong<{
-  hasPlaceHolder: boolean;
-  hasSelected: boolean;
+  $hasPlaceHolder: boolean;
+  $hasSelected: boolean;
 }>`
-  color: ${(props) => (props.hasSelected ? '#2ac1bc' : '#fff')};
+  color: ${(props) => (props.$hasSelected ? '#2ac1bc' : '#fff')};
 `;
 
 export {
@@ -219,19 +219,19 @@ const Dropdown: React.FC<DropdownProps> = ({
     <DropdownContainer ref={dropdownRef} width={width} height={height}>
       <DropdownHeader
         onClick={dropDownHandler}
-        hasSelected={!!selectedOption}
+        $hasSelected={!!selectedOption}
         width={width}
         height={height}
       >
         <DropdownText
-          hasPlaceHolder={!selectedOption}
-          hasSelected={!!selectedOption}
+          $hasPlaceHolder={!selectedOption}
+          $hasSelected={!!selectedOption}
         >
           {selectedOption ? selectedOption.label : placeholder || title}
         </DropdownText>
 
         {/* 선택 옵션에 따른 아이콘 회전과 색상 변경 */}
-        <RotatableIcon isOpen={showDropDown}>
+        <RotatableIcon $isOpen={showDropDown}>
           {/* 상태에 따라 다른 아이콘 색상 적용 */}
           <DropdownIcon isMint={!!selectedOption} />
         </RotatableIcon>

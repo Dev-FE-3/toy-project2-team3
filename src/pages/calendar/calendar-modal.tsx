@@ -1,145 +1,22 @@
-import React from 'react';
+import React, { ChangeEvent, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import styled, { createGlobalStyle } from 'styled-components';
 import Dropdown, { OptionType } from '../../shared/dropdown/Dropdown';
-import Button from '../../shared/button/Button';
-
-// 전역 스타일 적용
-const ModalGlobalStyle = createGlobalStyle`
-  body.modal-open {
-    overflow: hidden;
-    padding-right: var(--scrollbar-width, 0px); // 스크롤바 너비만큼 패딩 추가
-  }
-`;
-
-// Styled Components
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
-const ModalContent = styled.article`
-  background-color: #fff;
-  border-radius: 12px;
-  width: 400px;
-  height: 550px;
-  display: flex;
-  padding: 20px;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  box-sizing: border-box;
-`;
-
-const ModalTitle = styled.h2`
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 133%;
-  letter-spacing: -0.24px;
-  margin: 0 0 10px 0;
-  width: 100%;
-  text-align: center;
-`;
-
-const FormRow = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-`;
-
-const FormLabel = styled.label`
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  width: 100%;
-  text-align: left;
-`;
-
-const MemoInput = styled.input`
-  width: 100%;
-  height: 40px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-size: 16px;
-  border: 1px solid #b2b2b2;
-  box-sizing: border-box;
-  &::placeholder {
-    vertical-align: middle;
-  }
-`;
-
-const MemoTextarea = styled.textarea`
-  width: 100%;
-  height: 40px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-size: 16px;
-  border: 1px solid #b2b2b2;
-  resize: none;
-  line-height: 20px;
-  box-sizing: border-box;
-  &::placeholder {
-    vertical-align: middle;
-  }
-  appearance: none;
-`;
-
-const LargerTextarea = styled(MemoTextarea)`
-  height: 90px;
-`;
-
-const DateContainer = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  margin-bottom: 10px;
-`;
-
-const DateWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 48%;
-`;
-
-const DateLabel = styled.label`
-  font-size: 16px;
-  font-weight: 700;
-  text-align: left;
-  margin-bottom: 5px;
-`;
-
-const DateInput = styled.input`
-  width: 100%;
-  height: 36px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #b2b2b2;
-  box-sizing: border-box;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  margin-top: 10px;
-`;
-
-const ActionButton = styled(Button)`
-  width: 120px;
-  height: 40px;
-  border-radius: 4px;
-`;
+import {
+  ModalGlobalStyle,
+  ModalOverlay,
+  ModalContent,
+  ModalTitle,
+  FormRow,
+  FormLabel,
+  MemoInput,
+  LargerTextarea,
+  DateContainer,
+  DateWrapper,
+  DateLabel,
+  DateInput,
+  ButtonContainer,
+  ActionButton,
+} from './calendar-modal.style';
 
 interface MemoModalProps {
   isOpen: boolean;
@@ -191,7 +68,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
   };
 
   // 모달이 열릴 때 스크롤바 너비를 계산하고 body 클래스 추가
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen) {
       const scrollbarWidth =
         window.innerWidth - document.documentElement.clientWidth;
@@ -217,8 +94,8 @@ const CalendarModal: React.FC<MemoModalProps> = ({
     <>
       <ModalGlobalStyle />
       <ModalOverlay role="dialog" aria-modal="true" onClick={onClose}>
-        <ModalContent onClick={(e) => e.stopPropagation()}>
-          <ModalTitle>업무추가</ModalTitle>
+        <ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+          <ModalTitle>{isNewEvent ? '업무 추가' : '업무 수정'}</ModalTitle>
 
           <FormRow>
             <FormLabel htmlFor="title">일정 제목</FormLabel>
@@ -226,7 +103,9 @@ const CalendarModal: React.FC<MemoModalProps> = ({
               id="title"
               type="text"
               value={titleText}
-              onChange={(e) => onTitleChange(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                onTitleChange(e.target.value)
+              }
               placeholder="업무 제목을 입력하세요"
             />
           </FormRow>
@@ -254,7 +133,9 @@ const CalendarModal: React.FC<MemoModalProps> = ({
             <LargerTextarea
               id="content"
               value={contentText}
-              onChange={(e) => onContentChange(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                onContentChange(e.target.value)
+              }
               placeholder="업무 내용을 입력하세요"
             />
           </FormRow>
@@ -266,7 +147,9 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 id="startDate"
                 type="date"
                 value={startDate}
-                onChange={(e) => onStartDateChange(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  onStartDateChange(e.target.value)
+                }
               />
             </DateWrapper>
             <DateWrapper>
@@ -275,7 +158,9 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 id="endDate"
                 type="date"
                 value={endDate}
-                onChange={(e) => onEndDateChange(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  onEndDateChange(e.target.value)
+                }
               />
             </DateWrapper>
           </DateContainer>
