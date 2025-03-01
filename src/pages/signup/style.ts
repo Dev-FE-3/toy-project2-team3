@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import SignupGraphic from '../../assets/imgs/signup_graphic.svg?react';
+
 export const Container = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
+  height: 100vh;
+  width: calc(100% - 518px);
 `;
 
 export const FormContainer = styled.div`
@@ -17,9 +19,6 @@ export const FormContainer = styled.div`
   align-items: center;
 
   gap: 100px;
-
-  margin: 0 auto;
-  margin-right: 136px;
 `;
 
 export const Form = styled.form`
@@ -121,4 +120,13 @@ export const AuthWrapper = styled.div`
 export const SignUpLink = styled(Link)`
   color: ${({ theme }) => theme.colors.point1};
   text-decoration: none;
+`;
+
+export const ResponsiveSignupGraphic = styled(SignupGraphic)`
+  width: auto;
+  height: calc(100% - 106px);
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(0, -50%);
 `;

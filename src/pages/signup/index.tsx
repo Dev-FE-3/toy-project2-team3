@@ -12,7 +12,6 @@ import {
 import * as S from './style';
 
 import Button from '../../shared/button/Button';
-import SignupGraphic from '../../assets/imgs/signup_graphic.svg?react';
 
 interface SignUpPageProps {
   children?: React.ReactNode;
@@ -161,7 +160,7 @@ const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
           </S.SignUpWrapper>
         </S.Form>
       </S.FormContainer>
-      <SignupGraphic />
+      <S.ResponsiveSignupGraphic />
     </S.Container>
   );
 };
