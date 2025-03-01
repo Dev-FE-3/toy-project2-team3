@@ -1,9 +1,9 @@
 import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
-import app from '../../fireBase';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import * as S from './style';
 import Button from '../../shared/button/Button';
+import { auth } from '@/firebase';
 
 interface LoginType {
   email: string;
@@ -11,8 +11,6 @@ interface LoginType {
 }
 
 const LoginPage = () => {
-  const auth = getAuth(app);
-
   const {
     register,
     handleSubmit,
