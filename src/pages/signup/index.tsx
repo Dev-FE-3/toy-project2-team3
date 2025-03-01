@@ -77,10 +77,10 @@ const SignUp = () => {
           </S.InputContainer>
 
           <Button type="submit">제출하기</Button>
-          <S.SignUpWrapper>
+          <S.Switcher>
             이미 계정이 있나요?
             <S.SignUpLink to="/login">로그인</S.SignUpLink>
-          </S.SignUpWrapper>
+          </S.Switcher>
         </S.Form>
       </S.FormContainer>
       <S.ResponsiveSignupGraphic />
