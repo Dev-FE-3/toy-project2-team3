@@ -37,8 +37,6 @@ const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
     mode: 'onChange',
   });
 
-  const [name, setName] = useState('');
-
   const handleSignUp = async (data: SignUpType) => {
     try {
       const createdUser = await createUserWithEmailAndPassword(
@@ -111,8 +109,6 @@ const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
                   required: '이름을 입력하세요.',
                 })}
                 placeholder="이름을 입력하세요"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
               />
               {errors.name && <S.ErrorText>{errors.name.message}</S.ErrorText>}
             </S.InputBox>
