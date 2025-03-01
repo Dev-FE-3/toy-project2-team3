@@ -2,13 +2,9 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { FirebaseError } from 'firebase/app';
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  updateProfile,
-} from 'firebase/auth';
-import app from '../../firebase';
-import { doc, getFirestore, setDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '@/firebase';
 
 interface SignUpType {
   email: string;
@@ -18,9 +14,6 @@ interface SignUpType {
 }
 
 const useSignUp = () => {
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
   const navigate = useNavigate();
 
   const {
