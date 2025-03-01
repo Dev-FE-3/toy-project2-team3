@@ -6,6 +6,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import app from '../../firebase';
+import { useNavigate } from 'react-router-dom';
 
 interface SignUpType {
   email: string;
@@ -16,6 +17,7 @@ interface SignUpType {
 
 const useSignUp = () => {
   const auth = getAuth(app);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -41,7 +43,7 @@ const useSignUp = () => {
 
       alert('회원가입 성공!'); // 임시
       console.log(createdUser);
-      // TODO: 회원가입 후 홈으로 이동하는 로직 추가
+      navigate('/');
     } catch (error) {
       const firebaseError = error as FirebaseError;
 
