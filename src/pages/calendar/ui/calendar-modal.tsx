@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import Dropdown, { OptionType } from '../../shared/dropdown/Dropdown';
+import Dropdown, { OptionType } from '../../../shared/dropdown/Dropdown';
 import {
   ModalGlobalStyle,
   ModalOverlay,
@@ -16,7 +16,7 @@ import {
   DateInput,
   ButtonContainer,
   ActionButton,
-} from './calendar-modal.style';
+} from '../styles/calendar-modal.style';
 
 interface MemoModalProps {
   isOpen: boolean;

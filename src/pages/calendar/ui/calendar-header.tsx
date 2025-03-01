@@ -1,12 +1,12 @@
 import React from 'react';
-import Button from '../../shared/button/Button';
+import Button from '../../../shared/button/Button';
 import {
   HeaderContainer,
   TitleGroup,
   Title,
   NavButton,
   ButtonGroup,
-} from './calendar-header.styles';
+} from '../styles/calendar-header.styles';
 
 interface CalendarHeaderProps {
   currentDate: Date;

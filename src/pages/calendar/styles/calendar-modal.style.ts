@@ -1,6 +1,6 @@
 // calendar-modal.styles.ts 파일을 생성하거나 경로 확인
 import styled, { createGlobalStyle } from 'styled-components';
-import Button from '../../shared/button/Button';
+import Button from '../../../shared/button/Button';
 
 // 전역 스타일 적용
 export const ModalGlobalStyle = createGlobalStyle`

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CalendarCell from './calendar-Cell';
+import CalendarCell from './calendar-cell';
 import CalendarModal from './calendar-modal';
 import CalendarHeader from './calendar-header';
 
@@ -10,7 +10,7 @@ import {
   WeekdaysContainer,
   Weekday,
   CalendarGrid,
-} from './calendar-main.styles';
+} from '../styles/calendar-main.styles';
 
 // 타입 정의
 interface EventData {

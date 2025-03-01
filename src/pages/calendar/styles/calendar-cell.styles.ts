@@ -35,7 +35,7 @@ export const EventRangeIndicator = styled.div<{
 
 export const CalendarCellStyled = styled.div<CalendarCellStyledProps>`
   position: relative;
-  height: 100px;
+  height: 80px;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 5px;
@@ -107,5 +107,5 @@ export const EventsContainer = styled.div`
   width: 100%;
   gap: 2px;
   overflow: hidden;
-  max-height: 50px; // 이벤트가 너무 많아도 셀 크기를 유지
+  max-height: 50px;
 `;

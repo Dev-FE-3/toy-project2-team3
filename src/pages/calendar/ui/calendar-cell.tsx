@@ -7,7 +7,7 @@ import {
   MemoPreview,
   EventsContainer,
   EventRangeIndicator,
-} from './calendar-cell.styles';
+} from '../styles/calendar-cell.styles';
 
 interface CalendarCellProps {
   date: Date;
