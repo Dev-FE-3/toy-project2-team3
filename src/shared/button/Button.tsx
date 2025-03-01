@@ -13,18 +13,19 @@ const StyledButton = styled.button<{
   $typeStyle?: 'rounded' | 'square';
   width?: number | string;
   variant?: 'filled' | 'outlined';
+  isDelete?: boolean;
 }>`
   box-sizing: border-box;
   white-space: nowrap;
   height: 40px;
   padding: 0 40px;
   width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
-  font: ${({ typeStyle }) =>
-    typeStyle === 'rounded'
+  font: ${({ $typeStyle }) =>
+    $typeStyle === 'rounded'
       ? ({ theme }) => theme.typography.menu1
       : ({ theme }) => theme.typography.body2};
-  border-radius: ${({ typeStyle }) =>
-    typeStyle === 'rounded' ? '8px' : '4px'};
+  border-radius: ${({ $typeStyle }) =>
+    $typeStyle === 'rounded' ? '8px' : '4px'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,7 +100,8 @@ const Button: React.FC<ButtonProps> = ({
     <StyledButton
       width={width}
       variant={variant}
-      typeStyle={typeStyle}
+      $typeStyle={typeStyle}
+      isDelete={isDelete}
       {...props}
     >
       {children}
