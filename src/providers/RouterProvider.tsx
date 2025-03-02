@@ -2,7 +2,7 @@ import { ProtectedRoute } from '@/features/auth/ProtectedRoute';
 import NotFoundPage from '@/pages/not-found';
 import LoginPage from '@/pages/login';
 import SignUpPage from '@/pages/signup';
-import NavBar from '@/widgets/navbar';
+import NavBar from '@/features/navbar';
 import MyPage from '@/pages/mypage';
 import SalaryCorrectionPage from '@/pages/salary-correction';
 import WorkCalendarPage from '@/pages/work-calendar';
