@@ -346,7 +346,7 @@ const CalendarMain: React.FC = () => {
           currentDate={currentDate}
           onPrevMonth={prevMonth}
           onNextMonth={nextMonth}
-          onAddTask={handleAddTask} // 일정 추가 버튼은 handleAddTask 함수를 사용
+          onAddTask={handleAddTask}
           onClearAll={clearAllData}
         />
 
@@ -422,7 +422,7 @@ const CalendarMain: React.FC = () => {
                     eventColor = '#4DB6AC';
                     break;
                   default:
-                    eventColor = 'grey';
+                    eventColor = '';
                 }
               }
             });

@@ -13,14 +13,14 @@ export const EventRangeIndicator = styled.div<{
   color: string;
   hasText: boolean;
 }>`
+  ${({ theme }) => theme.typography.body3}
   height: 15px;
-  background-color: ${(props) => props.color || 'grey'};
+  background-color: ${(props) => props.color};
   width: 100%;
   position: relative;
   margin-top: 2px;
   display: ${(props) => (props.hasText ? 'flex' : 'block')};
   align-items: center;
-  font-size: 12px;
   color: white;
   padding-left: ${(props) => (props.hasText ? '6px' : '0')};
   overflow: hidden;
@@ -50,7 +50,7 @@ export const CalendarCellStyled = styled.div<CalendarCellStyledProps>`
       ? '#000'
       : '#666'}; /* 이전/다음 달은 텍스트 색상도 어둡게 */
 
-  ${(props) => props.isToday && `border: 3px solid #B2B2B2;`}
+  ${(props) => props.isToday && `border: 2px solid #B2B2B2;`}
 
   /* 클릭 가능한 셀에만 호버 효과와 포인터 적용 */
   ${(props) =>
@@ -74,21 +74,12 @@ export const DateContainer = styled.div`
 `;
 
 export const DateNumber = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 24px;
-  width: 24px;
-  border-radius: 50%;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 140%;
-  letter-spacing: -0.1px;
+  ${({ theme }) => theme.typography.body2};
+  color: ${({ theme }) => theme.colors.grey1};
 `;
 
 export const MemoPreview = styled.div`
-  font-size: 0.8rem;
+  ${({ theme }) => theme.typography.body3}
   color: #666;
   margin-top: 1px;
   white-space: nowrap;

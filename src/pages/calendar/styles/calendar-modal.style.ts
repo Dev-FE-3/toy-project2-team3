@@ -1,6 +1,10 @@
-// calendar-modal.styles.ts 파일을 생성하거나 경로 확인
 import styled, { createGlobalStyle } from 'styled-components';
 import Button from '../../../shared/button/Button';
+import Dropdown, {
+  DropdownHeader,
+  DropdownList,
+  DropdownItem,
+} from '../../../shared/dropdown/Dropdown';
 
 // 전역 스타일 적용
 export const ModalGlobalStyle = createGlobalStyle`
@@ -23,7 +27,6 @@ export const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
-// 나머지 스타일 컴포넌트...
 export const ModalContent = styled.article`
   background-color: #fff;
   border-radius: 12px;
@@ -37,11 +40,9 @@ export const ModalContent = styled.article`
   box-sizing: border-box;
 `;
 
-export const ModalTitle = styled.h2`
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 133%;
-  letter-spacing: -0.24px;
+export const ModalTitle = styled.div`
+  ${({ theme }) => theme.typography.heading3};
+  color: ${({ theme }) => theme.colors.grey1};
   margin: 0 0 10px 0;
   width: 100%;
   text-align: center;
@@ -55,19 +56,27 @@ export const FormRow = styled.div`
 `;
 
 export const FormLabel = styled.label`
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 10px;
+  ${({ theme }) => theme.typography.heading4};
+  color: ${({ theme }) => theme.colors.grey1};
+  margin-bottom: 5px;
   width: 100%;
   text-align: left;
 `;
 
+export const CustomSizeDropdown = styled(Dropdown)`
+  font-size: 12px;
+  & ${DropdownHeader}, & ${DropdownList}, & ${DropdownItem} {
+    font-size: 12px;
+  }
+`;
+
 export const MemoInput = styled.input`
+  ${({ theme }) => theme.typography.body3};
+  color: ${({ theme }) => theme.colors.grey1};
   width: 100%;
   height: 40px;
   padding: 10px 16px;
   border-radius: 8px;
-  font-size: 16px;
   border: 1px solid #b2b2b2;
   box-sizing: border-box;
   &::placeholder {
@@ -80,26 +89,28 @@ export const MemoTextarea = styled.textarea`
   height: 40px;
   padding: 10px 16px;
   border-radius: 8px;
-  font-size: 16px;
   border: 1px solid #b2b2b2;
   resize: none;
   line-height: 20px;
   box-sizing: border-box;
   &::placeholder {
     vertical-align: middle;
+    text-align: left;
   }
   appearance: none;
 `;
 
 export const LargerTextarea = styled(MemoTextarea)`
   height: 90px;
+  ${({ theme }) => theme.typography.body3};
+  color: ${({ theme }) => theme.colors.grey1};
+  vertical-align: middle;
 `;
 
 export const DateContainer = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
-  margin-bottom: 10px;
 `;
 
 export const DateWrapper = styled.div`
@@ -110,10 +121,9 @@ export const DateWrapper = styled.div`
 `;
 
 export const DateLabel = styled.label`
-  font-size: 16px;
-  font-weight: 700;
+  ${({ theme }) => theme.typography.heading4};
+  color: ${({ theme }) => theme.colors.grey1};
   text-align: left;
-  margin-bottom: 5px;
 `;
 
 export const DateInput = styled.input`
@@ -131,10 +141,102 @@ export const ButtonContainer = styled.div`
   gap: 10px;
   width: 100%;
   margin-top: 10px;
+
+  > button {
+    width: 178px;
+  }
 `;
 
-export const ActionButton = styled(Button)`
+export const MintButton = styled(Button)`
+  ${({ variant, theme }) =>
+    variant === 'filled' &&
+    `
+    background-color: ${theme.colors.point1};
+    color: ${theme.colors.white};
+    border: 1px solid ${theme.colors.point1};
+    
+    &:hover {
+      background-color: ${theme.colors.white};
+      color: ${theme.colors.point1};
+      border: 1px solid ${theme.colors.point1};
+    } 
+   
+  `}
+
+  ${({ variant, theme }) =>
+    variant === 'outlined' &&
+    `
+    background-color: ${theme.colors.white};
+    color: ${theme.colors.point1};
+    border: 1px solid ${theme.colors.point1};
+    
+    &:hover {
+      background-color: ${theme.colors.point1};
+      color: ${theme.colors.white};
+    }
+  `}
+`;
+
+export const MintButtonModal = styled(Button)`
+  ${(props) =>
+    props.variant === 'filled' &&
+    `
+      background-color: ${props.theme.colors.point1};
+      border: 1px solid ${props.theme.colors.point1};
+      color: white;
+
+      &:hover {
+        background-color: point1;
+        color: ${props.theme.colors.point1};
+        border: 1px solid ${props.theme.colors.point1};
+      }
+    `}
+
+  ${(props) =>
+    props.variant === 'outlined' &&
+    `
+      background-color: white;
+      color: ${props.theme.colors.point1};
+      border: 1px solid ${props.theme.colors.point1};
+      
+      &:hover {
+        background-color: ${props.theme.colors.point1};
+        color: white;
+      }
+    `}
+`;
+export const ActionButton = styled(MintButtonModal)`
   width: 120px;
   height: 40px;
   border-radius: 4px;
+`;
+
+export const DeleteButton = styled(Button)`
+  ${(props) =>
+    props.variant === 'outlined' &&
+    `
+  background-color: white;
+      color: ${props.theme.colors.red};
+      border: 1px solid ${props.theme.colors.red};
+
+       &:hover {
+        background-color: ${props.theme.colors.red};
+        color: white;
+        border: 1px solid ${props.theme.colors.red};
+      }
+    `}
+
+  ${(props) =>
+    props.variant === 'filled' &&
+    `
+      background-color: ${props.theme.colors.red};
+      color: white;
+      border: 1px solid ${props.theme.colors.red};
+      
+      &:hover {
+        background-color: white;
+        color: ${props.theme.colors.red};
+        border: 1px solid ${props.theme.colors.red};
+      }
+    `}
 `;

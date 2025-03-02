@@ -8,6 +8,7 @@ import {
   ModalTitle,
   FormRow,
   FormLabel,
+  CustomSizeDropdown,
   MemoInput,
   LargerTextarea,
   DateContainer,
@@ -15,7 +16,8 @@ import {
   DateLabel,
   DateInput,
   ButtonContainer,
-  ActionButton,
+  MintButtonModal,
+  DeleteButton,
 } from '../styles/calendar-modal.style';
 
 interface MemoModalProps {
@@ -112,7 +114,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
 
           <FormRow>
             <FormLabel>일정 유형</FormLabel>
-            <Dropdown
+            <CustomSizeDropdown
               title="일정 유형을 선택 해주세요"
               options={[
                 { label: '회의', value: '1' },
@@ -166,19 +168,34 @@ const CalendarModal: React.FC<MemoModalProps> = ({
           </DateContainer>
 
           <ButtonContainer>
-            <ActionButton
-              typeStyle="rounded"
-              variant="outlined"
-              onClick={isNewEvent ? onClose : onDelete}
+            {isNewEvent ? (
+              <MintButtonModal
+                typeStyle="rounded"
+                variant="outlined"
+                onClick={onClose}
+              >
+                취소
+              </MintButtonModal>
+            ) : (
+              <DeleteButton
+                typeStyle="rounded"
+                variant="outlined"
+                onClick={onDelete}
+              >
+                삭제
+              </DeleteButton>
+            )}
+            <MintButtonModal
+              variant={isNewEvent ? 'filled' : 'outlined'}
+              onClick={onSave}
             >
-              {isNewEvent ? '닫기' : '삭제'}
-            </ActionButton>
-            <ActionButton onClick={onSave}>저장</ActionButton>
+              {isNewEvent ? '추가' : '저장'}
+            </MintButtonModal>
           </ButtonContainer>
         </ModalContent>
       </ModalOverlay>
     </>,
-    document.body // 모달을 body에 직접 렌더링
+    document.body
   );
 };
 

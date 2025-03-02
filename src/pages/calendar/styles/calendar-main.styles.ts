@@ -3,34 +3,26 @@ import styled from 'styled-components';
 export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  margin-top: 200px;
+  width: 1240px;
+  margin: 50px auto;
+  position: relative;
 `;
 
 // 업무관리 타이틀
 export const Title = styled.h1`
-  width: 100%;
-  position: relative;
-  padding: 10px 0;
-  margin-bottom: 10px;
-  font-size: 32px;
-  font-style: normal;
-  margin-right: 1100px;
-  font-weight: 700;
-  line-height: 125%;
-  letter-spacing: -0.64px;
+  ${({ theme }) => theme.typography.heading2};
+  color: ${({ theme }) => theme.colors.grey1};
+  margin-bottom: 20px;
 `;
 
 export const CalendarContainer = styled.div`
   width: 1240px;
   margin: 0 auto;
+
   border: 1px solid #2ac1bc;
   padding: 20px;
   border-radius: 8px;
-  overflow: hidden; // 다시 hidden으로 변경 (모든 셀 크기가 수정된 후)
+  overflow: hidden;
   box-sizing: border-box;
   position: relative;
 `;
@@ -43,6 +35,8 @@ export const WeekdaysContainer = styled.div`
 `;
 
 export const Weekday = styled.div`
+  ${({ theme }) => theme.typography.body2};
+  color: ${({ theme }) => theme.colors.grey1};
   padding: 10px;
   text-align: center;
   font-weight: bold;

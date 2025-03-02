@@ -1,11 +1,11 @@
 import React from 'react';
-import Button from '../../../shared/button/Button';
 import {
   HeaderContainer,
   TitleGroup,
   Title,
   NavButton,
   ButtonGroup,
+  MintButtonHeader,
 } from '../styles/calendar-header.styles';
 
 interface CalendarHeaderProps {
@@ -34,8 +34,20 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
       </TitleGroup>
 
       <ButtonGroup>
-        <Button onClick={() => onAddTask(currentDate)}>일정추가</Button>
-        <Button onClick={onClearAll}>전체삭제</Button>
+        <MintButtonHeader
+          variant="filled"
+          typeStyle="rounded"
+          onClick={() => onAddTask(currentDate)}
+        >
+          일정추가
+        </MintButtonHeader>
+        <MintButtonHeader
+          variant="filled"
+          typeStyle="rounded"
+          onClick={onClearAll}
+        >
+          전체삭제
+        </MintButtonHeader>
       </ButtonGroup>
     </HeaderContainer>
   );
