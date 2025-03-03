@@ -18,6 +18,7 @@ export const Header = styled.header`
 
 export const ContentWrapper = styled.div`
   width: 70%;
-  margin-top: 12rem;
-  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
 `;

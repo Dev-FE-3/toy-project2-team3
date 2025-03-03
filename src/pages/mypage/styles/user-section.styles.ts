@@ -18,7 +18,6 @@ export const InfoSection = styled.section`
   min-height: 260px;
   border-top: 2px solid ${({ theme }) => theme.colors.point1};
   border-bottom: 2px solid ${({ theme }) => theme.colors.point1};
-  margin-bottom: 3rem;
   position: relative;
   display: flex;
   flex-direction: column;
