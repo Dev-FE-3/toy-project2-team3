@@ -1,6 +1,6 @@
 import { JSX, ReactNode, useEffect, useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import {  onAuthStateChanged, User } from 'firebase/auth';
+import { Navigate } from 'react-router-dom';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/firebase';
 
 interface ProtectedRouteType {
@@ -26,5 +26,5 @@ export const ProtectedRoute = ({
     return <div>Loading...</div>; // 임시 로딩
   }
 
-  return user ? <Outlet /> : <Navigate to="/login" replace />;
+  return user ? <>{children}</> : <Navigate to="/login" replace />;
 };

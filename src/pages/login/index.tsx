@@ -1,5 +1,5 @@
 import * as S from './style';
-import Button from '../../shared/button/Button';
+import Button from '@/shared/button/Button';
 import { useLogin } from '@/features/auth/useLogin';
 
 const Login = () => {
