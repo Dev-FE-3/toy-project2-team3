@@ -4,7 +4,7 @@ import Modal from './salary-modal';
 import Dropdown from '../../../shared/dropdown/Dropdown';
 import Button from '../../../shared/button/Button';
 
-// 🔹 급여 내역 더미 데이터
+// 급여 내역 더미 데이터
 const salaryData = [
   {
     date: '2025/02/25',
@@ -25,22 +25,33 @@ const salaryData = [
 
 const SalaryInfoSection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const handleModalOpen = () => setIsModalOpen(true);
   const handleModalClose = () => setIsModalOpen(false);
 
-  const options = [
-    { label: '1', value: 1 },
-    { label: '2', value: 2 },
-    { label: '3', value: 3 },
-    { label: '4', value: 4 },
-  ];
+  const options = salaryData.map((salary) => ({
+    label: salary.date, // 드롭다운에 표시될 텍스트
+    value: salary.date, // 선택 시 저장될 값
+  }));
+
+  const handleDateChange = (selectedValue: string) => {
+    setSelectedDate(selectedValue); // 선택된 급여일 업데이트
+  };
+
+  const filteredData = selectedDate
+    ? salaryData.filter((salary) => salary.date === selectedDate)
+    : salaryData; // 선택된 값이 없으면 전체 표시
 
   return (
     <S.SalarySection>
       <S.Title style={{ position: 'relative', top: '0' }}>급여 내역</S.Title>
       <S.SalaryControls>
-        <Dropdown title="급여 일자를 선택해주세요" options={options} />
+        <Dropdown
+          title="급여 일자를 선택해주세요"
+          options={options}
+          onSelect={(option) => handleDateChange(String(option.value))}
+        />
         <S.ButtonGroup>
           <Button>Excel</Button>
           <Button>CSV</Button>
@@ -60,7 +71,7 @@ const SalaryInfoSection: React.FC = () => {
           </S.TableRow>
         </thead>
         <tbody>
-          {salaryData.map((salary, index) => (
+          {filteredData.map((salary, index) => (
             <S.TableRow key={index}>
               <S.TableData>{salary.date}</S.TableData>
               <S.TableData style={{ color: '#14b8a6' }}>
