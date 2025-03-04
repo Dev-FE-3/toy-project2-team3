@@ -6,7 +6,6 @@ import SalaryInfoSection from './ui/salary-section';
 const MyPage: React.FC = () => {
   return (
     <S.Container>
-      <S.Header></S.Header>
       <S.ContentWrapper>
         <UserInfoSection />
         <SalaryInfoSection />

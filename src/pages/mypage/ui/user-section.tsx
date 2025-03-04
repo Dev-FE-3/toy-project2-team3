@@ -1,5 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import * as S from '../styles/user-section.styles';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, storage, db } from '../../../firebase';
 import profileDefault from '../../../assets/images/profile-default.png';
 
 const EditIcon: React.FC<{ onClick: () => void }> = ({ onClick }) => {
@@ -25,9 +28,43 @@ const EditIcon: React.FC<{ onClick: () => void }> = ({ onClick }) => {
 const UserInfoSection: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [profileImage, setProfileImage] = useState<string>(
-    localStorage.getItem('profileImage') || profileDefault
-  );
+  const [profileImage, setProfileImage] = useState<string>(profileDefault);
+  const [userData, setUserData] = useState({
+    name: '',
+    position: '',
+    joinedDate: '',
+    department: '',
+    email: '',
+  });
+
+  const user = auth.currentUser;
+  useEffect(() => {
+    if (user) {
+      const userDocRef = doc(db, 'users', user.uid);
+      getDoc(userDocRef).then((docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+
+          // Timestamp → Date 객체 변환
+          const rawJoinedDate = data.joinDate?.toDate();
+
+          // 날짜 포맷팅 (YYYY년 M월 D일)
+          const formattedDate = rawJoinedDate
+            ? `${rawJoinedDate.getFullYear()}년 ${rawJoinedDate.getMonth() + 1}월 ${rawJoinedDate.getDate()}일`
+            : '입사일 없음';
+
+          setProfileImage(data.profileImage || profileDefault);
+          setUserData({
+            name: data.name || '사용자',
+            position: data.position || '직책 없음',
+            joinedDate: formattedDate,
+            department: data.department || '부서 없음',
+            email: data.email || '이메일 없음',
+          });
+        }
+      });
+    }
+  }, [user]);
 
   const handleEditClick = () => {
     if (fileInputRef.current) {
@@ -35,28 +72,24 @@ const UserInfoSection: React.FC = () => {
     }
   };
 
-  // 이미지 변경 및 localStorage 저장
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          const imageData = e.target.result as string;
-          setProfileImage(imageData);
-          localStorage.setItem('profileImage', imageData); // 저장
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (!user) return;
 
-  const userData = {
-    name: '백지헌',
-    position: 'Security Engineer',
-    joinedDate: '2024.04.17',
-    department: '인프라보안팀',
-    email: 'jiheonbaek@gmail.com',
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const storageRef = ref(storage, `profile-images/${user.uid}`); // Storage 경로 지정
+    const snapshot = await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+
+    await setDoc(
+      doc(db, 'users', user.uid),
+      { profileImage: downloadURL },
+      { merge: true }
+    );
+    setProfileImage(downloadURL);
   };
 
   return (
