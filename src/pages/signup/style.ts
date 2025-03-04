@@ -102,7 +102,8 @@ export const FindAccountLink = styled.p`
   color: ${({ theme }) => theme.colors.point1};
 `;
 
-export const SignUpWrapper = styled.div`
+
+export const Switcher = styled.div`
   display: flex;
   justify-content: center;
   gap: 2px;

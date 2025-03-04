@@ -1,83 +1,10 @@
-import { JSX, useState } from 'react';
-import { useForm } from 'react-hook-form';
-
-import { FirebaseError } from 'firebase/app';
-import app from '../../firebase';
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  updateProfile,
-} from 'firebase/auth';
-
 import * as S from './style';
 
 import Button from '../../shared/button/Button';
+import useSignUp from '@/features/auth/useSignUp';
 
-interface SignUpPageProps {
-  children?: React.ReactNode;
-}
-
-interface SignUpType {
-  email: string;
-  name: string;
-  password: string;
-  pwdCheck: string;
-}
-
-const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
-  const auth = getAuth(app);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setError,
-    watch,
-  } = useForm<SignUpType>({
-    mode: 'onChange',
-  });
-
-  const handleSignUp = async (data: SignUpType) => {
-    try {
-      const createdUser = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-
-      // 회원가입 후 displayName 업데이트
-      if (createdUser.user) {
-        await updateProfile(createdUser.user, {
-          displayName: data.name,
-        });
-      }
-
-      alert('회원가입 성공!'); // 임시
-      console.log(createdUser);
-      // home으로 이동
-    } catch (error) {
-      const firebaseError = error as FirebaseError;
-
-      switch (firebaseError.code) {
-        case 'auth/email-already-in-use':
-          setError('email', { message: '이미 가입된 이메일입니다.' });
-          break;
-        case 'auth/invalid-email':
-          setError('email', { message: '이메일 형식이 잘못되었습니다.' });
-          break;
-        case 'auth/weak-password':
-          setError('password', {
-            message: '비밀번호를 6자 이상 입력해 주세요.',
-          });
-          break;
-        default:
-          setError('email', {
-            message: '로그인 중 문제가 발생했습니다. 다시 시도해 주세요.',
-          });
-          break;
-      }
-    }
-  };
+const SignUp = () => {
+  const { register, handleSubmit, errors, handleSignUp, watch } = useSignUp();
 
   return (
     <S.Container>
@@ -150,10 +77,10 @@ const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
           </S.InputContainer>
 
           <Button type="submit">제출하기</Button>
-          <S.SignUpWrapper>
+          <S.Switcher>
             이미 계정이 있나요?
             <S.SignUpLink to="/login">로그인</S.SignUpLink>
-          </S.SignUpWrapper>
+          </S.Switcher>
         </S.Form>
       </S.FormContainer>
       <S.ResponsiveSignupGraphic />
@@ -161,4 +88,4 @@ const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
   );
 };
 
-export default SignUpPage;
+export default SignUp;
