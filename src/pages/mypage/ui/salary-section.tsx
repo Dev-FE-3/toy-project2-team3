@@ -21,6 +21,11 @@ const salaryData = [
     totalPayment: '5,000,000',
     actualPayment: '4,480,000',
   },
+  {
+    date: '2024/11/25',
+    totalPayment: '5,000,000',
+    actualPayment: '4,480,000',
+  },
 ];
 
 const SalaryInfoSection: React.FC = () => {
@@ -71,7 +76,7 @@ const SalaryInfoSection: React.FC = () => {
           </S.TableRow>
         </thead>
         <tbody>
-          {filteredData.map((salary, index) => (
+          {filteredData.slice(0, 3).map((salary, index) => (
             <S.TableRow key={index}>
               <S.TableData>{salary.date}</S.TableData>
               <S.TableData style={{ color: '#14b8a6' }}>

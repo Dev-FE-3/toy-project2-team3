@@ -128,15 +128,3 @@ export const ModalFooter = styled.div`
   gap: 0.625rem;
   margin-top: 1.25rem;
 `;
-
-// const Button = styled.button<{ primary?: boolean }>`
-//   width: 150px;
-//   height: 40px;
-//   background-color: ${({ primary }) => (primary ? '#14b8a6' : 'white')};
-//   color: ${({ primary }) => (primary ? 'white' : '#14b8a6')};
-//   border: 2px solid #14b8a6;
-//   border-radius: 4px;
-//   cursor: pointer;
-//   font-size: 16px;
-//   font-weight: bold;
-// `;
