@@ -1,7 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import app from '../../firebase';
+import {  signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '@/firebase';
 
 interface LoginType {
   email: string;
@@ -9,13 +10,13 @@ interface LoginType {
 }
 
 export const useLogin = () => {
-  const auth = getAuth(app);
   const {
     register,
     handleSubmit,
     formState: { errors },
     setError,
   } = useForm<LoginType>();
+  const navigate = useNavigate();
 
   const handleLogin = async (data: LoginType) => {
     try {
@@ -26,6 +27,7 @@ export const useLogin = () => {
       );
       console.log(userCredential.user); // 임시
       alert('로그인 성공!');
+      navigate('/');
     } catch (error) {
       const firebaseError = error as FirebaseError;
       switch (firebaseError.code) {

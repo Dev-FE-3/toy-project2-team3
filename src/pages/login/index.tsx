@@ -41,14 +41,14 @@ const Login = () => {
               )}
             </S.InputBox>
           </S.InputContainer>
-          <S.FindAccountWrapper>
+          <S.FindSwitcher>
             <S.FindAccountLink>이메일/비밀번호</S.FindAccountLink> 찾기
-          </S.FindAccountWrapper>
+          </S.FindSwitcher>
           <Button type="submit">로그인</Button>
-          <S.SignUpWrapper>
+          <S.Switcher>
             아직 회원이 아니신가요?
             <S.SignUpLink to="/signup">회원가입</S.SignUpLink>
-          </S.SignUpWrapper>
+          </S.Switcher>
         </S.Form>
       </S.FormContainer>
     </S.Container>

@@ -1,7 +1,7 @@
 import { JSX } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { auth } from '@/firebase';
 
 const NavBox = styled.nav`
   box-sizing: border-box;
@@ -59,6 +59,14 @@ const LogoutBtn = styled.button`
 `;
 
 const NavBar = (): JSX.Element => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    auth.signOut();
+    // TODO: 로그아웃 성공 메세지
+    navigate('/login');
+  };
+
   return (
     <>
       <NavBox>
@@ -75,11 +83,7 @@ const NavBar = (): JSX.Element => {
             </Link>
           </MenuItem>
         </Menu>
-        <LogoutBtn>
-          <Link style={{ all: 'unset' }} to="/login">
-            로그아웃
-          </Link>
-        </LogoutBtn>
+        <LogoutBtn onClick={handleLogout}>로그아웃</LogoutBtn>
       </NavBox>
       <Outlet />
     </>

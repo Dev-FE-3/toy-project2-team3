@@ -102,6 +102,7 @@ export const FindAccountLink = styled.p`
   color: ${({ theme }) => theme.colors.point1};
 `;
 
+
 export const Switcher = styled.div`
   display: flex;
   justify-content: center;
