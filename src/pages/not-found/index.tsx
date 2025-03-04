@@ -1,4 +1,4 @@
-import CurationImg from '../../assets/imgs/curation.svg';
+import CurationImg from '@/assets/images/curation.svg';
 import styled from 'styled-components';
 
 const Container = styled.div`
