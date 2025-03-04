@@ -1,6 +1,6 @@
 import * as S from './style';
 
-import Button from '../../shared/button/Button';
+import Button from '@/shared/button/Button';
 import useSignUp from '@/features/auth/useSignUp';
 
 const SignUp = () => {
