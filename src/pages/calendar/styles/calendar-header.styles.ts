@@ -18,11 +18,7 @@ export const TitleGroup = styled.div`
 `;
 
 export const Title = styled.div`
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 133%;
-  letter-spacing: -0.24px;
+  ${({ theme }) => theme.typography.heading3};
 `;
 
 export const NavButton = styled.button`

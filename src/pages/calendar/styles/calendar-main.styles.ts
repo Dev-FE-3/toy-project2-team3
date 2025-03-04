@@ -6,12 +6,12 @@ export const PageContainer = styled.div`
   width: 1240px;
   margin: 50px auto;
   position: relative;
+  margin-top: 150px;
 `;
 
 // 업무관리 타이틀
 export const Title = styled.h1`
   ${({ theme }) => theme.typography.heading2};
-  color: ${({ theme }) => theme.colors.grey1};
   margin-bottom: 20px;
 `;
 
@@ -36,7 +36,7 @@ export const WeekdaysContainer = styled.div`
 
 export const Weekday = styled.div`
   ${({ theme }) => theme.typography.body2};
-  color: ${({ theme }) => theme.colors.grey1};
+
   padding: 10px;
   text-align: center;
   font-weight: bold;

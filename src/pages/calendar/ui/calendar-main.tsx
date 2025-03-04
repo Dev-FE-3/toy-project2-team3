@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CalendarCell from './calendar-cell';
 import CalendarModal from './calendar-modal';
 import CalendarHeader from './calendar-header';
+import ConfirmationModal from './confirmation-modal';
 
 import {
   PageContainer,
@@ -42,6 +43,7 @@ const CalendarMain: React.FC = () => {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [isNewEvent, setIsNewEvent] = useState<boolean>(true);
+  const [confirmModalOpen, setConfirmModalOpen] = useState<boolean>(false);
 
   // 달력 데이터 계산
   const getDaysInMonth = (year: number, month: number): number => {
@@ -284,25 +286,6 @@ const CalendarMain: React.FC = () => {
     }
   }, []);
 
-  const deleteMemo = (): void => {
-    if (selectedDate) {
-      const datekey = formatDateKey(selectedDate);
-      const updatedMemos = { ...memos };
-      const updatedEvents = { ...events };
-
-      delete updatedMemos[datekey];
-      delete updatedEvents[datekey];
-
-      setMemos(updatedMemos);
-      setEvents(updatedEvents);
-
-      localStorage.setItem('calendarMemos', JSON.stringify(updatedMemos));
-      localStorage.setItem('calendarEvents', JSON.stringify(updatedEvents));
-
-      setModalOpen(false);
-    }
-  };
-
   // 요일 이름 배열
   const weekdays: string[] = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -335,6 +318,35 @@ const CalendarMain: React.FC = () => {
     // 로컬 스토리지에서도 삭제
     localStorage.removeItem('calendarMemos');
     localStorage.removeItem('calendarEvents');
+  };
+
+  const handleDeleteClick = (): void => {
+    setConfirmModalOpen(true);
+    setModalOpen(false);
+  };
+
+  const handleCancelDelete = (): void => {
+    setConfirmModalOpen(false);
+    setModalOpen(true);
+  };
+
+  const confirmDelete = (): void => {
+    if (selectedDate) {
+      const dateKey = formatDateKey(selectedDate);
+      const updatedMemos = { ...memos };
+      const updatedEvents = { ...events };
+
+      delete updatedMemos[dateKey];
+      delete updatedEvents[dateKey];
+
+      setMemos(updatedMemos);
+      setEvents(updatedEvents);
+
+      localStorage.setItem('calendarMemos', JSON.stringify(updatedMemos));
+      localStorage.setItem('calendarEvents', JSON.stringify(updatedEvents));
+
+      setConfirmModalOpen(false);
+    }
   };
 
   return (
@@ -467,9 +479,17 @@ const CalendarMain: React.FC = () => {
           onSave={saveMemo}
           onClose={closeModal}
           isNewEvent={isNewEvent}
-          onDelete={deleteMemo}
+          onDelete={handleDeleteClick}
         />
       )}
+
+      <ConfirmationModal
+        isOpen={confirmModalOpen}
+        onConfirm={confirmDelete}
+        onCancel={handleCancelDelete}
+        title="일정을 삭제하시겠습니까?"
+        message=""
+      ></ConfirmationModal>
     </PageContainer>
   );
 };

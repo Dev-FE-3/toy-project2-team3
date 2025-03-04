@@ -75,7 +75,6 @@ export const DateContainer = styled.div`
 
 export const DateNumber = styled.div`
   ${({ theme }) => theme.typography.body2};
-  color: ${({ theme }) => theme.colors.grey1};
 `;
 
 export const MemoPreview = styled.div`
