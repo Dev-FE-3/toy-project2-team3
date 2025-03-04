@@ -1,6 +1,16 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const FormContainer = styled.div`
   width: 360px;
   display: flex;
   flex-direction: column;
@@ -47,10 +57,11 @@ export const Input = styled.input`
   border: 1px solid #b2b2b2;
   padding: 11px 16px;
 
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%;
+  ${({ theme }) => theme.typography.body3}
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const InputContainer = styled.div`
@@ -71,7 +82,7 @@ export const ErrorText = styled.p`
   letter-spacing: 0.1px;
 `;
 
-export const FindAccountWrapper = styled.div`
+export const FindSwitcher = styled.div`
   ${({ theme }) => theme.typography.body4}
 
   display: flex;
@@ -86,7 +97,7 @@ export const FindAccountLink = styled.p`
   color: ${({ theme }) => theme.colors.point1};
 `;
 
-export const SignUpWrapper = styled.div`
+export const Switcher = styled.div`
   display: flex;
   justify-content: center;
   gap: 2px;
@@ -94,12 +105,10 @@ export const SignUpWrapper = styled.div`
   margin-top: 4px;
 
   ${({ theme }) => theme.typography.body4}
+  color: ${({ theme }) => theme.colors.grey1};
 `;
 
-export const AuthWrapper = styled.div`
-  width: 100%;
-`;
-
-export const SignUpLink = styled.a`
+export const SignUpLink = styled(Link)`
   color: ${({ theme }) => theme.colors.point1};
+  text-decoration: none;
 `;
