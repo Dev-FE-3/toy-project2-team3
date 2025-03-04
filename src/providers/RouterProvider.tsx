@@ -1,6 +1,6 @@
 import { ProtectedRoute } from '@/features/auth/ProtectedRoute';
 import NotFoundPage from '@/pages/not-found';
-// import LoginPage from '@/pages/login';
+import LoginPage from '@/pages/login';
 import SignUpPage from '@/pages/signup';
 import NavBar from '@/features/navbar';
 import MyPage from '@/pages/mypage';
@@ -13,7 +13,7 @@ const AppRouter = (): JSX.Element => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route path="/login" element={<LoginPage />} /> */}
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route
           element={

@@ -31,7 +31,6 @@ interface EventsData {
 }
 
 const CalendarMain: React.FC = () => {
-  // 상태 관리
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [memos, setMemos] = useState<MemoData>({});
@@ -298,11 +297,7 @@ const CalendarMain: React.FC = () => {
       case '2':
         return '출장';
       case '3':
-        return '회식';
-      case '4':
         return '휴가';
-      case '5':
-        return '회의';
       default:
         return '';
     }

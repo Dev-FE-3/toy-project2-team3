@@ -1,10 +1,8 @@
 import React from 'react';
-
 import {
   CalendarCellStyled,
   DateContainer,
   DateNumber,
-  MemoPreview,
   EventsContainer,
   EventRangeIndicator,
 } from '../styles/calendar-cell.styles';
@@ -29,7 +27,7 @@ interface CalendarCellProps {
   onDateClick: (date: Date) => void;
 }
 
-const formatMemoPreview = (text: string): string => {
+const formatTitlePreview = (text: string): string => {
   return text.length > 15 ? text.substring(0, 15) + '...' : text;
 };
 
@@ -38,10 +36,10 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
   isCurrentMonth,
   isToday,
   memo,
+  event,
   isEventStart,
   isEventEnd,
   isInEventRange,
-  eventTypeName,
   eventColor,
   onDateClick,
 }) => {
@@ -53,8 +51,10 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
     }
   };
 
-  // 텍스트를 표시해야 하는지 여부를 명시적으로 계산
-  const showEventText = Boolean(isEventStart && eventTypeName);
+  const showEventTitle = Boolean(isEventStart && event && event.title);
+
+  const displayTitle =
+    showEventTitle && event ? formatTitlePreview(event.title) : '';
 
   return (
     <CalendarCellStyled
@@ -65,7 +65,6 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
     >
       <DateContainer>
         <DateNumber>{date.getDate()}</DateNumber>
-        {memo && <MemoPreview>{formatMemoPreview(memo)}</MemoPreview>}
       </DateContainer>
 
       {isInEventRange && eventColor && (
@@ -74,9 +73,9 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
             isStart={Boolean(isEventStart)}
             isEnd={Boolean(isEventEnd)}
             color={eventColor}
-            hasText={showEventText}
+            hasText={showEventTitle}
           >
-            {showEventText ? eventTypeName : ''}
+            {displayTitle}
           </EventRangeIndicator>
         </EventsContainer>
       )}
