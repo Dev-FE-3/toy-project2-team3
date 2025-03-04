@@ -2,9 +2,24 @@ import * as S from './style';
 
 import Button from '@/shared/button/Button';
 import useSignUp from '@/features/auth/useSignUp';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
-  const { register, handleSubmit, errors, handleSignUp, watch } = useSignUp();
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    handleSignUp,
+    watch,
+    isModalOpen,
+    setIsModalOpen,
+  } = useSignUp();
+
+  const handleClick = () => {
+    setIsModalOpen(false);
+    navigate('/login');
+  };
 
   return (
     <S.Container>
@@ -84,6 +99,21 @@ const SignUp = () => {
         </S.Form>
       </S.FormContainer>
       <S.ResponsiveSignupGraphic />
+
+      {/* 모달 */}
+      {isModalOpen && (
+        <S.Modal>
+          <S.ModalContent>
+            <S.ModalMessage>이미 가입된 계정이 있습니다.</S.ModalMessage>
+            <S.ButtonWrapper>
+              <Button variant="outlined" onClick={() => setIsModalOpen(false)}>
+                닫기
+              </Button>
+              <Button onClick={handleClick}>로그인으로 이동</Button>
+            </S.ButtonWrapper>
+          </S.ModalContent>
+        </S.Modal>
+      )}
     </S.Container>
   );
 };
