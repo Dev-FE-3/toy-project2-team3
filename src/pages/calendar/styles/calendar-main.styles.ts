@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 
-export const PageContainer = styled.div`
+export const PageContainer = styled.div<{ isModalOpen?: boolean }>`
   display: flex;
   flex-direction: column;
   width: 1240px;
   margin: 50px auto;
   position: relative;
   margin-top: 150px;
+  padding-right: ${(props) => (props.isModalOpen ? '17px' : '0')};
 `;
 
 // 업무관리 타이틀
@@ -17,8 +18,6 @@ export const Title = styled.h1`
 
 export const CalendarContainer = styled.div`
   width: 1240px;
-  margin: 0 auto;
-
   border: 1px solid #2ac1bc;
   padding: 20px;
   border-radius: 8px;
@@ -36,7 +35,6 @@ export const WeekdaysContainer = styled.div`
 
 export const Weekday = styled.div`
   ${({ theme }) => theme.typography.body2};
-
   padding: 10px;
   text-align: center;
   font-weight: bold;

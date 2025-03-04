@@ -345,7 +345,7 @@ const CalendarMain: React.FC = () => {
   };
 
   return (
-    <PageContainer>
+    <PageContainer isModalOpen={modalOpen}>
       <Title>업무관리</Title>
 
       <CalendarContainer>
