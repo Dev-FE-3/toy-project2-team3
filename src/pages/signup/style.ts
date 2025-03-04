@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import SignupGraphic from '../../assets/imgs/signup_graphic.svg?react';
+import SignupGraphic from '@/assets/images/signup_graphic.svg?react';
 
 export const Container = styled.div`
   display: flex;
@@ -101,7 +101,6 @@ export const FindAccountWrapper = styled.div`
 export const FindAccountLink = styled.p`
   color: ${({ theme }) => theme.colors.point1};
 `;
-
 
 export const Switcher = styled.div`
   display: flex;
