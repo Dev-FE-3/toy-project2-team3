@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as S from '../styles/salary-modal.styles';
 import Button from '../../../shared/button/Button';
 
@@ -31,7 +32,13 @@ const salaryData = {
 };
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
+
   if (!isOpen) return null;
+
+  const handleCorrectionRequest = () => {
+    navigate('/salary-correction');
+  };
 
   return (
     <S.ModalOverlay>
@@ -127,7 +134,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           <Button onClick={onClose} variant="outlined">
             닫기
           </Button>
-          <Button>정정 신청하기</Button>
+          <Button onClick={handleCorrectionRequest}>정정 신청하기</Button>
         </S.ModalFooter>
       </S.ModalContent>
     </S.ModalOverlay>

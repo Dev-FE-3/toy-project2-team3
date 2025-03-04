@@ -13,5 +13,5 @@ export const ProtectedRoute = ({
   // const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const isLoggedIn = true;
 
-  return isLoggedIn ? <Outlet /> : <Navigate to="/login" replace />;
+  return isLoggedIn ? <>{children}</> : <Navigate to="/login" replace />;
 };

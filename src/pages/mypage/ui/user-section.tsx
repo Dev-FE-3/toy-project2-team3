@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import * as S from '../styles/user-section.styles';
 import profileDefault from '../../../assets/images/profile-default.png';
 
-const EditIcon: React.FC = () => {
+const EditIcon: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   return (
     <svg
+      onClick={() => {
+        onClick();
+      }}
       xmlns="http://www.w3.org/2000/svg"
       width="28"
       height="28"
@@ -20,6 +23,34 @@ const EditIcon: React.FC = () => {
 };
 
 const UserInfoSection: React.FC = () => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [profileImage, setProfileImage] = useState<string>(
+    localStorage.getItem('profileImage') || profileDefault
+  );
+
+  const handleEditClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  // 이미지 변경 및 localStorage 저장
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          const imageData = e.target.result as string;
+          setProfileImage(imageData);
+          localStorage.setItem('profileImage', imageData); // 저장
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const userData = {
     name: '백지헌',
     position: 'Security Engineer',
@@ -52,14 +83,21 @@ const UserInfoSection: React.FC = () => {
         </div>
         <S.ProfileImage>
           <img
-            src={profileDefault}
+            src={profileImage}
             alt="Profile"
             style={{ width: '100%', height: '100%' }}
           />
         </S.ProfileImage>
         <S.ProfileEditButton>
-          <EditIcon />
+          <EditIcon onClick={handleEditClick} />
         </S.ProfileEditButton>
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          accept="image/*"
+          onChange={handleImageChange}
+        />
       </S.ProfileContainer>
     </S.InfoSection>
   );

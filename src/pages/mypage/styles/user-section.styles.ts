@@ -56,10 +56,20 @@ export const ProfileEditButton = styled.button`
   bottom: 3.1rem;
   right: -1px;
   cursor: pointer;
+  transition: transform 0.2s ease-in-out;
 
-  img {
-    width: 25px;
-    height: 25px;
+  &:hover {
+    transform: scale(1.2); /* 버튼이 커지도록 */
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  &:hover svg {
+    transform: scale(1.2); /* 아이콘이 살짝 더 커짐 */
   }
 `;
 

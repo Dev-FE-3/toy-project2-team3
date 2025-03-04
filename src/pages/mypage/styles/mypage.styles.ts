@@ -21,4 +21,5 @@ export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 25px;
+  margin-top: 160px;
 `;
