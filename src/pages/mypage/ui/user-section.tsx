@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as S from '../styles/user-section.styles';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth, storage, db } from '../../../firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../../firebase';
 import profileDefault from '../../../assets/images/profile-default.png';
 
 const EditIcon: React.FC<{ onClick: () => void }> = ({ onClick }) => {
@@ -72,24 +71,18 @@ const UserInfoSection: React.FC = () => {
     }
   };
 
-  const handleImageChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (!user) return;
-
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const storageRef = ref(storage, `profile-images/${user.uid}`); // Storage 경로 지정
-    const snapshot = await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(snapshot.ref);
-
-    await setDoc(
-      doc(db, 'users', user.uid),
-      { profileImage: downloadURL },
-      { merge: true }
-    );
-    setProfileImage(downloadURL);
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        localStorage.setItem('profileImage', reader.result);
+        setProfileImage(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   return (

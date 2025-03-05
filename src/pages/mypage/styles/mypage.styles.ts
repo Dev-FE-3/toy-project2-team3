@@ -9,17 +9,10 @@ export const Container = styled.div`
   align-items: center;
 `;
 
-export const Header = styled.header`
-  width: 100%;
-  min-height: 4.375rem;
-  display: flex;
-  border-bottom: 0.125rem solid ${({ theme }) => theme.colors.point1};
-`;
-
 export const ContentWrapper = styled.div`
   width: 70%;
   display: flex;
   flex-direction: column;
   gap: 25px;
-  margin-top: 160px;
+  margin-top: 230px;
 `;

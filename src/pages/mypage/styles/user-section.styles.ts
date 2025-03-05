@@ -53,7 +53,7 @@ export const ProfileEditButton = styled.button`
   align-items: center;
   justify-content: center;
   position: absolute;
-  bottom: 3.1rem;
+  bottom: 2.2rem;
   right: -1px;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
@@ -76,7 +76,7 @@ export const ProfileEditButton = styled.button`
 export const InfoWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 30px;
+  gap: 10px;
   width: 100%;
   padding: 30px;
 `;
