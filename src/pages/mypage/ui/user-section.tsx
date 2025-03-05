@@ -29,48 +29,40 @@ const UserInfoSection: React.FC = () => {
 
   const [profileImage, setProfileImage] = useState<string>(profileDefault);
   const [userData, setUserData] = useState({
-    name: '',
-    position: '',
-    joinedDate: '',
-    department: '',
-    email: '',
+    name: '사용자',
+    position: '직책 없음',
+    joinedDate: '입사일 없음',
+    department: '부서 없음',
+    email: '이메일 없음',
   });
 
-  const user = auth.currentUser;
-  useEffect(() => {
-    if (user) {
-      const userDocRef = doc(db, 'users', user.uid);
-      getDoc(userDocRef).then((docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data();
+  // firebase에서 사용자 데이터 가져오기
+  const fetchUserData = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
 
-          // Timestamp → Date 객체 변환
-          const rawJoinedDate = data.joinDate?.toDate();
+    const userDocRef = doc(db, 'users', user.uid);
+    const docSnap = await getDoc(userDocRef);
+    if (!docSnap.exists()) return;
 
-          // 날짜 포맷팅 (YYYY년 M월 D일)
-          const formattedDate = rawJoinedDate
-            ? `${rawJoinedDate.getFullYear()}년 ${rawJoinedDate.getMonth() + 1}월 ${rawJoinedDate.getDate()}일`
-            : '입사일 없음';
-
-          setProfileImage(data.profileImage || profileDefault);
-          setUserData({
-            name: data.name || '사용자',
-            position: data.position || '직책 없음',
-            joinedDate: formattedDate,
-            department: data.department || '부서 없음',
-            email: data.email || '이메일 없음',
-          });
-        }
-      });
-    }
-  }, [user]);
-
-  const handleEditClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    const data = docSnap.data();
+    setProfileImage(data.profileImage || profileDefault);
+    setUserData({
+      name: data.name || '사용자',
+      position: data.position || '직책 없음',
+      joinedDate: data.joinDate?.toDate()
+        ? `${data.joinDate.toDate().getFullYear()}년 ${data.joinDate.toDate().getMonth() + 1}월 ${data.joinDate.toDate().getDate()}일`
+        : `입사일 없음`,
+      department: data.department || `부서 없음`,
+      email: data.email || `이메일 없음`,
+    });
   };
 
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  // 프로필 이미지 변경 핸들러
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -115,7 +107,7 @@ const UserInfoSection: React.FC = () => {
           />
         </S.ProfileImage>
         <S.ProfileEditButton>
-          <EditIcon onClick={handleEditClick} />
+          <EditIcon onClick={() => fileInputRef.current?.click()} />
         </S.ProfileEditButton>
         <input
           type="file"
