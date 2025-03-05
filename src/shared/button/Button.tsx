@@ -91,7 +91,7 @@ const StyledButton = styled.button<{
 // 버튼 컴포넌트
 const Button: React.FC<ButtonProps> = ({
   children,
-  width = 'auto',
+  width = 'fit-content',
   variant = 'filled',
   typeStyle = 'rounded',
   isDelete = false,
