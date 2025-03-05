@@ -7,8 +7,8 @@ import {
 import Button from '../../../shared/button/Button';
 
 export const CompactModalContent = styled(ModalContent)`
+  width: 480px;
   height: 200px;
-  max-height: 480px;
 `;
 
 export const MessageContainer = styled.div`
@@ -24,6 +24,7 @@ export const ConfirmationTitle = styled(ModalTitle)`
 
 export const ConfirmButtonContainer = styled(ButtonContainer)`
   justify-content: flex-end;
+  margin-top: auto;
 `;
 
 export const CancelButton = styled(Button)`
@@ -33,7 +34,6 @@ export const CancelButton = styled(Button)`
     border: 1px solid ${theme.colors.red};
     font-size: ${theme.typography.menu1.fontSize};
     font-weight: ${theme.typography.menu1.fontWeight};
-    
     &:hover {
       background-color: ${theme.colors.red};
       color: white;
@@ -49,7 +49,6 @@ export const ConfirmDeleteButton = styled(Button)`
     border: 1px solid ${theme.colors.red};
     font-size: ${theme.typography.menu1.fontSize};
     font-weight: ${theme.typography.menu1.fontWeight};
-    
     &:hover {
       background-color: white;
       color: ${theme.colors.red};

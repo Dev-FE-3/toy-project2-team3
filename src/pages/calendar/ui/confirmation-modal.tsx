@@ -10,11 +10,13 @@ import {
   ConfirmButtonContainer,
 } from '../styles/confirmation-modal.style';
 
+import { ReactNode } from 'react';
+
 interface ConfirmationModalProps {
   isOpen: boolean;
   onConfirm: () => void;
   onCancel: () => void;
-  title: string;
+  title: ReactNode;
   message: string;
 }
 

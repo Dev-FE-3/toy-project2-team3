@@ -43,6 +43,7 @@ const CalendarMain: React.FC = () => {
   const [endDate, setEndDate] = useState<string>('');
   const [isNewEvent, setIsNewEvent] = useState<boolean>(true);
   const [confirmModalOpen, setConfirmModalOpen] = useState<boolean>(false);
+  const [deleteMode, setDeleteMode] = useState<string>('single'); // 'single' 또는 'month'
 
   // 달력 데이터 계산
   const getDaysInMonth = (year: number, month: number): number => {
@@ -221,6 +222,28 @@ const CalendarMain: React.FC = () => {
   };
 
   const saveMemo = (): void => {
+    if (!titleText.trim()) {
+      alert('일정 제목을 입력해주세요.');
+      return;
+    }
+    if (!eventType) {
+      alert('일정 유형을 선택해주세요.');
+      return;
+    }
+    if (!startDate) {
+      alert('시작일을 선택해주세요.');
+      return;
+    }
+    if (!endDate) {
+      alert('종료일을 선택해주세요.');
+      return;
+    }
+
+    // 시작일이 종료일보다 나중인 경우 검증
+    if (new Date(startDate) > new Date(endDate)) {
+      alert('시작일은 종료일보다 이전이어야 합니다.');
+      return;
+    }
     if (selectedDate) {
       // 선택된 날짜 대신 시작일을 기준으로 dateKey 생성
       let dateKey;
@@ -293,40 +316,77 @@ const CalendarMain: React.FC = () => {
   const getEventTypeName = (typeValue: string): string => {
     switch (typeValue) {
       case '1':
-        return '회의';
+        return '일정을 선택해주세요.';
       case '2':
-        return '출장';
+        return '회의';
       case '3':
+        return '출장';
+      case '4':
         return '휴가';
       default:
         return '';
     }
   };
 
-  const clearAllData = (): void => {
-    // 확인 대화상자 표시
+  // 현재 월만 삭제하는 함수 (이전에 전체 삭제였던 부분)
+  const clearCurrentMonthData = (): void => {
+    // 현재 월에 해당하는 일정만 삭제
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
 
-    // 모든 상태 초기화
-    setMemos({});
-    setEvents({});
+    // 필터링을 위해 기존 데이터 복사
+    const filteredMemos = { ...memos };
+    const filteredEvents = { ...events };
 
-    // 로컬 스토리지에서도 삭제
-    localStorage.removeItem('calendarMemos');
-    localStorage.removeItem('calendarEvents');
+    // 각 데이터의 키(날짜)를 확인하여 현재 월에 해당하는 것만 삭제
+    Object.keys(filteredMemos).forEach((dateKey) => {
+      const [keyYear, keyMonth] = dateKey.split('-').map(Number);
+      if (keyYear === year && keyMonth === month) {
+        delete filteredMemos[dateKey];
+      }
+    });
+
+    Object.keys(filteredEvents).forEach((dateKey) => {
+      const [keyYear, keyMonth] = dateKey.split('-').map(Number);
+      if (keyYear === year && keyMonth === month) {
+        delete filteredEvents[dateKey];
+      }
+    });
+
+    setMemos(filteredMemos);
+    setEvents(filteredEvents);
+
+    // 로컬 스토리지 업데이트
+    localStorage.setItem('calendarMemos', JSON.stringify(filteredMemos));
+    localStorage.setItem('calendarEvents', JSON.stringify(filteredEvents));
+  };
+
+  // 전체 삭제 버튼 클릭 핸들러 (월별 삭제로 기능 변경)
+  const handleClearAll = (): void => {
+    setDeleteMode('month');
+    setConfirmModalOpen(true);
   };
 
   const handleDeleteClick = (): void => {
+    setDeleteMode('single');
     setConfirmModalOpen(true);
     setModalOpen(false);
   };
 
   const handleCancelDelete = (): void => {
     setConfirmModalOpen(false);
-    setModalOpen(true);
+    // 단일 일정 삭제 취소 시 모달 다시 열기
+    if (deleteMode === 'single') {
+      setModalOpen(true);
+    }
   };
 
   const confirmDelete = (): void => {
-    if (selectedDate) {
+    if (deleteMode === 'month') {
+      // 현재 월의 일정만 삭제
+      clearCurrentMonthData();
+    } else if (selectedDate) {
+      // 단일 일정 삭제
       const dateKey = formatDateKey(selectedDate);
       const updatedMemos = { ...memos };
       const updatedEvents = { ...events };
@@ -339,9 +399,9 @@ const CalendarMain: React.FC = () => {
 
       localStorage.setItem('calendarMemos', JSON.stringify(updatedMemos));
       localStorage.setItem('calendarEvents', JSON.stringify(updatedEvents));
-
-      setConfirmModalOpen(false);
     }
+
+    setConfirmModalOpen(false);
   };
 
   return (
@@ -354,7 +414,7 @@ const CalendarMain: React.FC = () => {
           onPrevMonth={prevMonth}
           onNextMonth={nextMonth}
           onAddTask={handleAddTask}
-          onClearAll={clearAllData}
+          onClearAll={handleClearAll}
         />
 
         <WeekdaysContainer>
@@ -456,7 +516,7 @@ const CalendarMain: React.FC = () => {
         </CalendarGrid>
       </CalendarContainer>
 
-      {/* 수정된 props를 사용하여 MemoModal 렌더링 */}
+      {/* CalendarModal 렌더링 */}
       {modalOpen && (
         <CalendarModal
           isOpen={modalOpen}
@@ -482,9 +542,15 @@ const CalendarMain: React.FC = () => {
         isOpen={confirmModalOpen}
         onConfirm={confirmDelete}
         onCancel={handleCancelDelete}
-        title="일정을 삭제하시겠습니까?"
+        title={
+          deleteMode === 'month' ? (
+            <>{currentDate.getMonth() + 1}월 일정을 삭제하시겠습니까?</>
+          ) : (
+            '일정을 삭제하시겠습니까?'
+          )
+        }
         message=""
-      ></ConfirmationModal>
+      />
     </PageContainer>
   );
 };
