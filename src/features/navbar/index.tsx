@@ -15,6 +15,7 @@ const NavBox = styled.nav`
   align-items: center;
   padding-left: 56px;
   border-bottom: ${({ theme }) => theme.colors.grey2} 1px solid;
+  z-index: 1;
 `;
 
 const Logo = styled.img`

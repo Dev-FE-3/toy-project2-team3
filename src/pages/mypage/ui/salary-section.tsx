@@ -36,9 +36,12 @@ const SalaryInfoSection: React.FC = () => {
         return {
           id: doc.id,
           ...data,
+          rawDate,
           date: formattedDate, // 변환된 날짜 값 저장
         };
       });
+      // 날짜 기준 내림차순 정렬
+      salaries.sort((a, b) => b.rawDate - a.rawDate);
 
       setSalaryData(salaries);
     };
@@ -46,19 +49,19 @@ const SalaryInfoSection: React.FC = () => {
     fetchSalaryData();
   }, [user]);
 
-  // 🔹 특정 급여 내역을 선택하여 모달 열기
+  // 특정 급여 내역을 선택하여 모달 열기
   const handleModalOpen = (salaryDetail: any) => {
     setSelectedSalaryDetail(salaryDetail);
     setIsModalOpen(true);
   };
 
-  // 🔹 모달 닫기
+  // 모달 닫기
   const handleModalClose = () => {
     setIsModalOpen(false);
     setSelectedSalaryDetail(null);
   };
 
-  // 🔹 숫자를 화폐 단위(₩)로 변환하는 함수
+  // 숫자를 화폐 단위(₩)로 변환
   const formatCurrency = (value: number) => {
     return value < 0
       ? `-₩${Math.abs(value).toLocaleString()}`

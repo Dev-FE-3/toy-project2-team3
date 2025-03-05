@@ -9,6 +9,37 @@ interface ModalProps {
   salaryDetail: any | null;
 }
 
+const SalaryTable = ({
+  title,
+  data,
+}: {
+  title: string;
+  data: { label: string; value: number | undefined }[];
+}) => (
+  <S.SalaryTable>
+    <thead>
+      <tr>
+        <S.TableHeader>{title}</S.TableHeader>
+      </tr>
+    </thead>
+    <tbody>
+      {data.map((item, index) => (
+        <S.TableRow key={index}>
+          <S.TableData>{item.label}</S.TableData>
+          <S.TableDataRight>{formatCurrency(item.value)}</S.TableDataRight>
+        </S.TableRow>
+      ))}
+    </tbody>
+  </S.SalaryTable>
+);
+
+const formatCurrency = (value: number | undefined) => {
+  if (typeof value !== 'number' || isNaN(value)) return '₩0';
+  return value < 0
+    ? `-₩${Math.abs(value).toLocaleString()}`
+    : `₩${value.toLocaleString()}`;
+};
+
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, salaryDetail }) => {
   const navigate = useNavigate();
 
@@ -34,13 +65,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, salaryDetail }) => {
     );
   }
 
-  const formatCurrency = (value: number | undefined) => {
-    if (typeof value !== 'number' || isNaN(value)) return '₩0';
-    return value < 0
-      ? `-₩${Math.abs(value).toLocaleString()}`
-      : `₩${value.toLocaleString()}`;
-  };
-
   const formattedDate = salaryDetail.date ?? '날짜 없음';
 
   //'월' 값만 추출
@@ -65,78 +89,26 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, salaryDetail }) => {
 
         <S.ModalBody>
           <S.SalaryDetails>
-            <S.SalaryTable>
-              <thead>
-                <tr>
-                  <S.TableHeader>지급 항목</S.TableHeader>
-                </tr>
-              </thead>
-              <tbody>
-                <S.TableRow>
-                  <S.TableData>기본급</S.TableData>
-                  <S.TableDataRight>
-                    {formatCurrency(salaryDetail.base)}
-                  </S.TableDataRight>
-                </S.TableRow>
-                <S.TableRow>
-                  <S.TableData>상여금</S.TableData>
-                  <S.TableDataRight>
-                    {formatCurrency(salaryDetail.bonus)}
-                  </S.TableDataRight>
-                </S.TableRow>
-                <S.TableRow>
-                  <S.TableData>직책수당</S.TableData>
-                  <S.TableDataRight>
-                    {formatCurrency(salaryDetail.position)}
-                  </S.TableDataRight>
-                </S.TableRow>
-                <S.TableRow>
-                  <S.TableData>특근수당</S.TableData>
-                  <S.TableDataRight>
-                    {formatCurrency(salaryDetail.overtime)}
-                  </S.TableDataRight>
-                </S.TableRow>
-                <S.TableRow>
-                  <S.TableData>야근수당</S.TableData>
-                  <S.TableDataRight>
-                    {formatCurrency(salaryDetail.night)}
-                  </S.TableDataRight>
-                </S.TableRow>
-              </tbody>
-            </S.SalaryTable>
-            <S.SalaryTable>
-              <thead>
-                <tr>
-                  <S.TableHeader>공제 항목</S.TableHeader>
-                </tr>
-              </thead>
-              <tbody>
-                <S.TableRow>
-                  <S.TableData>건강보험</S.TableData>
-                  <S.TableDataRight>
-                    {formatCurrency(salaryDetail.health)}
-                  </S.TableDataRight>
-                </S.TableRow>
-                <S.TableRow>
-                  <S.TableData>장기요양보험</S.TableData>
-                  <S.TableDataRight>
-                    {formatCurrency(salaryDetail.care)}
-                  </S.TableDataRight>
-                </S.TableRow>
-                <S.TableRow>
-                  <S.TableData>고용보험</S.TableData>
-                  <S.TableDataRight>
-                    {formatCurrency(salaryDetail.job)}
-                  </S.TableDataRight>
-                </S.TableRow>
-                <S.TableRow>
-                  <S.TableData>소득세</S.TableData>
-                  <S.TableDataRight>
-                    {formatCurrency(salaryDetail.tax)}
-                  </S.TableDataRight>
-                </S.TableRow>
-              </tbody>
-            </S.SalaryTable>
+            <SalaryTable
+              title="지급 항목"
+              data={[
+                { label: '기본급', value: salaryDetail.base },
+                { label: '상여금', value: salaryDetail.bonus },
+                { label: '직책수당', value: salaryDetail.position },
+                { label: '특근수당', value: salaryDetail.overtime },
+                { label: '야근수당', value: salaryDetail.night },
+              ]}
+            />
+
+            <SalaryTable
+              title="공제 항목"
+              data={[
+                { label: '건강보험', value: salaryDetail.health },
+                { label: '장기요양보험', value: salaryDetail.care },
+                { label: '고용보험', value: salaryDetail.job },
+                { label: '소득세', value: salaryDetail.tax },
+              ]}
+            />
           </S.SalaryDetails>
 
           <S.TotalSection>

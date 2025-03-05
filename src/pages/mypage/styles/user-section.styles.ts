@@ -59,7 +59,7 @@ export const ProfileEditButton = styled.button`
   transition: transform 0.2s ease-in-out;
 
   &:hover {
-    transform: scale(1.2); /* 버튼이 커지도록 */
+    transform: scale(1.2);
   }
 
   svg {
@@ -69,7 +69,7 @@ export const ProfileEditButton = styled.button`
   }
 
   &:hover svg {
-    transform: scale(1.2); /* 아이콘이 살짝 더 커짐 */
+    transform: scale(1.2);
   }
 `;
 

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import * as S from '../styles/user-section.styles';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../../firebase';
-import profileDefault from '../../../assets/images/profile-default.png';
+import profileDefault from '../../../assets/images/profile-default.svg';
 
 const EditIcon: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   return (
