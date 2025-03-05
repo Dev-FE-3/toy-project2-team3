@@ -1,8 +1,9 @@
 import { useForm } from 'react-hook-form';
-import { FirebaseError } from 'firebase/app';
-
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+
+import { FirebaseError } from 'firebase/app';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/firebase';
 
 interface LoginType {
@@ -29,6 +30,7 @@ export const useLogin = () => {
       );
       console.log(userCredential.user); // 임시
 
+      toast.success('로그인 성공!');
       navigate('/');
     } catch (error) {
       const firebaseError = error as FirebaseError;
