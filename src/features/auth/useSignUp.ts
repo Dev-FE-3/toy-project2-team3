@@ -5,6 +5,7 @@ import { FirebaseError } from 'firebase/app';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/firebase';
+import { useState } from 'react';
 
 interface SignUpType {
   email: string;
@@ -15,7 +16,7 @@ interface SignUpType {
 
 const useSignUp = () => {
   const navigate = useNavigate();
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     register,
     handleSubmit,
@@ -58,7 +59,7 @@ const useSignUp = () => {
 
       switch (firebaseError.code) {
         case 'auth/email-already-in-use':
-          setError('email', { message: '이미 가입된 이메일입니다.' });
+          setIsModalOpen(true);
           break;
         case 'auth/invalid-email':
           setError('email', { message: '이메일 형식이 잘못되었습니다.' });
@@ -83,6 +84,8 @@ const useSignUp = () => {
     errors,
     handleSignUp,
     watch,
+    isModalOpen,
+    setIsModalOpen,
   };
 };
 
