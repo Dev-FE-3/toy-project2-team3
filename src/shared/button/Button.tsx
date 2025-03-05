@@ -17,7 +17,8 @@ const StyledButton = styled.button<{
 }>`
   box-sizing: border-box;
   white-space: nowrap;
-  height: 40px;
+  min-height: 40px;
+  width: fit-content;
   padding: 0 40px;
   width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
   font: ${({ $typeStyle }) =>
