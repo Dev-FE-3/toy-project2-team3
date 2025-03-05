@@ -11,16 +11,17 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 // 기본 스타일
 const StyledButton = styled.button<{
   $typeStyle?: 'rounded' | 'square';
-  width?: number | string;
-  variant?: 'filled' | 'outlined';
-  isDelete?: boolean;
+  $width?: number | string;
+  $variant?: 'filled' | 'outlined';
+  $isDelete?: boolean;
 }>`
   box-sizing: border-box;
   white-space: nowrap;
   min-height: 40px;
   width: fit-content;
   padding: 0 40px;
-  width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
+  width: ${({ $width }) =>
+    typeof $width === 'number' ? `${$width}px` : $width};
   font: ${({ $typeStyle }) =>
     $typeStyle === 'rounded'
       ? ({ theme }) => theme.typography.menu1
@@ -36,10 +37,10 @@ const StyledButton = styled.button<{
     color 0.2s ease-in-out;
 
   // variant에 따른 스타일 변화
-  ${({ variant }) =>
-    variant === 'filled'
-      ? ({ theme, isDelete }) =>
-          isDelete
+  ${({ $variant }) =>
+    $variant === 'filled'
+      ? ({ theme, $isDelete }) =>
+          $isDelete
             ? `
       background-color: ${theme.colors.red} ;
       color: ${theme.colors.white};
@@ -62,8 +63,8 @@ const StyledButton = styled.button<{
         border : ${theme.colors.point1} 1px solid;
       }
     `
-      : ({ theme, isDelete }) =>
-          isDelete
+      : ({ theme, $isDelete }) =>
+          $isDelete
             ? `
       background-color: ${theme.colors.white};
       color: ${theme.colors.red};
@@ -99,10 +100,10 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <StyledButton
-      width={width}
-      variant={variant}
+      $width={width}
+      $variant={variant}
       $typeStyle={typeStyle}
-      isDelete={isDelete}
+      $isDelete={isDelete}
       {...props}
     >
       {children}
