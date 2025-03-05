@@ -3,13 +3,12 @@ import { Navigate } from 'react-router-dom';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/firebase';
 
-interface ProtectedRouteType {
+interface AuthRouteProps {
   children: ReactNode;
+  type: 'protected' | 'public';
 }
 
-export const ProtectedRoute = ({
-  children,
-}: ProtectedRouteType): JSX.Element => {
+export const AuthRoute = ({ children, type }: AuthRouteProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
 
@@ -20,11 +19,19 @@ export const ProtectedRoute = ({
     });
 
     return () => unsubscribe();
-  }, [auth]);
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>; // 임시 로딩
   }
 
-  return user ? <>{children}</> : <Navigate to="/login" replace />;
+  if (type === 'protected' && !user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (type === 'public' && user) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
 };
