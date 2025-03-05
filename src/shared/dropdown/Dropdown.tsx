@@ -14,6 +14,8 @@ export interface DropdownProps {
   placeholder?: string;
   width?: string;
   height?: string;
+  fontSize?: string;
+  className?: string;
 }
 
 export interface DropdownTextProps {
@@ -199,6 +201,8 @@ const Dropdown: React.FC<DropdownProps> = ({
   placeholder,
   width,
   height,
+  fontSize,
+  className,
 }) => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [selectedOption, setSelectedOption] = useState<OptionType | undefined>(
@@ -238,7 +242,12 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   return (
-    <DropdownContainer ref={dropdownRef} width={width} height={height}>
+    <DropdownContainer
+      ref={dropdownRef}
+      width={width}
+      height={height}
+      className={className}
+    >
       <DropdownHeader
         onClick={dropDownHandler}
         $hasSelected={!!selectedOption}

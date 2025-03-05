@@ -58,6 +58,13 @@ const LogoutBtn = styled.button`
   transition: 0.2s ease-in-out;
 `;
 
+const PageContainer = styled.section`
+  margin: 80px auto auto auto;
+  width: 100%;
+  max-width: 1240px;
+  height: auto;
+`;
+
 const NavBar = (): JSX.Element => {
   const navigate = useNavigate();
 
@@ -85,7 +92,9 @@ const NavBar = (): JSX.Element => {
         </Menu>
         <LogoutBtn onClick={handleLogout}>로그아웃</LogoutBtn>
       </NavBox>
-      <Outlet />
+      <PageContainer>
+        <Outlet />
+      </PageContainer>
     </>
   );
 };
