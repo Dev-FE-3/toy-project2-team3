@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+//import { useSelector } from 'react-redux';
+//import { RootState } from '@/redux/store';
 import * as S from '../styles/salary-modal.styles';
 import Button from '../../../shared/button/Button';
 
@@ -9,6 +9,7 @@ import Button from '../../../shared/button/Button';
 interface ModalProps {
   isOpen: boolean;
   onClose: (keepState?: boolean) => void;
+  selectedSalary: any | null;
 }
 
 const formatCurrency = (value: number | undefined) => {
@@ -25,7 +26,7 @@ interface SalaryTableProps {
 }
 
 // 급여 테이블 컴포넌트 (메모이제이션)
-const SalaryTable = React.memo(({ title, data }: SalaryTableProps) => (
+const SalaryTable = ({ title, data }: SalaryTableProps) => (
   <S.SalaryTable>
     <thead>
       <tr>
@@ -41,66 +42,64 @@ const SalaryTable = React.memo(({ title, data }: SalaryTableProps) => (
       ))}
     </tbody>
   </S.SalaryTable>
-));
+);
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, selectedSalary }) => {
   const navigate = useNavigate();
-
-  // Redux에서 급여 데이터 가져오기
-  const salaryDetail = useSelector(
-    (state: RootState) => state.salary.selectedSalary
-  );
 
   const handleCorrectionRequest = () => {
     onClose(true);
-    navigate('/salary-correction');
+    const month = getMonth(selectedSalary);
+    navigate(`/salary-correction?month=${encodeURIComponent(month)}`);
   };
 
-  // 조건부 로직을 제거하고 훅들을 항상 호출하도록 변경
-  const month = useMemo(() => {
-    if (!salaryDetail) return '월 정보 없음';
-    if (
-      typeof salaryDetail.date === 'string' &&
-      salaryDetail.date.includes('년')
-    ) {
-      return salaryDetail.date.split('년 ')[1].split('월')[0] + '월';
+  // 월 정보 추출 함수
+  const getMonth = (salary: any) => {
+    if (!salary) return '';
+    if (typeof salary.date === 'string' && salary.date.includes('년')) {
+      return salary.date.split('년 ')[1].split('월')[0] + '월';
     }
-    return '월 정보 없음';
-  }, [salaryDetail]);
+    return '';
+  };
+
+  // 월 정보 추출 (메모이제이션)
+  const month = useMemo(() => {
+    return getMonth(selectedSalary);
+  }, [selectedSalary]);
 
   const formattedDate = useMemo(() => {
-    return salaryDetail?.rawDate
-      ? new Date(salaryDetail.rawDate).toLocaleDateString()
+    return selectedSalary?.rawDate
+      ? new Date(selectedSalary.rawDate).toLocaleDateString()
       : '날짜 없음';
-  }, [salaryDetail?.rawDate]);
+  }, [selectedSalary?.rawDate]);
 
   // 지급 항목 데이터 (메모이제이션)
   const paymentData = useMemo(() => {
-    if (!salaryDetail) return [];
+    if (!selectedSalary) return [];
     return [
-      { label: '기본급', value: salaryDetail.base },
-      { label: '상여금', value: salaryDetail.bonus },
-      { label: '직책수당', value: salaryDetail.position },
-      { label: '특근수당', value: salaryDetail.overtime },
-      { label: '야근수당', value: salaryDetail.night },
+      { label: '기본급', value: selectedSalary.base },
+      { label: '상여금', value: selectedSalary.bonus },
+      { label: '직책수당', value: selectedSalary.position },
+      { label: '특근수당', value: selectedSalary.overtime },
+      { label: '야근수당', value: selectedSalary.night },
     ];
-  }, [salaryDetail]);
+  }, [selectedSalary]);
 
   // 공제 항목 데이터 (메모이제이션)
   const deductionData = useMemo(() => {
-    if (!salaryDetail) return [];
+    if (!selectedSalary) return [];
     return [
-      { label: '건강보험', value: salaryDetail.health },
-      { label: '장기요양보험', value: salaryDetail.care },
-      { label: '고용보험', value: salaryDetail.job },
-      { label: '소득세', value: salaryDetail.tax },
+      { label: '건강보험', value: selectedSalary.health },
+      { label: '장기요양보험', value: selectedSalary.care },
+      { label: '고용보험', value: selectedSalary.job },
+      { label: '소득세', value: selectedSalary.tax },
     ];
-  }, [salaryDetail]);
+  }, [selectedSalary]);
 
   // 렌더링 조건
   if (!isOpen) return null;
 
-  if (!salaryDetail) {
+  if (!selectedSalary) {
     return (
       <S.ModalOverlay>
         <S.ModalContent>
@@ -141,19 +140,19 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             <S.TotalRow>
               <S.TotalText>지급합계</S.TotalText>
               <S.TotalAmount>
-                {formatCurrency(salaryDetail.totalPayment)}
+                {formatCurrency(selectedSalary.totalPayment)}
               </S.TotalAmount>
             </S.TotalRow>
             <S.TotalRow>
               <S.TotalText>공제합계</S.TotalText>
               <S.TotalAmount>
-                {formatCurrency(salaryDetail.totalDeduct)}
+                {formatCurrency(selectedSalary.totalDeduct)}
               </S.TotalAmount>
             </S.TotalRow>
             <S.TotalRow>
               <S.TotalText>실지급액</S.TotalText>
               <S.TotalAmount className="highlight">
-                {formatCurrency(salaryDetail.actualPayment)}
+                {formatCurrency(selectedSalary.actualPayment)}
               </S.TotalAmount>
             </S.TotalRow>
           </S.TotalSection>

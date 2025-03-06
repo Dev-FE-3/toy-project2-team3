@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { setSelectedSalary, clearSelectedSalary } from '@/redux/salary-slice';
+import { setAvailableSalaryDates } from '@/redux/salary-slice';
 import * as S from '../styles/salary-section.styles';
 import Modal from './salary-modal';
 import Dropdown from '../../../shared/dropdown/Dropdown';
@@ -33,10 +33,11 @@ interface DropdownOption {
   value: string;
 }
 
-const SalaryInfoSection: React.FC = () => {
+const SalaryInfoSection = () => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [salaryData, setSalaryData] = useState<SalaryData[]>([]);
+  const [selectedSalary, setSelectedSalary] = useState<SalaryData | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const user = auth.currentUser;
@@ -51,52 +52,43 @@ const SalaryInfoSection: React.FC = () => {
     const salaries: SalaryData[] = querySnapshot.docs.map((doc) => {
       const data = doc.data();
 
-      // Timestamp → Date 변환 후 포맷팅
-      const rawDate = data.date?.toDate().getTime();
-      const formattedDate = rawDate
-        ? new Date(rawDate).getFullYear() +
-          '년 ' +
-          (new Date(rawDate).getMonth() + 1) +
-          '월 ' +
-          new Date(rawDate).getDate() +
-          '일'
-        : '날짜 없음';
+      // Firestore Timestamp 변환
+      const formattedDate = data.date.toDate();
+      const rawDate = formattedDate.getTime();
+      const formattedDateString = `${formattedDate.getFullYear()}년 ${formattedDate.getMonth() + 1}월 ${formattedDate.getDate()}일`;
 
       return {
         id: doc.id,
         ...data,
         rawDate,
-        date: formattedDate, // 변환된 날짜 값 저장
+        date: formattedDateString, // 변환된 날짜 값 저장
       } as SalaryData;
     });
 
     salaries.sort((a, b) => b.rawDate - a.rawDate);
 
     setSalaryData(salaries);
-  }, [user]);
+
+    // Redux에 "급여 일자 리스트" 저장
+    const salaryDates = salaries.map((salary) => salary.date);
+    dispatch(setAvailableSalaryDates(salaryDates));
+  }, [user, dispatch]);
 
   useEffect(() => {
     fetchSalaryData();
   }, [fetchSalaryData]);
 
-  // 모달 열기 + Redux에 급여 데이터 저장
-  const handleModalOpen = useCallback(
-    (salaryDetail: SalaryData) => {
-      dispatch(setSelectedSalary(salaryDetail)); // Redux에 저장
-      setIsModalOpen(true);
-    },
-    [dispatch]
-  );
+  // 모달 열기 (Redux 대신 `props`로 데이터 전달)
+  const handleModalOpen = useCallback((salaryDetail: SalaryData) => {
+    setSelectedSalary(salaryDetail);
+    setIsModalOpen(true);
+  }, []);
 
-  const handleModalClose = useCallback(
-    (keepState = false) => {
-      setIsModalOpen(false);
-      if (!keepState) {
-        dispatch(clearSelectedSalary()); // ✅ 모달을 수동으로 닫을 때만 Redux 상태 초기화
-      }
-    },
-    [dispatch]
-  );
+  // 모달 닫기
+  const handleModalClose = useCallback(() => {
+    setIsModalOpen(false);
+    setSelectedSalary(null);
+  }, []);
 
   // Memoize currency formatting function
   const formatCurrency = useCallback((value: number) => {
@@ -105,6 +97,7 @@ const SalaryInfoSection: React.FC = () => {
       : `₩${value.toLocaleString()}`;
   }, []);
 
+  // 드롭다운 옵션 구성
   const options: DropdownOption[] = useMemo(
     () =>
       salaryData.map((salary) => ({
@@ -114,6 +107,7 @@ const SalaryInfoSection: React.FC = () => {
     [salaryData]
   );
 
+  //드롭다운 선택 시 필터링
   const handleDateChange = useCallback((selectedValue: string) => {
     setSelectedDate(selectedValue);
   }, []);
@@ -172,9 +166,13 @@ const SalaryInfoSection: React.FC = () => {
           ))}
         </tbody>
       </S.Table>
-      <Modal isOpen={isModalOpen} onClose={handleModalClose} />
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        selectedSalary={selectedSalary}
+      />
     </S.SalarySection>
   );
 };
 
-export default React.memo(SalaryInfoSection);
+export default SalaryInfoSection;

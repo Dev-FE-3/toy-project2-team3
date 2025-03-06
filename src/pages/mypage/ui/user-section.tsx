@@ -4,7 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../../firebase';
 import profileDefault from '../../../assets/images/profile-default.svg';
 
-const EditIcon: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+const EditIcon = ({ onClick }: { onClick: () => void }) => {
   return (
     <svg
       onClick={() => {
@@ -24,7 +24,7 @@ const EditIcon: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   );
 };
 
-const UserInfoSection: React.FC = () => {
+const UserInfoSection = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [profileImage, setProfileImage] = useState<string>(profileDefault);
