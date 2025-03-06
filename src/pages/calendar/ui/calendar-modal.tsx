@@ -74,20 +74,16 @@ const CalendarModal: React.FC<MemoModalProps> = ({
   // 모달이 열릴 때 스크롤바 너비를 계산하고 body 클래스 추가
   useEffect(() => {
     if (isOpen) {
-      const scrollbarWidth =
-        window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.setProperty(
-        '--scrollbar-width',
-        `${scrollbarWidth}px`
-      );
-      document.body.classList.add('modal-open');
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = '17px'; // 스크롤바 너비만큼 패딩 추가
     } else {
-      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     }
 
-    // 컴포넌트 언마운트 시 클래스 제거
     return () => {
-      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     };
   }, [isOpen]);
 

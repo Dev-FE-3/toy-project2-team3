@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import CalendarCell from './calendar-cell';
 import CalendarModal from './calendar-modal';
 import CalendarHeader from './calendar-header';
@@ -27,6 +27,10 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 
+import { auth } from '../../../firebase';
+
+const USERS_COLLECTION = 'users';
+
 // 타입 정의
 interface EventData {
   id?: string;
@@ -43,9 +47,6 @@ interface EventData {
 interface EventsData {
   [dateKey: string]: EventData;
 }
-
-// Firebase 컬렉션 이름
-const EVENTS_COLLECTION = 'calendarEvents';
 
 const CalendarMain: React.FC = () => {
   // 현재 표시중인 년월을 저장하는 상태 (달력 헤더에 표시되는 날짜)
@@ -77,6 +78,7 @@ const CalendarMain: React.FC = () => {
   // 전체 삭제 모드인지(true), 개별 일정 삭제 모드인지(false) 구분
   // "모든 일정 삭제" 버튼 클릭 시 true로 설정됨
   const [isDeleteAll, setIsDeleteAll] = useState<boolean>(false);
+  // 현재 사용자 ID 상태 추가
 
   // 한 달의 일수 계산
   const getDaysInMonth = (year: number, month: number): number => {
@@ -171,12 +173,32 @@ const CalendarMain: React.FC = () => {
     });
   };
 
+  // 현재 사용자 ID 상태 추가
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const user = auth.currentUser;
+
+    if (user) {
+      setCurrentUserId(user.uid);
+    } else {
+      console.error('로그인이 필요합니다');
+    }
+  }, []);
+
   // Firebase에서 데이터 로드하기
   const loadCalendarData = async () => {
+    if (!currentUserId) return;
     setLoading(true);
     try {
       // 이벤트 데이터 가져오기
-      const eventsSnapshot = await getDocs(collection(db, EVENTS_COLLECTION));
+      const eventsCollection = collection(
+        db,
+        USERS_COLLECTION,
+        currentUserId,
+        'calendarEvents'
+      );
+      const eventsSnapshot = await getDocs(eventsCollection);
       const eventsData: EventsData = {};
 
       eventsSnapshot.forEach((doc) => {
@@ -201,8 +223,10 @@ const CalendarMain: React.FC = () => {
 
   // 컴포넌트 마운트 시 Firebase에서 데이터 로드
   useEffect(() => {
-    loadCalendarData();
-  }, []);
+    if (currentUserId) {
+      loadCalendarData();
+    }
+  }, [currentUserId]);
 
   // 새 일정 추가 버튼 핸들러 - 항상 새 일정 모드로 설정
   const handleAddTask = (date: Date): void => {
@@ -280,6 +304,11 @@ const CalendarMain: React.FC = () => {
 
   // Firebase에 이벤트 저장
   const saveEvent = async (): Promise<void> => {
+    if (!currentUserId) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
     // 필수값 검증
     if (!titleText.trim()) {
       alert('일정 제목을 입력해주세요.');
@@ -329,9 +358,16 @@ const CalendarMain: React.FC = () => {
           dateKey: dateKey, // dateKey 추가
         };
 
+        const eventsCollectionRef = collection(
+          db,
+          USERS_COLLECTION,
+          currentUserId,
+          'calendarEvents'
+        );
+
         // 기존 이벤트가 있는지 확인
         const eventQuery = query(
-          collection(db, EVENTS_COLLECTION),
+          eventsCollectionRef,
           where('dateKey', '==', dateKey)
         );
         const eventSnapshot = await getDocs(eventQuery);
@@ -340,10 +376,19 @@ const CalendarMain: React.FC = () => {
         if (!eventSnapshot.empty) {
           // 기존 이벤트 업데이트
           const eventDoc = eventSnapshot.docs[0];
-          await updateDoc(doc(db, EVENTS_COLLECTION, eventDoc.id), {
-            ...eventData,
-            updatedAt: Timestamp.now(),
-          });
+          await updateDoc(
+            doc(
+              db,
+              USERS_COLLECTION,
+              currentUserId,
+              'calendarEvents',
+              eventDoc.id
+            ),
+            {
+              ...eventData,
+              updatedAt: Timestamp.now(),
+            }
+          );
 
           // 상태 업데이트
           updatedEvents[dateKey] = {
@@ -352,7 +397,7 @@ const CalendarMain: React.FC = () => {
           };
         } else {
           // 새 이벤트 추가
-          const newEventRef = await addDoc(collection(db, EVENTS_COLLECTION), {
+          const newEventRef = await addDoc(eventsCollectionRef, {
             ...eventData,
             createdAt: Timestamp.now(),
           });
@@ -397,6 +442,8 @@ const CalendarMain: React.FC = () => {
 
   // 모든 데이터 삭제
   const clearAllData = async (): Promise<void> => {
+    if (!currentUserId) return;
+
     setLoading(true);
 
     try {
@@ -409,9 +456,16 @@ const CalendarMain: React.FC = () => {
       const firstDayFormatted = `${year}-${(month + 1).toString().padStart(2, '0')}-01`;
       const lastDayFormatted = `${year}-${(month + 1).toString().padStart(2, '0')}-${lastDayOfMonth.getDate().toString().padStart(2, '0')}`;
 
+      const eventsCollectionRef = collection(
+        db,
+        USERS_COLLECTION,
+        currentUserId,
+        'calendarEvents'
+      );
+
       // 이벤트 쿼리 - 시작일이 현재 달에 속하는 이벤트만 필터링
       const eventsQuery = query(
-        collection(db, EVENTS_COLLECTION),
+        eventsCollectionRef,
         where('startDate', '>=', firstDayFormatted),
         where('startDate', '<=', lastDayFormatted)
       );
@@ -419,7 +473,15 @@ const CalendarMain: React.FC = () => {
 
       // 이벤트 삭제
       for (const document of eventsSnapshot.docs) {
-        await deleteDoc(doc(db, EVENTS_COLLECTION, document.id));
+        await deleteDoc(
+          doc(
+            db,
+            USERS_COLLECTION,
+            currentUserId,
+            'calendarEvents',
+            document.id
+          )
+        );
       }
 
       // 이벤트 상태 업데이트 (현재 달의 데이터만 제거)
@@ -459,6 +521,8 @@ const CalendarMain: React.FC = () => {
 
   // 확인 모달 확인 핸들러
   const confirmDelete = async (): Promise<void> => {
+    if (!currentUserId) return;
+
     if (isDeleteAll) {
       // 전체 삭제 실행
       await clearAllData();
@@ -469,16 +533,31 @@ const CalendarMain: React.FC = () => {
       try {
         const dateKey = formatDateKey(selectedDate);
 
+        const eventsCollectionRef = collection(
+          db,
+          USERS_COLLECTION,
+          currentUserId,
+          'calendarEvents'
+        );
+
         // 이벤트 삭제 쿼리
         const eventQuery = query(
-          collection(db, EVENTS_COLLECTION),
+          eventsCollectionRef,
           where('dateKey', '==', dateKey)
         );
         const eventSnapshot = await getDocs(eventQuery);
 
         // 이벤트 삭제
         for (const document of eventSnapshot.docs) {
-          await deleteDoc(doc(db, EVENTS_COLLECTION, document.id));
+          await deleteDoc(
+            doc(
+              db,
+              USERS_COLLECTION,
+              currentUserId,
+              'calendarEvents',
+              document.id
+            )
+          );
         }
 
         // 상태 업데이트
@@ -500,123 +579,142 @@ const CalendarMain: React.FC = () => {
   // 요일 이름 배열
   const weekdays: string[] = ['일', '월', '화', '수', '목', '금', '토'];
 
+  useEffect(() => {
+    if (modalOpen) {
+      // 모달이 열리면 timeout을 이용해 overflow: hidden 속성을 덮어씀
+      const timer = setTimeout(() => {
+        document.body.style.overflow = 'scroll';
+      }, 0);
+
+      return () => clearTimeout(timer);
+    }
+  }, [modalOpen]);
+
   return (
     <PageContainer $isModalOpen={modalOpen}>
       <Title>업무관리</Title>
+      <div style={{ width: '1240px', overflow: 'hidden' }}>
+        <CalendarContainer $isModalOpen={modalOpen}>
+          <CalendarHeader
+            currentDate={currentDate}
+            onPrevMonth={prevMonth}
+            onNextMonth={nextMonth}
+            onAddTask={handleAddTask}
+            onClearAll={handleClearAllClick}
+          />
 
-      <CalendarContainer>
-        <CalendarHeader
-          currentDate={currentDate}
-          onPrevMonth={prevMonth}
-          onNextMonth={nextMonth}
-          onAddTask={handleAddTask}
-          onClearAll={handleClearAllClick}
-        />
+          <WeekdaysContainer>
+            {weekdays.map((day, index) => (
+              <Weekday key={index}>{day}</Weekday>
+            ))}
+          </WeekdaysContainer>
 
-        <WeekdaysContainer>
-          {weekdays.map((day, index) => (
-            <Weekday key={index}>{day}</Weekday>
-          ))}
-        </WeekdaysContainer>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '20px' }}>
+              로딩 중...
+            </div>
+          ) : (
+            <CalendarGrid>
+              {calendarDays.map((dayData, index) => {
+                const dateKey = formatDateKey(dayData.date);
+                const currentDate = dayData.date;
+                const event = events[dateKey];
 
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '20px' }}>로딩 중...</div>
-        ) : (
-          <CalendarGrid>
-            {calendarDays.map((dayData, index) => {
-              const dateKey = formatDateKey(dayData.date);
-              const currentDate = dayData.date;
-              const event = events[dateKey];
+                // 현재 날짜가 포함된 이벤트 찾기
+                let isInEventRange = false;
+                let isEventStart = false;
+                let isEventEnd = false;
+                let eventTypeName = '';
+                let eventColor = '';
+                let foundEventInfo = null;
 
-              // 현재 날짜가 포함된 이벤트 찾기
-              let isInEventRange = false;
-              let isEventStart = false;
-              let isEventEnd = false;
-              let eventTypeName = '';
-              let eventColor = '';
-              let foundEventInfo = null;
+                Object.values(events).forEach((event) => {
+                  if (!event.startDate || !event.endDate || !event.type) return;
 
-              Object.values(events).forEach((event) => {
-                if (!event.startDate || !event.endDate || !event.type) return;
+                  // 시간 정보를 제거한 날짜 객체 생성
+                  const [startYear, startMonth, startDay] = event.startDate
+                    .split('-')
+                    .map(Number);
+                  const [endYear, endMonth, endDay] = event.endDate
+                    .split('-')
+                    .map(Number);
 
-                // 시간 정보를 제거한 날짜 객체 생성
-                const [startYear, startMonth, startDay] = event.startDate
-                  .split('-')
-                  .map(Number);
-                const [endYear, endMonth, endDay] = event.endDate
-                  .split('-')
-                  .map(Number);
+                  const startDate = new Date(
+                    startYear,
+                    startMonth - 1,
+                    startDay
+                  );
+                  const endDate = new Date(endYear, endMonth - 1, endDay);
 
-                const startDate = new Date(startYear, startMonth - 1, startDay);
-                const endDate = new Date(endYear, endMonth - 1, endDay);
+                  // 현재 날짜도 시간 정보 제거
+                  const currentDateNoTime = new Date(
+                    currentDate.getFullYear(),
+                    currentDate.getMonth(),
+                    currentDate.getDate()
+                  );
 
-                // 현재 날짜도 시간 정보 제거
-                const currentDateNoTime = new Date(
-                  currentDate.getFullYear(),
-                  currentDate.getMonth(),
-                  currentDate.getDate()
+                  // 시작일과 종료일 사이에 있는지 확인 (시간 정보 없이)
+                  const isInRange =
+                    currentDateNoTime.getTime() >= startDate.getTime() &&
+                    currentDateNoTime.getTime() <= endDate.getTime();
+
+                  if (isInRange) {
+                    isInEventRange = true;
+                    foundEventInfo = event;
+
+                    // 이벤트의 시작일인지 확인
+                    if (currentDateNoTime.getTime() === startDate.getTime()) {
+                      isEventStart = true;
+                    }
+
+                    // 종료일 확인
+                    if (currentDateNoTime.getTime() === endDate.getTime()) {
+                      isEventEnd = true;
+                    }
+
+                    eventTypeName = getEventTypeName(event.type);
+
+                    switch (event.type) {
+                      case '1':
+                        eventColor = '#FFB74D';
+                        break;
+                      case '2':
+                        eventColor = '#E57373';
+                        break;
+                      case '3':
+                        eventColor = '#4DB6AC';
+                        break;
+                      default:
+                        eventColor = '';
+                    }
+                  }
+                });
+
+                return (
+                  <CalendarCell
+                    key={index}
+                    date={dayData.date}
+                    isCurrentMonth={dayData.isCurrentMonth}
+                    isToday={isToday(dayData.date)}
+                    memo={event ? event.title : ''}
+                    event={
+                      isEventStart && foundEventInfo
+                        ? foundEventInfo
+                        : undefined
+                    }
+                    isEventStart={isEventStart}
+                    isEventEnd={isEventEnd}
+                    isInEventRange={isInEventRange}
+                    eventTypeName={eventTypeName}
+                    eventColor={eventColor}
+                    onDateClick={handleDateClick}
+                  />
                 );
-
-                // 시작일과 종료일 사이에 있는지 확인 (시간 정보 없이)
-                const isInRange =
-                  currentDateNoTime.getTime() >= startDate.getTime() &&
-                  currentDateNoTime.getTime() <= endDate.getTime();
-
-                if (isInRange) {
-                  isInEventRange = true;
-                  foundEventInfo = event;
-
-                  // 이벤트의 시작일인지 확인
-                  if (currentDateNoTime.getTime() === startDate.getTime()) {
-                    isEventStart = true;
-                  }
-
-                  // 종료일 확인
-                  if (currentDateNoTime.getTime() === endDate.getTime()) {
-                    isEventEnd = true;
-                  }
-
-                  eventTypeName = getEventTypeName(event.type);
-
-                  switch (event.type) {
-                    case '1':
-                      eventColor = '#FFB74D';
-                      break;
-                    case '2':
-                      eventColor = '#E57373';
-                      break;
-                    case '3':
-                      eventColor = '#4DB6AC';
-                      break;
-                    default:
-                      eventColor = '';
-                  }
-                }
-              });
-
-              return (
-                <CalendarCell
-                  key={index}
-                  date={dayData.date}
-                  isCurrentMonth={dayData.isCurrentMonth}
-                  isToday={isToday(dayData.date)}
-                  memo={event ? event.title : ''}
-                  event={
-                    isEventStart && foundEventInfo ? foundEventInfo : undefined
-                  }
-                  isEventStart={isEventStart}
-                  isEventEnd={isEventEnd}
-                  isInEventRange={isInEventRange}
-                  eventTypeName={eventTypeName}
-                  eventColor={eventColor}
-                  onDateClick={handleDateClick}
-                />
-              );
-            })}
-          </CalendarGrid>
-        )}
-      </CalendarContainer>
-
+              })}
+            </CalendarGrid>
+          )}
+        </CalendarContainer>
+      </div>
       {modalOpen && (
         <CalendarModal
           isOpen={modalOpen}
