@@ -1,6 +1,9 @@
 import { JSX } from 'react';
 import { Outlet, useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 import styled from 'styled-components';
+
 import { auth } from '@/firebase';
 
 const NavBox = styled.nav`
@@ -71,7 +74,7 @@ const NavBar = (): JSX.Element => {
 
   const handleLogout = () => {
     auth.signOut();
-    // TODO: 로그아웃 성공 메세지
+    toast.success('로그아웃 성공!');
     navigate('/login');
   };
 

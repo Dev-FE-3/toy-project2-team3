@@ -7,6 +7,7 @@ import 'reset-css';
 import App from './App';
 import ThemeProvider from './providers/ThemeProvider';
 import GlobalStyle from './styles/createGlobalStyle';
+import { ToastContainer } from 'react-toastify';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,6 +15,7 @@ createRoot(document.getElementById('root')!).render(
       <ThemeProvider>
         <GlobalStyle />
         <App />
+        <ToastContainer autoClose={2000} />
       </ThemeProvider>
     </Provider>
   </StrictMode>
