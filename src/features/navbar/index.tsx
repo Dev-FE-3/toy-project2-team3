@@ -1,6 +1,9 @@
 import { JSX } from 'react';
 import { Outlet, useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 import styled from 'styled-components';
+
 import { auth } from '@/firebase';
 
 const NavBox = styled.nav`
@@ -58,12 +61,19 @@ const LogoutBtn = styled.button`
   transition: 0.2s ease-in-out;
 `;
 
+const PageContainer = styled.section`
+  margin: 80px auto auto auto;
+  width: 100%;
+  max-width: 1240px;
+  height: auto;
+`;
+
 const NavBar = (): JSX.Element => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
     auth.signOut();
-    // TODO: 로그아웃 성공 메세지
+    toast.success('로그아웃 성공!');
     navigate('/login');
   };
 
@@ -85,7 +95,9 @@ const NavBar = (): JSX.Element => {
         </Menu>
         <LogoutBtn onClick={handleLogout}>로그아웃</LogoutBtn>
       </NavBox>
-      <Outlet />
+      <PageContainer>
+        <Outlet />
+      </PageContainer>
     </>
   );
 };

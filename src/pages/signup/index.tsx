@@ -1,82 +1,24 @@
-import { JSX, useState } from 'react';
-import { useForm } from 'react-hook-form';
-
-import { FirebaseError } from 'firebase/app';
-import app from '../../firebase';
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  updateProfile,
-} from 'firebase/auth';
-
 import * as S from './style';
 
-import Button from '../../shared/button/Button';
+import Button from '@/shared/button/Button';
+import useSignUp from '@/features/auth/useSignUp';
+import { useNavigate } from 'react-router-dom';
 
-interface SignUpPageProps {
-  children?: React.ReactNode;
-}
-
-interface SignUpType {
-  email: string;
-  name: string;
-  password: string;
-  pwdCheck: string;
-}
-
-const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
-  const auth = getAuth(app);
-
+const SignUp = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    setError,
+    errors,
+    handleSignUp,
     watch,
-  } = useForm<SignUpType>({
-    mode: 'onChange',
-  });
+    isModalOpen,
+    setIsModalOpen,
+  } = useSignUp();
 
-  const handleSignUp = async (data: SignUpType) => {
-    try {
-      const createdUser = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-
-      // 회원가입 후 displayName 업데이트
-      if (createdUser.user) {
-        await updateProfile(createdUser.user, {
-          displayName: data.name,
-        });
-      }
-
-      alert('회원가입 성공!'); // 임시
-      console.log(createdUser);
-      // home으로 이동
-    } catch (error) {
-      const firebaseError = error as FirebaseError;
-
-      switch (firebaseError.code) {
-        case 'auth/email-already-in-use':
-          setError('email', { message: '이미 가입된 이메일입니다.' });
-          break;
-        case 'auth/invalid-email':
-          setError('email', { message: '이메일 형식이 잘못되었습니다.' });
-          break;
-        case 'auth/weak-password':
-          setError('password', {
-            message: '비밀번호를 6자 이상 입력해 주세요.',
-          });
-          break;
-        default:
-          setError('email', {
-            message: '로그인 중 문제가 발생했습니다. 다시 시도해 주세요.',
-          });
-          break;
-      }
-    }
+  const handleClick = () => {
+    setIsModalOpen(false);
+    navigate('/login');
   };
 
   return (
@@ -150,15 +92,30 @@ const SignUpPage = ({ children }: SignUpPageProps): JSX.Element => {
           </S.InputContainer>
 
           <Button type="submit">제출하기</Button>
-          <S.SignUpWrapper>
+          <S.Switcher>
             이미 계정이 있나요?
             <S.SignUpLink to="/login">로그인</S.SignUpLink>
-          </S.SignUpWrapper>
+          </S.Switcher>
         </S.Form>
       </S.FormContainer>
       <S.ResponsiveSignupGraphic />
+
+      {/* 모달 */}
+      {isModalOpen && (
+        <S.Modal>
+          <S.ModalContent>
+            <S.ModalMessage>이미 가입된 계정이 있습니다.</S.ModalMessage>
+            <S.ButtonWrapper>
+              <Button variant="outlined" onClick={() => setIsModalOpen(false)}>
+                닫기
+              </Button>
+              <Button onClick={handleClick}>로그인으로 이동</Button>
+            </S.ButtonWrapper>
+          </S.ModalContent>
+        </S.Modal>
+      )}
     </S.Container>
   );
 };
 
-export default SignUpPage;
+export default SignUp;

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import SignupGraphic from '../../assets/imgs/signup_graphic.svg?react';
+import SignupGraphic from '@/assets/images/signup_graphic.svg?react';
 
 export const Container = styled.div`
   display: flex;
@@ -102,7 +102,7 @@ export const FindAccountLink = styled.p`
   color: ${({ theme }) => theme.colors.point1};
 `;
 
-export const SignUpWrapper = styled.div`
+export const Switcher = styled.div`
   display: flex;
   justify-content: center;
   gap: 2px;
@@ -129,4 +129,44 @@ export const ResponsiveSignupGraphic = styled(SignupGraphic)`
   top: 50%;
   right: 0;
   transform: translate(0, -50%);
+`;
+
+export const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const ModalContent = styled.div`
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  gap: 88px;
+  width: 480px;
+`;
+
+export const ModalMessage = styled.p`
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 133%;
+  letter-spacing: -0.24px;
+  display: flex;
+  justify-content: start;
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  justify-content: end;
 `;
