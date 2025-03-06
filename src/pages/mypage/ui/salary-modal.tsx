@@ -8,7 +8,7 @@ import Button from '../../../shared/button/Button';
 // 모달 props 인터페이스
 interface ModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (keepState?: boolean) => void;
 }
 
 const formatCurrency = (value: number | undefined) => {
@@ -52,6 +52,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   );
 
   const handleCorrectionRequest = () => {
+    onClose(true);
     navigate('/salary-correction');
   };
 
@@ -67,10 +68,11 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     return '월 정보 없음';
   }, [salaryDetail]);
 
-  const formattedDate = useMemo(
-    () => salaryDetail?.date ?? '날짜 없음',
-    [salaryDetail?.date]
-  );
+  const formattedDate = useMemo(() => {
+    return salaryDetail?.rawDate
+      ? new Date(salaryDetail.rawDate).toLocaleDateString()
+      : '날짜 없음';
+  }, [salaryDetail?.rawDate]);
 
   // 지급 항목 데이터 (메모이제이션)
   const paymentData = useMemo(() => {
@@ -109,7 +111,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             <p>급여 데이터를 불러오는 중...</p>
           </S.ModalBody>
           <S.ModalFooter>
-            <Button onClick={onClose} variant="outlined">
+            <Button onClick={() => onClose()} variant="outlined">
               닫기
             </Button>
           </S.ModalFooter>
@@ -158,7 +160,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         </S.ModalBody>
 
         <S.ModalFooter>
-          <Button onClick={onClose} variant="outlined">
+          <Button onClick={() => onClose()} variant="outlined">
             닫기
           </Button>
           <Button onClick={handleCorrectionRequest}>정정 신청하기</Button>

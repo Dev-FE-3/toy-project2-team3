@@ -12,7 +12,7 @@ import { collection, getDocs } from 'firebase/firestore';
 export interface SalaryData {
   id: string;
   date: string;
-  rawDate: Date;
+  rawDate: number;
   base: number;
   bonus: number;
   position: number;
@@ -52,9 +52,14 @@ const SalaryInfoSection: React.FC = () => {
       const data = doc.data();
 
       // Timestamp → Date 변환 후 포맷팅
-      const rawDate = data.date?.toDate();
+      const rawDate = data.date?.toDate().getTime();
       const formattedDate = rawDate
-        ? `${rawDate.getFullYear()}년 ${rawDate.getMonth() + 1}월 ${rawDate.getDate()}일`
+        ? new Date(rawDate).getFullYear() +
+          '년 ' +
+          (new Date(rawDate).getMonth() + 1) +
+          '월 ' +
+          new Date(rawDate).getDate() +
+          '일'
         : '날짜 없음';
 
       return {
@@ -65,7 +70,7 @@ const SalaryInfoSection: React.FC = () => {
       } as SalaryData;
     });
 
-    salaries.sort((a, b) => b.rawDate.getTime() - a.rawDate.getTime());
+    salaries.sort((a, b) => b.rawDate - a.rawDate);
 
     setSalaryData(salaries);
   }, [user]);
@@ -83,11 +88,15 @@ const SalaryInfoSection: React.FC = () => {
     [dispatch]
   );
 
-  // 모달 닫기
-  const handleModalClose = useCallback(() => {
-    setIsModalOpen(false);
-    dispatch(clearSelectedSalary()); // 모달 닫을 때 Redux 상태 초기화
-  }, [dispatch]);
+  const handleModalClose = useCallback(
+    (keepState = false) => {
+      setIsModalOpen(false);
+      if (!keepState) {
+        dispatch(clearSelectedSalary()); // ✅ 모달을 수동으로 닫을 때만 Redux 상태 초기화
+      }
+    },
+    [dispatch]
+  );
 
   // Memoize currency formatting function
   const formatCurrency = useCallback((value: number) => {
