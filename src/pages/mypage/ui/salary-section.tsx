@@ -8,7 +8,6 @@ import Button from '../../../shared/button/Button';
 import { auth, db } from '../../../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
-// 급여 데이터 인터페이스 정의
 export interface SalaryData {
   id: string;
   date: string;
@@ -27,7 +26,6 @@ export interface SalaryData {
   actualPayment: number;
 }
 
-// 드롭다운 옵션 인터페이스
 interface DropdownOption {
   label: string;
   value: string;
@@ -42,17 +40,16 @@ const SalaryInfoSection = () => {
 
   const user = auth.currentUser;
 
-  //급여 데이터 가져오기
+  //Firebase에서 급여 데이터 가져오기
   const fetchSalaryData = useCallback(async () => {
     if (!user) return;
 
     const salaryRef = collection(db, 'users', user.uid, 'salary');
     const querySnapshot = await getDocs(salaryRef);
-
     const salaries: SalaryData[] = querySnapshot.docs.map((doc) => {
       const data = doc.data();
 
-      // Firestore Timestamp 변환
+      // Firestore Timestamp -> Date 변환
       const formattedDate = data.date.toDate();
       const rawDate = formattedDate.getTime();
       const formattedDateString = `${formattedDate.getFullYear()}년 ${formattedDate.getMonth() + 1}월 ${formattedDate.getDate()}일`;
@@ -74,27 +71,25 @@ const SalaryInfoSection = () => {
     dispatch(setAvailableSalaryDates(salaryDates));
   }, [user, dispatch]);
 
+  //컴포넌트 마운트 시 급여 데이터 로드
   useEffect(() => {
     fetchSalaryData();
   }, [fetchSalaryData]);
 
-  // 모달 열기 (Redux 대신 `props`로 데이터 전달)
   const handleModalOpen = useCallback((salaryDetail: SalaryData) => {
     setSelectedSalary(salaryDetail);
     setIsModalOpen(true);
   }, []);
 
-  // 모달 닫기
   const handleModalClose = useCallback(() => {
     setIsModalOpen(false);
     setSelectedSalary(null);
   }, []);
 
-  // Memoize currency formatting function
   const formatCurrency = useCallback((value: number) => {
     return value < 0
-      ? `-₩${Math.abs(value).toLocaleString()}`
-      : `₩${value.toLocaleString()}`;
+      ? `-${Math.abs(value).toLocaleString()}₩`
+      : `${value.toLocaleString()}₩`;
   }, []);
 
   // 드롭다운 옵션 구성

@@ -46,7 +46,11 @@ const UserInfoSection = () => {
     if (!docSnap.exists()) return;
 
     const data = docSnap.data();
+
+    // 프로필 이미지 설정
     setProfileImage(data.profileImage || profileDefault);
+
+    // 사용자 정보 설정
     setUserData({
       name: data.name || '사용자',
       position: data.position || '직책 없음',
@@ -58,6 +62,7 @@ const UserInfoSection = () => {
     });
   };
 
+  //컴포넌트 마운트 시 사용자 데이터 로드
   useEffect(() => {
     fetchUserData();
   }, []);

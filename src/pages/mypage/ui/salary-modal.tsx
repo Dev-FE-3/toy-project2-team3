@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 //import { useSelector } from 'react-redux';
 //import { RootState } from '@/redux/store';
@@ -12,20 +12,20 @@ interface ModalProps {
   selectedSalary: any | null;
 }
 
-const formatCurrency = (value: number | undefined) => {
-  if (typeof value !== 'number' || isNaN(value)) return '₩0';
-  return value < 0
-    ? `-₩${Math.abs(value).toLocaleString()}`
-    : `₩${value.toLocaleString()}`;
-};
-
 // 테이블 props 인터페이스
 interface SalaryTableProps {
   title: string;
   data: { label: string; value: number | undefined }[];
 }
 
-// 급여 테이블 컴포넌트 (메모이제이션)
+const formatCurrency = (value: number | undefined) => {
+  if (typeof value !== 'number' || isNaN(value)) return '₩0';
+  return value < 0
+    ? `-${Math.abs(value).toLocaleString()}₩`
+    : `${value.toLocaleString()}₩`;
+};
+
+// 급여 테이블 컴포넌트
 const SalaryTable = ({ title, data }: SalaryTableProps) => (
   <S.SalaryTable>
     <thead>
@@ -44,9 +44,11 @@ const SalaryTable = ({ title, data }: SalaryTableProps) => (
   </S.SalaryTable>
 );
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, selectedSalary }) => {
+// 급여 명세서 모달 컴포넌트
+const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
   const navigate = useNavigate();
 
+  // 정정 신청 처리 핸들러
   const handleCorrectionRequest = () => {
     onClose(true);
     const month = getMonth(selectedSalary);
@@ -62,7 +64,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, selectedSalary }) => {
     return '';
   };
 
-  // 월 정보 추출 (메모이제이션)
   const month = useMemo(() => {
     return getMonth(selectedSalary);
   }, [selectedSalary]);
@@ -73,7 +74,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, selectedSalary }) => {
       : '날짜 없음';
   }, [selectedSalary?.rawDate]);
 
-  // 지급 항목 데이터 (메모이제이션)
+  // 지급 항목 데이터
   const paymentData = useMemo(() => {
     if (!selectedSalary) return [];
     return [
@@ -85,7 +86,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, selectedSalary }) => {
     ];
   }, [selectedSalary]);
 
-  // 공제 항목 데이터 (메모이제이션)
+  // 공제 항목 데이터
   const deductionData = useMemo(() => {
     if (!selectedSalary) return [];
     return [
@@ -96,9 +97,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, selectedSalary }) => {
     ];
   }, [selectedSalary]);
 
-  // 렌더링 조건
   if (!isOpen) return null;
 
+  // 급여 데이터가 업는 경우 로딩 메세지
   if (!selectedSalary) {
     return (
       <S.ModalOverlay>
@@ -169,4 +170,4 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, selectedSalary }) => {
   );
 };
 
-export default React.memo(Modal);
+export default Modal;
