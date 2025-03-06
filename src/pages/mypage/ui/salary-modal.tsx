@@ -1,15 +1,14 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-//import { useSelector } from 'react-redux';
-//import { RootState } from '@/redux/store';
 import * as S from '../styles/salary-modal.styles';
 import Button from '../../../shared/button/Button';
+import { SalaryData } from './salary-section';
 
 // 모달 props 인터페이스
 interface ModalProps {
   isOpen: boolean;
   onClose: (keepState?: boolean) => void;
-  selectedSalary: any | null;
+  selectedSalary: SalaryData | null;
 }
 
 // 테이블 props 인터페이스
@@ -19,7 +18,7 @@ interface SalaryTableProps {
 }
 
 const formatCurrency = (value: number | undefined) => {
-  if (typeof value !== 'number' || isNaN(value)) return '₩0';
+  if (typeof value !== 'number' || isNaN(value)) return '0₩';
   return value < 0
     ? `-${Math.abs(value).toLocaleString()}₩`
     : `${value.toLocaleString()}₩`;

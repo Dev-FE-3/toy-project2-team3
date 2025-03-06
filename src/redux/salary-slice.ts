@@ -1,14 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SalaryData } from '../pages/mypage/ui/salary-section';
 
 interface SalaryState {
   availableSalaryDates: string[];
-  selectedSalary: SalaryData | null;
 }
 
 const initialState: SalaryState = {
   availableSalaryDates: [],
-  selectedSalary: null,
 };
 
 const salarySlice = createSlice({
@@ -18,12 +15,8 @@ const salarySlice = createSlice({
     setAvailableSalaryDates: (state, action: PayloadAction<string[]>) => {
       state.availableSalaryDates = action.payload;
     },
-    setSelectedSalary: (state, action: PayloadAction<SalaryData | null>) => {
-      state.selectedSalary = action.payload;
-    },
   },
 });
 
-export const { setAvailableSalaryDates, setSelectedSalary } =
-  salarySlice.actions;
+export const { setAvailableSalaryDates } = salarySlice.actions;
 export default salarySlice.reducer;
