@@ -35,12 +35,9 @@ interface EventData {
   content: string;
   startDate: string;
   endDate: string;
+  dateKey: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
-}
-
-interface MemoData {
-  [dateKey: string]: string;
 }
 
 interface EventsData {
@@ -49,29 +46,44 @@ interface EventsData {
 
 // Firebase 컬렉션 이름
 const EVENTS_COLLECTION = 'calendarEvents';
-const MEMOS_COLLECTION = 'calendarMemos';
 
 const CalendarMain: React.FC = () => {
+  // 현재 표시중인 년월을 저장하는 상태 (달력 헤더에 표시되는 날짜)
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  // 사용자가 선택한 날짜를 저장하는 상태 (클릭한 날짜 셀)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [memos, setMemos] = useState<MemoData>({});
+  // 일정 추가/편집 모달의 열림/닫힘 상태
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  // 일정 제목 입력값 (모달 내 제목 입력 필드)
   const [titleText, setTitleText] = useState<string>('');
+  // 일정 내용 입력값 (모달 내 상세 내용 입력 필드)
   const [contentText, setContentText] = useState<string>('');
+  // 모든 이벤트 데이터를 날짜별로 저장하는 객체
+  // 키는 "YYYY-M-D" 형식의 날짜 문자열, 값은 해당 날짜의 이벤트 데이터
   const [events, setEvents] = useState<EventsData>({});
+  // 일정 유형 선택값 (회의(1), 출장(2), 휴가(3) 등)
   const [eventType, setEventType] = useState<string>('');
+  // 일정 시작일 (YYYY-MM-DD 형식)
   const [startDate, setStartDate] = useState<string>('');
+  // 일정 종료일 (YYYY-MM-DD 형식)
   const [endDate, setEndDate] = useState<string>('');
+  // 현재 모달이 새 일정 작성 모드인지(true), 기존 일정 수정 모드인지(false) 구분
   const [isNewEvent, setIsNewEvent] = useState<boolean>(true);
+  // 일정 삭제 확인 모달의 열림/닫힘 상태
   const [confirmModalOpen, setConfirmModalOpen] = useState<boolean>(false);
+  // 데이터 로딩 중 상태 표시
+  // true일 때 로딩 인디케이터 표시, Firebase 데이터 요청 중에 활성화됨
   const [loading, setLoading] = useState<boolean>(true);
+  // 전체 삭제 모드인지(true), 개별 일정 삭제 모드인지(false) 구분
+  // "모든 일정 삭제" 버튼 클릭 시 true로 설정됨
   const [isDeleteAll, setIsDeleteAll] = useState<boolean>(false);
 
-  // 달력 데이터 계산 함수들
+  // 한 달의 일수 계산
   const getDaysInMonth = (year: number, month: number): number => {
     return new Date(year, month + 1, 0).getDate();
   };
 
+  // 해당 월의 첫 날의 요일 구하기
   const getFirstDayOfMonth = (year: number, month: number): number => {
     return new Date(year, month, 1).getDay();
   };
@@ -169,9 +181,9 @@ const CalendarMain: React.FC = () => {
 
       eventsSnapshot.forEach((doc) => {
         const eventData = doc.data() as EventData;
-        // startDate를 키로 사용
-        const startDateObj = new Date(eventData.startDate);
-        const dateKey = formatDateKey(startDateObj);
+        // dateKey를 기준으로 사용
+        const dateKey =
+          eventData.dateKey || formatDateKey(new Date(eventData.startDate));
 
         eventsData[dateKey] = {
           ...eventData,
@@ -179,17 +191,7 @@ const CalendarMain: React.FC = () => {
         };
       });
 
-      // 메모 데이터 가져오기
-      const memosSnapshot = await getDocs(collection(db, MEMOS_COLLECTION));
-      const memosData: MemoData = {};
-
-      memosSnapshot.forEach((doc) => {
-        const memoData = doc.data();
-        memosData[memoData.dateKey] = memoData.text;
-      });
-
       setEvents(eventsData);
-      setMemos(memosData);
     } catch (error) {
       console.error('캘린더 데이터 로드 중 오류:', error);
     } finally {
@@ -226,35 +228,25 @@ const CalendarMain: React.FC = () => {
   const handleDateClick = (date: Date): void => {
     const dateKey = formatDateKey(date);
 
-    // 해당 날짜에 메모나 이벤트가 있는지 확인
+    // 해당 날짜에 이벤트가 있는지 확인
     const hasEvent = events[dateKey];
-    const hasMemo = memos[dateKey];
 
-    // 메모나 이벤트가 있는 경우에만 모달 열기
-    if (hasEvent || hasMemo) {
+    // 이벤트가 있는 경우에만 모달 열기
+    if (hasEvent) {
       setSelectedDate(date);
       const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
       setIsNewEvent(false);
 
-      if (hasEvent) {
-        setTitleText(hasEvent.title || '');
-        setContentText(hasEvent.content || '');
-        setEventType(hasEvent.type || '');
-        setStartDate(hasEvent.startDate || formattedDate);
-        setEndDate(hasEvent.endDate || formattedDate);
-      } else {
-        // 메모만 있는 경우
-        setTitleText(hasMemo || '');
-        setContentText('');
-        setEventType('');
-        setStartDate(formattedDate);
-        setEndDate(formattedDate);
-      }
+      setTitleText(hasEvent.title || '');
+      setContentText(hasEvent.content || '');
+      setEventType(hasEvent.type || '');
+      setStartDate(hasEvent.startDate || formattedDate);
+      setEndDate(hasEvent.endDate || formattedDate);
 
       setModalOpen(true);
     }
-    // 메모나 이벤트가 없는 경우는 아무 동작도 하지 않음
+    // 이벤트가 없는 경우는 아무 동작도 하지 않음
   };
 
   const closeModal = (): void => {
@@ -286,8 +278,8 @@ const CalendarMain: React.FC = () => {
     setEndDate(date);
   };
 
-  // Firebase에 메모와 이벤트 저장
-  const saveEventAndMemo = async (): Promise<void> => {
+  // Firebase에 이벤트 저장
+  const saveEvent = async (): Promise<void> => {
     // 필수값 검증
     if (!titleText.trim()) {
       alert('일정 제목을 입력해주세요.');
@@ -325,7 +317,6 @@ const CalendarMain: React.FC = () => {
           dateKey = formatDateKey(selectedDate);
         }
 
-        const updatedMemos = { ...memos };
         const updatedEvents = { ...events };
 
         // 이벤트 데이터 생성
@@ -335,21 +326,15 @@ const CalendarMain: React.FC = () => {
           content: contentText,
           startDate: startDate,
           endDate: endDate,
+          dateKey: dateKey, // dateKey 추가
         };
 
         // 기존 이벤트가 있는지 확인
         const eventQuery = query(
           collection(db, EVENTS_COLLECTION),
-          where('startDate', '==', startDate)
-        );
-        const eventSnapshot = await getDocs(eventQuery);
-
-        // 메모 확인
-        const memoQuery = query(
-          collection(db, MEMOS_COLLECTION),
           where('dateKey', '==', dateKey)
         );
-        const memoSnapshot = await getDocs(memoQuery);
+        const eventSnapshot = await getDocs(eventQuery);
 
         // 이벤트 저장 또는 업데이트
         if (!eventSnapshot.empty) {
@@ -379,28 +364,7 @@ const CalendarMain: React.FC = () => {
           };
         }
 
-        // 메모 저장 또는 업데이트
-        if (!memoSnapshot.empty) {
-          // 기존 메모 업데이트
-          const memoDoc = memoSnapshot.docs[0];
-          await updateDoc(doc(db, MEMOS_COLLECTION, memoDoc.id), {
-            text: titleText,
-            updatedAt: Timestamp.now(),
-          });
-        } else {
-          // 새 메모 추가
-          await addDoc(collection(db, MEMOS_COLLECTION), {
-            dateKey: dateKey,
-            text: titleText,
-            createdAt: Timestamp.now(),
-          });
-        }
-
-        // 메모 상태 업데이트
-        updatedMemos[dateKey] = titleText;
-
         // 상태 업데이트
-        setMemos(updatedMemos);
         setEvents(updatedEvents);
       } catch (error) {
         console.error('Firebase에 데이터 저장 중 오류:', error);
@@ -439,7 +403,6 @@ const CalendarMain: React.FC = () => {
       // 현재 표시중인 달의 시작일과 끝일 계산
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
-      const firstDayOfMonth = new Date(year, month, 1);
       const lastDayOfMonth = new Date(year, month + 1, 0);
 
       // 날짜 형식 변환 (YYYY-MM-DD)
@@ -454,41 +417,13 @@ const CalendarMain: React.FC = () => {
       );
       const eventsSnapshot = await getDocs(eventsQuery);
 
-      // 메모 쿼리 구성 - Firebase에서는 복합 쿼리 제한으로 인해 dateKey 범위 쿼리가 어려울 수 있음
-      // 대신 모든 메모를 가져온 다음 JavaScript로 필터링
-      const memosSnapshot = await getDocs(collection(db, MEMOS_COLLECTION));
-
       // 이벤트 삭제
       for (const document of eventsSnapshot.docs) {
         await deleteDoc(doc(db, EVENTS_COLLECTION, document.id));
       }
 
-      // 메모 삭제 (현재 달에 속하는 메모만)
-      for (const document of memosSnapshot.docs) {
-        const memoData = document.data();
-        const dateKey = memoData.dateKey;
-
-        // dateKey 형식이 YYYY-M-D 또는 YYYY-MM-DD 형식이라고 가정
-        if (dateKey) {
-          const [memoYear, memoMonth] = dateKey.split('-').map(Number);
-
-          if (memoYear === year && memoMonth === month + 1) {
-            await deleteDoc(doc(db, MEMOS_COLLECTION, document.id));
-          }
-        }
-      }
-
-      // 메모 및 이벤트 상태 업데이트 (현재 달의 데이터만 제거)
-      const updatedMemos = { ...memos };
+      // 이벤트 상태 업데이트 (현재 달의 데이터만 제거)
       const updatedEvents = { ...events };
-
-      // 업데이트된 메모와 이벤트 객체에서 현재 달의 항목만 제거
-      Object.keys(updatedMemos).forEach((dateKey) => {
-        const [memoYear, memoMonth] = dateKey.split('-').map(Number);
-        if (memoYear === year && memoMonth === month + 1) {
-          delete updatedMemos[dateKey];
-        }
-      });
 
       Object.keys(updatedEvents).forEach((dateKey) => {
         const [eventYear, eventMonth] = dateKey.split('-').map(Number);
@@ -497,7 +432,6 @@ const CalendarMain: React.FC = () => {
         }
       });
 
-      setMemos(updatedMemos);
       setEvents(updatedEvents);
     } catch (error) {
       console.error('Firebase에서 현재 달의 데이터 삭제 중 오류:', error);
@@ -538,35 +472,18 @@ const CalendarMain: React.FC = () => {
         // 이벤트 삭제 쿼리
         const eventQuery = query(
           collection(db, EVENTS_COLLECTION),
-          where('startDate', '==', startDate)
-        );
-        const eventSnapshot = await getDocs(eventQuery);
-
-        // 메모 삭제 쿼리
-        const memoQuery = query(
-          collection(db, MEMOS_COLLECTION),
           where('dateKey', '==', dateKey)
         );
-        const memoSnapshot = await getDocs(memoQuery);
+        const eventSnapshot = await getDocs(eventQuery);
 
         // 이벤트 삭제
         for (const document of eventSnapshot.docs) {
           await deleteDoc(doc(db, EVENTS_COLLECTION, document.id));
         }
 
-        // 메모 삭제
-        for (const document of memoSnapshot.docs) {
-          await deleteDoc(doc(db, MEMOS_COLLECTION, document.id));
-        }
-
         // 상태 업데이트
-        const updatedMemos = { ...memos };
         const updatedEvents = { ...events };
-
-        delete updatedMemos[dateKey];
         delete updatedEvents[dateKey];
-
-        setMemos(updatedMemos);
         setEvents(updatedEvents);
       } catch (error) {
         console.error('Firebase에서 데이터 삭제 중 오류:', error);
@@ -609,6 +526,7 @@ const CalendarMain: React.FC = () => {
             {calendarDays.map((dayData, index) => {
               const dateKey = formatDateKey(dayData.date);
               const currentDate = dayData.date;
+              const event = events[dateKey];
 
               // 현재 날짜가 포함된 이벤트 찾기
               let isInEventRange = false;
@@ -682,7 +600,7 @@ const CalendarMain: React.FC = () => {
                   date={dayData.date}
                   isCurrentMonth={dayData.isCurrentMonth}
                   isToday={isToday(dayData.date)}
-                  memo={memos[dateKey]}
+                  memo={event ? event.title : ''}
                   event={
                     isEventStart && foundEventInfo ? foundEventInfo : undefined
                   }
@@ -713,7 +631,7 @@ const CalendarMain: React.FC = () => {
           onEventTypeChange={handleEventTypeChange}
           onStartDateChange={handleStartDateChange}
           onEndDateChange={handleEndDateChange}
-          onSave={saveEventAndMemo}
+          onSave={saveEvent}
           onClose={closeModal}
           isNewEvent={isNewEvent}
           onDelete={handleDeleteClick}
