@@ -14,7 +14,7 @@ const Container = styled.div`
 const Code = styled.p`
   font-family: 'Hanna 11yrs';
   color: ${({ theme }) => theme.colors.point1};
-  font-size: 80px;
+  font-size: 8rem;
   font-weight: 400;
   line-height: 120%;
   letter-spacing: -0.8px;
