@@ -1,6 +1,9 @@
 import React from 'react';
 import * as S from '../styles/calendar-cell.styles';
-import { theme } from '@/shared/config/theme';
+import {
+  getEventColor,
+  formatTitlePreview,
+} from './calendar-utils/calendar-utils';
 
 // EventData 인터페이스 정의
 interface EventData {
@@ -29,24 +32,6 @@ interface CalendarCellProps {
   rangeInfo?: RangeInfo[]; // 날짜 범위 정보 (시작일, 종료일)
   onDateClick: (date: Date) => void;
 }
-
-const formatTitlePreview = (text: string): string => {
-  return text.length > 13 ? text.substring(0, 13) + '...' : text;
-};
-
-// 이벤트 색상 가져오기
-const getEventColor = (type: string): string => {
-  switch (type) {
-    case '1':
-      return theme.colors.orange; // 회의
-    case '2':
-      return theme.colors.red; // 출장
-    case '3':
-      return theme.colors.green; // 휴가
-    default:
-      return theme.colors.grey1;
-  }
-};
 
 // 이벤트 ID로 그룹화하여 중복 제거와 정렬을 위한 함수
 const groupAndSortEvents = (
