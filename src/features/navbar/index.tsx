@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { Outlet, useNavigate, Link } from 'react-router-dom';
+import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import styled from 'styled-components';
@@ -33,9 +33,10 @@ const Menu = styled.ul`
   gap: 40px;
 `;
 
-const MenuItem = styled.li`
+const MenuItem = styled.li<{ active: boolean }>`
   ${({ theme }) => theme.typography.menu1};
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme, active }) =>
+    active ? theme.colors.point1 : theme.colors.black};
   cursor: pointer;
   &:hover {
     color: ${({ theme }) => theme.colors.point1};
@@ -71,6 +72,7 @@ const PageContainer = styled.section`
 
 const NavBar = (): JSX.Element => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     auth.signOut();
@@ -87,12 +89,12 @@ const NavBar = (): JSX.Element => {
           onClick={() => navigate('/')}
         />
         <Menu>
-          <MenuItem>
+          <MenuItem active={location.pathname === '/'}>
             <Link style={{ all: 'unset' }} to="/">
               마이페이지
             </Link>
           </MenuItem>
-          <MenuItem>
+          <MenuItem active={location.pathname === '/work-calendar'}>
             <Link style={{ all: 'unset' }} to="/work-calendar">
               업무관리
             </Link>
