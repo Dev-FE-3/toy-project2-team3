@@ -58,9 +58,9 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
 
   return (
     <CalendarCellStyled
-      isCurrentMonth={isCurrentMonth}
-      isToday={isToday}
-      isClickable={isClickable}
+      $isCurrentMonth={isCurrentMonth}
+      $isToday={isToday}
+      $isClickable={isClickable}
       onClick={handleCellClick}
     >
       <DateContainer>
@@ -70,10 +70,10 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
       {isInEventRange && eventColor && (
         <EventsContainer>
           <EventRangeIndicator
-            isStart={Boolean(isEventStart)}
-            isEnd={Boolean(isEventEnd)}
-            color={eventColor}
-            hasText={showEventTitle}
+            $isStart={isEventStart}
+            $isEnd={isEventEnd}
+            $color={eventColor}
+            $hasText={showEventTitle}
           >
             {displayTitle}
           </EventRangeIndicator>
