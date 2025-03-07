@@ -1,5 +1,4 @@
-
-import { JSX } from 'react';
+import { JSX, useState } from 'react';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 
 import { toast } from 'react-toastify';
@@ -100,7 +99,7 @@ export const ModalContent = styled.div`
 `;
 
 export const ModalMessage = styled.p`
-  font-size: 24px;
+  font-size: 2.4rem;
   font-weight: 700;
   line-height: 133%;
   letter-spacing: -0.24px;
