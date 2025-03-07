@@ -18,10 +18,12 @@ const NavBox = styled.nav`
   align-items: center;
   padding-left: 56px;
   border-bottom: ${({ theme }) => theme.colors.grey2} 1px solid;
+  z-index: 99;
 `;
 
 const Logo = styled.img`
   width: 96px;
+  cursor: pointer;
 `;
 
 const Menu = styled.ul`
@@ -33,7 +35,7 @@ const Menu = styled.ul`
 `;
 
 const MenuItem = styled.li`
-  font: ${({ theme }) => theme.typography.menu1};
+  ${({ theme }) => theme.typography.menu1};
   color: ${({ theme }) => theme.colors.black};
   cursor: pointer;
   &:hover {
@@ -54,7 +56,7 @@ const LogoutBtn = styled.button`
   border: none;
   padding: auto;
   cursor: pointer;
-  font: ${({ theme }) => theme.typography.menu1};
+  ${({ theme }) => theme.typography.menu1};
   &:hover {
     transform: scale(1.05);
   }
@@ -80,7 +82,11 @@ const NavBar = (): JSX.Element => {
   return (
     <>
       <NavBox>
-        <Logo src="./src/assets/images/devHR_logo.png" alt="logo" />
+        <Logo
+          src="./src/assets/images/logo.svg"
+          alt="logo"
+          onClick={() => navigate('/')}
+        />
         <Menu>
           <MenuItem>
             <Link style={{ all: 'unset' }} to="/">
