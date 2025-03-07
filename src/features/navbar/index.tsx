@@ -34,7 +34,7 @@ const Menu = styled.ul`
 `;
 
 const MenuItem = styled.li`
-  font: ${({ theme }) => theme.typography.menu1};
+  ${({ theme }) => theme.typography.menu1};
   color: ${({ theme }) => theme.colors.black};
   cursor: pointer;
   &:hover {
@@ -55,7 +55,7 @@ const LogoutBtn = styled.button`
   border: none;
   padding: auto;
   cursor: pointer;
-  font: ${({ theme }) => theme.typography.menu1};
+  ${({ theme }) => theme.typography.menu1};
   &:hover {
     transform: scale(1.05);
   }
