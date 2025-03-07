@@ -17,10 +17,10 @@
 ### 🎯 역할
 | 이름   | 역할   |
 |---------|---------|
-| [@eas1w0n](https://github.com/eas1w0n) | 내용 |
-| [@minsung521](https://github.com/minsung521) | 내용 |
-| [@gkfla668](https://github.com/gkfla668) | 내용 |
-| [@qzeeee1](https://github.com/qzeeee1) | 내용 |
+| [이지원](https://github.com/eas1w0n) | 내용 |
+| [김민성](https://github.com/minsung521) | 내용 |
+| [임하림](https://github.com/gkfla668) | 내용 |
+| [이혜림](https://github.com/qzeeee1) | 내용 |
 
 
 ## ⚙️ 기술 스택
