@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  CalendarCellStyled,
-  DateContainer,
-  DateNumber,
-  EventsContainer,
-  EventRangeIndicator,
-} from '../styles/calendar-cell.styles';
+import * as S from '../styles/calendar-cell.styles';
+import { theme } from '@/shared/config/theme';
 
 // EventData 인터페이스 정의
 interface EventData {
@@ -36,20 +31,20 @@ interface CalendarCellProps {
 }
 
 const formatTitlePreview = (text: string): string => {
-  return text.length > 15 ? text.substring(0, 15) + '...' : text;
+  return text.length > 13 ? text.substring(0, 13) + '...' : text;
 };
 
 // 이벤트 색상 가져오기
 const getEventColor = (type: string): string => {
   switch (type) {
     case '1':
-      return '#FFB74D'; // 회의
+      return theme.colors.orange; // 회의
     case '2':
-      return '#E57373'; // 출장
+      return theme.colors.red; // 출장
     case '3':
-      return '#4DB6AC'; // 휴가
+      return theme.colors.green; // 휴가
     default:
-      return '#CCCCCC';
+      return theme.colors.grey1;
   }
 };
 
@@ -81,6 +76,8 @@ const groupAndSortEvents = (
   return { rangeEvents, regularEvents };
 };
 
+const MAX_VISIBLE_EVENTS = 3;
+
 const CalendarCell: React.FC<CalendarCellProps> = ({
   date,
   isCurrentMonth,
@@ -102,7 +99,7 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
   );
 
   // 최대 표시할 이벤트 수
-  const MAX_VISIBLE_EVENTS = 3;
+
   const totalEvents = events.length;
   const visibleCount = Math.min(MAX_VISIBLE_EVENTS, totalEvents);
 
@@ -117,22 +114,22 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
   };
 
   return (
-    <CalendarCellStyled
+    <S.CalendarCellStyled
       $isCurrentMonth={isCurrentMonth}
       $isToday={isToday}
       $isClickable={isClickable}
       onClick={handleCellClick}
     >
-      <DateContainer>
-        <DateNumber>{date.getDate()}</DateNumber>
-      </DateContainer>
+      <S.DateContainer>
+        <S.DateNumber>{date.getDate()}</S.DateNumber>
+      </S.DateContainer>
 
-      <EventsContainer>
+      <S.EventsContainer>
         {/* 범위 이벤트 먼저 표시 */}
         {sortedRangeEvents
           .slice(0, visibleCount)
           .map(({ event, rangeInfo }, index) => (
-            <EventRangeIndicator
+            <S.EventRangeIndicator
               key={`range-${event.id || index}`}
               $isStart={rangeInfo.isStart}
               $isEnd={rangeInfo.isEnd}
@@ -140,13 +137,13 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
               $hasText={rangeInfo.isStart}
             >
               {rangeInfo.isStart ? formatTitlePreview(event.title) : ''}
-            </EventRangeIndicator>
+            </S.EventRangeIndicator>
           ))}
         {/* 남은 공간에 일반 이벤트 표시 */}
         {sortedRegularEvents
           .slice(0, Math.max(0, visibleCount - sortedRangeEvents.length))
           .map((event, index) => (
-            <EventRangeIndicator
+            <S.EventRangeIndicator
               key={`event-${event.id || index}`}
               $isStart={true}
               $isEnd={true}
@@ -154,10 +151,10 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
               $hasText={true}
             >
               {formatTitlePreview(event.title)}
-            </EventRangeIndicator>
+            </S.EventRangeIndicator>
           ))}
-      </EventsContainer>
-    </CalendarCellStyled>
+      </S.EventsContainer>
+    </S.CalendarCellStyled>
   );
 };
 

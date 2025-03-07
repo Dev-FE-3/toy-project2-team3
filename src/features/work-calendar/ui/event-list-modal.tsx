@@ -1,26 +1,9 @@
 import React from 'react';
-import { theme } from '../../../shared/config/theme';
+import { theme } from '@/shared/config/theme';
 import ReactDOM from 'react-dom';
-import {
-  ModalGlobalStyle,
-  ModalOverlay,
-  ModalContent,
-  ModalTitle,
-  ButtonContainer,
-  MintButtonModal,
-} from '../styles/calendar-modal.style';
-import {
-  EventListContainer,
-  EventItem,
-  EventTitle,
-  EventTypeTag,
-  EventDate,
-  AddNewEventButton,
-  EventListModalButtonWrapper,
-  EventListModalContainer,
-  EventListModalContent,
-  EventListModalFooter,
-} from '../styles/event-list-modal.styles';
+import { toast } from 'react-toastify';
+import * as MS from '../styles/calendar-modal.style';
+import * as S from '../styles/event-list-modal.styles';
 
 // EventData 인터페이스 정의
 interface EventData {
@@ -92,7 +75,7 @@ const EventListModal: React.FC<EventListModalProps> = ({
 
   const handleAddNewEvent = () => {
     if (events.length >= 3) {
-      alert('하루에 최대 3개까지만 일정을 추가할 수 있습니다.');
+      toast.error('하루에 최대 3개까지만 일정을 추가할 수 있습니다.');
       return;
     }
     onAddNewEvent(selectedDate);
@@ -101,56 +84,53 @@ const EventListModal: React.FC<EventListModalProps> = ({
   // 모달 요소를 document.body에 포탈로 렌더링
   return ReactDOM.createPortal(
     <>
-      <ModalGlobalStyle />
-      <ModalOverlay role="dialog" aria-modal="true" onClick={onClose}>
-        <ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-          <EventListModalContainer>
-            <ModalTitle>{formattedDate} 일정</ModalTitle>
+      <MS.ModalGlobalStyle />
+      <MS.ModalOverlay role="dialog" aria-modal="true" onClick={onClose}>
+        <MS.ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+          <S.EventListModalContainer>
+            <MS.ModalTitle>{formattedDate} 일정</MS.ModalTitle>
 
-            <EventListModalContent>
-              <EventListContainer>
+            <S.EventListModalContent>
+              <S.EventListContainer>
                 {events.map((event) => (
-                  <EventItem
+                  <S.EventItem
                     key={event.id}
                     onClick={() => onSelectEvent(event)}
                   >
-                    <EventTitle>{event.title}</EventTitle>
-                    <EventTypeTag
+                    <S.EventTitle>{event.title}</S.EventTitle>
+                    <S.EventTypeTag
                       style={{ backgroundColor: getEventTypeColor(event.type) }}
                     >
                       {getEventTypeName(event.type)}
-                    </EventTypeTag>
-                    <EventDate>
+                    </S.EventTypeTag>
+                    <S.EventDate>
                       {formatDateDisplay(event.startDate)} ~{' '}
                       {formatDateDisplay(event.endDate)}
-                    </EventDate>
-                  </EventItem>
+                    </S.EventDate>
+                  </S.EventItem>
                 ))}
-                <EventListModalButtonWrapper>
-                  <AddNewEventButton
-                    onClick={handleAddNewEvent}
-                    style={{ marginTop: '15px', marginBottom: '15px' }}
-                  >
+                <S.EventListModalButtonWrapper>
+                  <S.AddNewEventButton onClick={handleAddNewEvent}>
                     + 새 일정 추가하기
-                  </AddNewEventButton>
-                </EventListModalButtonWrapper>
-              </EventListContainer>
-            </EventListModalContent>
+                  </S.AddNewEventButton>
+                </S.EventListModalButtonWrapper>
+              </S.EventListContainer>
+            </S.EventListModalContent>
 
-            <EventListModalFooter>
-              <ButtonContainer>
-                <MintButtonModal
+            <S.EventListModalFooter>
+              <MS.ButtonContainer>
+                <MS.MintButtonModal
                   typeStyle="rounded"
                   variant="outlined"
                   onClick={onClose}
                 >
                   닫기
-                </MintButtonModal>
-              </ButtonContainer>
-            </EventListModalFooter>
-          </EventListModalContainer>
-        </ModalContent>
-      </ModalOverlay>
+                </MS.MintButtonModal>
+              </MS.ButtonContainer>
+            </S.EventListModalFooter>
+          </S.EventListModalContainer>
+        </MS.ModalContent>
+      </MS.ModalOverlay>
     </>,
     document.body
   );

@@ -74,7 +74,8 @@ export const AddNewEventButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-
+  margin-top: 10px;
+  margin-bottom: 15px;
   &:hover {
     background-color: ${({ theme }) => theme.colors.point2};
   }

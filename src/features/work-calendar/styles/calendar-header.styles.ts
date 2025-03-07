@@ -8,7 +8,7 @@ export const HeaderContainer = styled.div`
   padding: 16px;
   color: ${({ theme }) => theme.colors.point3}
   background-color: ${({ theme }) => theme.colors.white}
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey3}
 `;
 
 export const TitleGroup = styled.div`

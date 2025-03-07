@@ -15,7 +15,7 @@ export const CalendarCellStyled = styled.div<{
   border-radius: 8px;
   gap: 2px;
   background-color: ${(props) =>
-    props.$isCurrentMonth ? theme.colors.white : '#f0f0f0'};
+    props.$isCurrentMonth ? theme.colors.white : theme.colors.grey3};
   color: ${(props) =>
     props.$isCurrentMonth ? theme.colors.black : theme.colors.grey2};
   cursor: ${(props) => (props.$isClickable ? 'pointer' : 'default')};
@@ -64,7 +64,7 @@ export const EventRangeIndicator = styled.div<{
   $color: string;
   $hasText: boolean;
 }>`
-  background-color: ${(props) => props.$color};
+  background-color: ${({ $color }) => $color};
   color: ${({ theme }) => theme.colors.white};
   ${({ theme }) => theme.typography.body3};
   padding: 4px;

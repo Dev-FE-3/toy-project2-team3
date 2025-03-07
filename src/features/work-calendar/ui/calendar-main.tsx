@@ -1,21 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import CalendarCell from './calendar-cell';
 import CalendarModal from './calendar-modal';
 import CalendarHeader from './calendar-header';
 import ConfirmationModal from './confirmation-modal';
 import EventListModal from './event-list-modal';
-
-import {
-  PageContainer,
-  Title,
-  CalendarContainer,
-  WeekdaysContainer,
-  Weekday,
-  CalendarGrid,
-} from '../styles/calendar-main.styles';
+import { toast } from 'react-toastify';
+import * as S from '../styles/calendar-main.styles';
 
 // Firebase 임포트
-import { db } from '../../../firebase';
+import { db } from '@/firebase';
 import {
   collection,
   getDocs,
@@ -55,14 +48,6 @@ interface DateEventInfo {
   isStart: boolean;
   isEnd: boolean;
 }
-
-// 날짜 범위 정보
-// interface RangeInfo {
-//   eventId?: string;
-//   isStart: boolean;
-//   isEnd: boolean;
-//   type: string;
-// }
 
 const CalendarMain: React.FC = () => {
   // 현재 표시중인 년월을 저장하는 상태 (달력 헤더에 표시되는 날짜)
@@ -402,18 +387,18 @@ const CalendarMain: React.FC = () => {
   // Firebase에 이벤트 저장
   const saveEvent = async (): Promise<void> => {
     if (!currentUserId) {
-      alert('로그인이 필요합니다.');
+      toast.error('로그인이 필요합니다.');
       return;
     }
 
     // 필수값 검증
     if (!titleText.trim()) {
-      alert('일정 제목을 입력해주세요.');
+      toast.error('일정 제목을 입력해주세요.');
       return;
     }
 
     if (!eventType) {
-      alert('일정 유형을 선택해주세요.');
+      toast.error('일정 유형을 선택해주세요.');
       return;
     }
 
@@ -422,7 +407,7 @@ const CalendarMain: React.FC = () => {
       const end = new Date(endDate);
 
       if (start > end) {
-        alert('종료일은 시작일보다 이후여야 합니다.');
+        toast.error('종료일은 시작일보다 이후여야 합니다.');
         return;
       }
     }
@@ -458,7 +443,7 @@ const CalendarMain: React.FC = () => {
 
       if (totalStartEvents >= 3) {
         // 3개 이상이면 추가 불가 (4가 아닌 3으로 수정)
-        alert(
+        toast.error(
           `시작일(${startDate})에 이미 3개의 일정이 있어 추가할 수 없습니다.`
         );
         return;
@@ -472,7 +457,7 @@ const CalendarMain: React.FC = () => {
         const totalEndEvents = endDateEvents.length + endEventsInRange.length;
 
         if (totalEndEvents >= 3) {
-          alert(
+          toast.error(
             `종료일(${endDate})에 이미 3개의 일정이 있어 추가할 수 없습니다.`
           );
           return;
@@ -501,7 +486,7 @@ const CalendarMain: React.FC = () => {
                 2,
                 '0'
               )}-${String(currentDate.getDate()).padStart(2, '0')}`;
-              alert(
+              toast.error(
                 `일정 범위 내 날짜(${curDateFormatted})에 이미 3개의 일정이 있어 추가할 수 없습니다`
               );
               return;
@@ -785,10 +770,10 @@ const CalendarMain: React.FC = () => {
   }, [modalOpen]);
 
   return (
-    <PageContainer $isModalOpen={modalOpen}>
-      <Title>업무관리</Title>
+    <S.PageContainer $isModalOpen={modalOpen}>
+      <S.Title>업무관리</S.Title>
       <div style={{ width: '1240px', overflow: 'hidden' }}>
-        <CalendarContainer $isModalOpen={modalOpen}>
+        <S.CalendarContainer $isModalOpen={modalOpen}>
           <CalendarHeader
             currentDate={currentDate}
             onPrevMonth={prevMonth}
@@ -797,18 +782,18 @@ const CalendarMain: React.FC = () => {
             onClearAll={handleClearAllClick}
           />
 
-          <WeekdaysContainer>
+          <S.WeekdaysContainer>
             {weekdays.map((day, index) => (
-              <Weekday key={index}>{day}</Weekday>
+              <S.Weekday key={index}>{day}</S.Weekday>
             ))}
-          </WeekdaysContainer>
+          </S.WeekdaysContainer>
 
           {loading ? (
             <div style={{ textAlign: 'center', padding: '20px' }}>
               로딩 중...
             </div>
           ) : (
-            <CalendarGrid>
+            <S.CalendarGrid>
               {calendarDays.map((dayData, index) => {
                 const dateKey = formatDateKey(dayData.date);
                 const dateEvents = events[dateKey] || [];
@@ -849,9 +834,9 @@ const CalendarMain: React.FC = () => {
                   />
                 );
               })}
-            </CalendarGrid>
+            </S.CalendarGrid>
           )}
-        </CalendarContainer>
+        </S.CalendarContainer>
       </div>
 
       {/* 이벤트 목록 모달 */}
@@ -901,7 +886,7 @@ const CalendarMain: React.FC = () => {
         }
         message=""
       />
-    </PageContainer>
+    </S.PageContainer>
   );
 };
 

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  HeaderContainer,
-  TitleGroup,
-  Title,
-  NavButton,
-  ButtonGroup,
-  MintButtonHeader,
-} from '../styles/calendar-header.styles';
+import * as S from '../styles/calendar-header.styles';
 
 interface CalendarHeaderProps {
   currentDate: Date;
@@ -54,36 +47,36 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   onClearAll,
 }) => {
   return (
-    <HeaderContainer>
-      <TitleGroup>
-        <NavButton onClick={onPrevMonth}>
+    <S.HeaderContainer>
+      <S.TitleGroup>
+        <S.NavButton onClick={onPrevMonth}>
           <PrevIcon />
-        </NavButton>
-        <Title>
+        </S.NavButton>
+        <S.Title>
           {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
-        </Title>
-        <NavButton onClick={onNextMonth}>
+        </S.Title>
+        <S.NavButton onClick={onNextMonth}>
           <NextIcon />
-        </NavButton>
-      </TitleGroup>
+        </S.NavButton>
+      </S.TitleGroup>
 
-      <ButtonGroup>
-        <MintButtonHeader
+      <S.ButtonGroup>
+        <S.MintButtonHeader
           variant="filled"
           typeStyle="rounded"
           onClick={() => onAddTask(currentDate)}
         >
           일정추가
-        </MintButtonHeader>
-        <MintButtonHeader
+        </S.MintButtonHeader>
+        <S.MintButtonHeader
           variant="filled"
           typeStyle="rounded"
           onClick={onClearAll}
         >
           전체삭제
-        </MintButtonHeader>
-      </ButtonGroup>
-    </HeaderContainer>
+        </S.MintButtonHeader>
+      </S.ButtonGroup>
+    </S.HeaderContainer>
   );
 };
 
