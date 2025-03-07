@@ -1,36 +1,36 @@
 import styled from 'styled-components';
 
 export interface CalendarCellStyledProps {
-  isCurrentMonth: boolean;
-  isToday: boolean;
-  isClickable: boolean;
+  $isCurrentMonth: boolean;
+  $isToday: boolean;
+  $isClickable: boolean;
 }
 
 // 이벤트 범위 표시자 (선) - 시작일에는 텍스트 표시
 export const EventRangeIndicator = styled.div<{
-  isStart: boolean;
-  isEnd: boolean;
-  color: string;
-  hasText: boolean;
+  $isStart?: boolean;
+  $isEnd?: boolean;
+  $color: string;
+  $hasText?: boolean;
 }>`
   ${({ theme }) => theme.typography.body3}
   height: 15px;
-  background-color: ${(props) => props.color};
+  background-color: ${(props) => props.$color};
   width: 100%;
   position: relative;
   margin-top: 2px;
-  display: ${(props) => (props.hasText ? 'flex' : 'block')};
+  display: ${(props) => (props.$hasText ? 'flex' : 'block')};
   align-items: center;
   color: white;
-  padding-left: ${(props) => (props.hasText ? '6px' : '0')};
+  padding-left: ${(props) => (props.$hasText ? '6px' : '0')};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 
-  border-top-left-radius: ${(props) => (props.isStart ? '5px' : '0')};
-  border-bottom-left-radius: ${(props) => (props.isStart ? '5px' : '0')};
-  border-top-right-radius: ${(props) => (props.isEnd ? '5px' : '0')};
-  border-bottom-right-radius: ${(props) => (props.isEnd ? '5px' : '0')};
+  border-top-left-radius: ${(props) => (props.$isStart ? '5px' : '0')};
+  border-bottom-left-radius: ${(props) => (props.$isStart ? '5px' : '0')};
+  border-top-right-radius: ${(props) => (props.$isEnd ? '5px' : '0')};
+  border-bottom-right-radius: ${(props) => (props.$isEnd ? '5px' : '0')};
 `;
 
 export const CalendarCellStyled = styled.div<CalendarCellStyledProps>`
@@ -42,23 +42,19 @@ export const CalendarCellStyled = styled.div<CalendarCellStyledProps>`
   gap: 2px;
 
   /* 현재 달과 이전/다음 달 구분 */
-  background-color: ${(props) => (props.isCurrentMonth ? '#fff' : '#eaeaea')};
-  opacity: ${(props) =>
-    props.isCurrentMonth ? 1 : 0.6}; /* 이전/다음 달은 투명도 적용 */
-  color: ${(props) =>
-    props.isCurrentMonth
-      ? '#000'
-      : '#666'}; /* 이전/다음 달은 텍스트 색상도 어둡게 */
+  background-color: ${(props) => (props.$isCurrentMonth ? '#fff' : '#eaeaea')};
+  opacity: ${(props) => (props.$isCurrentMonth ? 1 : 0.6)};
+  color: ${(props) => (props.$isCurrentMonth ? '#000' : '#666')};
 
-  ${(props) => props.isToday && `border: 2px solid #B2B2B2;`}
+  ${(props) => props.$isToday && `border: 2px solid #B2B2B2;`}
 
   /* 클릭 가능한 셀에만 호버 효과와 포인터 적용 */
   ${(props) =>
-    props.isClickable
+    props.$isClickable
       ? `
     cursor: pointer;
     &:hover {
-      background-color: ${props.isCurrentMonth ? '#EEFAFA' : '#d9d9d9'};
+      background-color: ${props.$isCurrentMonth ? '#EEFAFA' : '#d9d9d9'};
     }
   `
       : `

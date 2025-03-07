@@ -19,8 +19,8 @@ export interface DropdownProps {
 }
 
 export interface DropdownTextProps {
-  hasPlaceHolder: boolean;
-  hasSelected: boolean;
+  $hasPlaceHolder: boolean;
+  $hasSelected: boolean;
 }
 
 // 드롭다운 아이콘 색상 변경
@@ -30,11 +30,7 @@ interface DropdownIconProps {
 
 // 드롭다운 공통 style 정의
 const fontStyles = css`
-  font-family: 'Noto Sans';
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%;
+  ${({ theme }) => theme.typography.body2};
 `;
 
 const baseBoxStyles = css`
@@ -78,22 +74,25 @@ const DropdownHeader = styled.button<{
   flex-shrink: 0;
   text-align: left;
 
-  background: ${(props) => (props.$hasSelected ? '#fff' : '#2ac1bc')};
-  color: ${(props) => (props.$hasSelected ? '#2ac1bc' : '#fff')};
-  border: ${(props) => (props.$hasSelected ? '1px solid #2ac1bc' : 'none')};
+  background: ${(props) =>
+    props.$hasSelected ? props.theme.colors.white : props.theme.colors.point1};
+  color: ${(props) =>
+    props.$hasSelected ? props.theme.colors.point1 : props.theme.colors.white};
+  border: ${(props) =>
+    props.$hasSelected ? `1px solid ${props.theme.colors.point1}` : 'none'};
 `;
 
 // 드롭다운 list
 const DropdownList = styled.ul`
+  ${fontStyles}
   position: absolute;
   width: 100%;
   top: 100%;
-  background: #fff;
-  border: 1px solid #b2b2b2;
+  background: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.grey2};
   border-radius: 4px;
   z-index: 1;
   box-sizing: border-box;
-  ${fontStyles}
   padding: 0;
   margin: 0;
   list-style: none;
@@ -123,6 +122,7 @@ const DropdownList = styled.ul`
 
 // 드롭다운 item
 const DropdownItem = styled.li`
+  ${fontStyles}
   width: 100%;
   box-sizing: border-box;
   height: 40px;
@@ -130,16 +130,15 @@ const DropdownItem = styled.li`
   padding: 8px 20px;
   cursor: pointer;
   align-items: center;
-  border-bottom: 0.8px solid #b2b2b2;
+  border-bottom: 0.8px solid ${({ theme }) => theme.colors.grey2};
   &:hover {
-    background: rgba(42, 193, 188, 0.2);
-    color: #2ac1bc;
+    background: ${({ theme }) => theme.colors.point2};
+    color: ${({ theme }) => theme.colors.point1};
   }
 
   &:last-child {
     border-bottom: none;
   }
-  ${fontStyles}
 `;
 
 // 드롭다운 icon 회전
@@ -152,33 +151,36 @@ const RotatableIcon = styled.figure<{ $isOpen: boolean }>`
 `;
 
 // DropdownIcon 컴포넌트
-const DropdownIcon: React.FC<DropdownIconProps> = ({ isMint = false }) => {
-  const fillColor = isMint ? '#2ac1bc' : 'white';
+const StyledSVG = styled.svg<{ isMint?: boolean }>`
+  & path {
+    fill: ${({ isMint, theme }) =>
+      isMint ? theme.colors.point1 : theme.colors.white};
+  }
+`;
 
+const DropdownIcon: React.FC<DropdownIconProps> = ({ isMint = false }) => {
   return (
-    <svg
+    <StyledSVG
       width={18}
       height={12}
       viewBox="0 0 18 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      isMint={isMint}
     >
       <g id="Frame 2608833">
         <path
           id="Vector"
           d="M2.115 0.5L9 7.29892L15.885 0.5L18 2.59312L9 11.5L0 2.59312L2.115 0.5Z"
-          fill={fillColor}
         />
       </g>
-    </svg>
+    </StyledSVG>
   );
 };
 
-const DropdownText = styled.strong<{
-  $hasPlaceHolder: boolean;
-  $hasSelected: boolean;
-}>`
-  color: ${(props) => (props.$hasSelected ? '#2ac1bc' : '#fff')};
+const DropdownText = styled.strong<DropdownTextProps>`
+  color: ${({ $hasSelected, theme }) =>
+    $hasSelected ? theme.colors.point1 : theme.colors.white};
 `;
 
 export {
