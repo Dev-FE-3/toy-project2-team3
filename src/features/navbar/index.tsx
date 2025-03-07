@@ -80,7 +80,7 @@ const NavBar = (): JSX.Element => {
   return (
     <>
       <NavBox>
-        <Logo src="./src/assets/images/devHR_logo.png" alt="logo" />
+        <Logo src="./src/assets/images/logo.svg" alt="logo" />
         <Menu>
           <MenuItem>
             <Link style={{ all: 'unset' }} to="/">
