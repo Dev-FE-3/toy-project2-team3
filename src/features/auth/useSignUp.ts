@@ -1,11 +1,12 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { FirebaseError } from 'firebase/app';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/firebase';
-import { useState } from 'react';
 
 interface SignUpType {
   email: string;
@@ -53,6 +54,7 @@ const useSignUp = () => {
       // Firestore에 유저 정보 저장
       await setDoc(doc(db, 'users', user.uid), userData);
 
+      toast.success('회원가입 성공!');
       navigate('/');
     } catch (error) {
       const firebaseError = error as FirebaseError;
