@@ -1,5 +1,5 @@
 import { ReactNode, JSX } from 'react';
-import CalendarMain from '../calendar/ui/calendar-main';
+import CalendarMain from '../../features/work-calendar/ui/calendar-main';
 
 interface WorkCalendarPageProps {
   children?: ReactNode;

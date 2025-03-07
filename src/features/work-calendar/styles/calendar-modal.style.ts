@@ -33,7 +33,7 @@ export const ModalContent = styled.article`
   width: 400px;
   height: 550px;
   display: flex;
-  padding: 20px;
+  padding: 25px 25px;
   flex-direction: column;
   align-items: center;
   gap: 10px;
@@ -75,7 +75,7 @@ export const MemoInput = styled.input`
   height: 40px;
   padding: 10px 16px;
   border-radius: 8px;
-  border: 1px solid #b2b2b2;
+  border: 1px solid ${({ theme }) => theme.colors.grey2};
   box-sizing: border-box;
   &::placeholder {
     vertical-align: middle;
@@ -87,7 +87,7 @@ export const MemoTextarea = styled.textarea`
   height: 40px;
   padding: 10px 16px;
   border-radius: 8px;
-  border: 1px solid #b2b2b2;
+  border: 1px solid ${({ theme }) => theme.colors.grey2};
   resize: none;
   line-height: 20px;
   box-sizing: border-box;
@@ -127,7 +127,7 @@ export const DateInput = styled.input`
   height: 36px;
   padding: 8px 12px;
   border-radius: 8px;
-  border: 1px solid #b2b2b2;
+  border: 1px solid ${({ theme }) => theme.colors.grey2};
   box-sizing: border-box;
 `;
 

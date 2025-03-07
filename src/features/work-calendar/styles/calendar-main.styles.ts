@@ -19,9 +19,9 @@ export const CalendarContainer = styled.div<{
   $isModalOpen?: boolean;
 }>`
   width: 1240px;
-  border: 1px solid #2ac1bc;
+  border: 1px solid ${({ theme }) => theme.colors.point1};
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 16px;
   overflow: hidden;
   box-sizing: border-box;
   position: relative;
@@ -30,15 +30,15 @@ export const CalendarContainer = styled.div<{
 export const WeekdaysContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  background-color: rgba(42, 193, 188, 0.2);
-  border-bottom: 1px solid #e0e0e0;
+  background-color: ${({ theme }) => theme.colors.point2};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey2};
+  margin-bottom: 2px;
 `;
 
 export const Weekday = styled.div`
   ${({ theme }) => theme.typography.body2};
   padding: 10px;
   text-align: center;
-  font-weight: bold;
 `;
 
 export const CalendarGrid = styled.div`
