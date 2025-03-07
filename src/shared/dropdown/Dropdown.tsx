@@ -96,6 +96,28 @@ const DropdownList = styled.ul`
   padding: 0;
   margin: 0;
   list-style: none;
+
+  max-height: 160px; /* 옵션이 4개 이상이면 스크롤 */
+  overflow-y: auto;
+
+  /*스크롤바 스타일링 추가 */
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.point2};
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.colors.point1};
+  }
+
+  &::-webkit-scrollbar-track {
+    background: ${({ theme }) => theme.colors.white};
+    border-radius: 10px;
+  }
 `;
 
 // 드롭다운 item

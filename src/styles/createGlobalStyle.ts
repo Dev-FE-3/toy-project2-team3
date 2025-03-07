@@ -44,9 +44,11 @@ footer, header, hgroup, main, menu, nav, section {
 *[hidden] {
     display: none;
 }
+
 body {
-  line-height: 1;
+  height:auto;
 }
+  
 menu, ol, ul {
   list-style: none;
 }
