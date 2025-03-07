@@ -2,7 +2,7 @@
   <img src="https://github.com/user-attachments/assets/361c18bd-56e5-48fa-a687-834269b6f863" width="300" />
 </p>
 
-## 목차
+## 🔖 목차
 
 1.  [프로젝트 소개](#1)
 2.  [팀원 구성](#2)
@@ -37,3 +37,5 @@
 
 ## <span id="4">🗂️ 브랜치 및 디렉토리 구조</span>
 
+
+## <span id="5">🌵 커밋 컨벤션</span>
