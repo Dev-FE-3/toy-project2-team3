@@ -84,7 +84,7 @@ export const InfoWrapper = styled.div`
 export const InfoItem = styled.p`
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1.5rem;
   ${({ theme }) => theme.typography.body1}
   padding: 0.5rem 0.75rem;
 

@@ -18,10 +18,10 @@ interface SalaryTableProps {
 }
 
 const formatCurrency = (value: number | undefined) => {
-  if (typeof value !== 'number' || isNaN(value)) return '0₩';
+  if (typeof value !== 'number' || isNaN(value)) return '0원';
   return value < 0
-    ? `-${Math.abs(value).toLocaleString()}₩`
-    : `${value.toLocaleString()}₩`;
+    ? `-${Math.abs(value).toLocaleString()}원`
+    : `${value.toLocaleString()}원`;
 };
 
 // 급여 테이블 컴포넌트
@@ -68,20 +68,25 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
   }, [selectedSalary]);
 
   const formattedDate = useMemo(() => {
-    return selectedSalary?.rawDate
-      ? new Date(selectedSalary.rawDate).toLocaleDateString()
-      : '날짜 없음';
+    if (!selectedSalary?.rawDate) return '날짜 없음';
+
+    const date = new Date(selectedSalary.rawDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 두 자리로 만들기
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}년 ${month}월 ${day}일`;
   }, [selectedSalary?.rawDate]);
 
   // 지급 항목 데이터
   const paymentData = useMemo(() => {
     if (!selectedSalary) return [];
     return [
-      { label: '기본급', value: selectedSalary.base },
-      { label: '상여금', value: selectedSalary.bonus },
-      { label: '직책수당', value: selectedSalary.position },
-      { label: '특근수당', value: selectedSalary.overtime },
-      { label: '야근수당', value: selectedSalary.night },
+      { label: '기본급 :', value: selectedSalary.base },
+      { label: '상여금 :', value: selectedSalary.bonus },
+      { label: '직책수당 :', value: selectedSalary.position },
+      { label: '특근수당 :', value: selectedSalary.overtime },
+      { label: '야근수당 :', value: selectedSalary.night },
     ];
   }, [selectedSalary]);
 
@@ -89,10 +94,10 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
   const deductionData = useMemo(() => {
     if (!selectedSalary) return [];
     return [
-      { label: '건강보험', value: selectedSalary.health },
-      { label: '장기요양보험', value: selectedSalary.care },
-      { label: '고용보험', value: selectedSalary.job },
-      { label: '소득세', value: selectedSalary.tax },
+      { label: '건강보험 :', value: selectedSalary.health },
+      { label: '장기요양보험 :', value: selectedSalary.care },
+      { label: '고용보험 :', value: selectedSalary.job },
+      { label: '소득세 :', value: selectedSalary.tax },
     ];
   }, [selectedSalary]);
 
@@ -131,9 +136,9 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
 
         <S.ModalBody>
           <S.SalaryDetails>
-            <SalaryTable title="지급 항목" data={paymentData} />
+            <SalaryTable title="지급항목" data={paymentData} />
 
-            <SalaryTable title="공제 항목" data={deductionData} />
+            <SalaryTable title="공제항목" data={deductionData} />
           </S.SalaryDetails>
 
           <S.TotalSection>

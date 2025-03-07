@@ -88,8 +88,8 @@ const SalaryInfoSection = () => {
 
   const formatCurrency = useCallback((value: number) => {
     return value < 0
-      ? `-${Math.abs(value).toLocaleString()}₩`
-      : `${value.toLocaleString()}₩`;
+      ? `-${Math.abs(value).toLocaleString()}원`
+      : `${value.toLocaleString()}원`;
   }, []);
 
   // 드롭다운 옵션 구성
