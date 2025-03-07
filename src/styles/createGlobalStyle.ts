@@ -27,6 +27,7 @@ time, mark, audio, video {
   html, body {
     height: 100%;
     width: 100%;
+    font-size: 62.5%;
   }
 
   #root{
