@@ -124,10 +124,6 @@ const SalaryInfoSection = () => {
           options={options}
           onSelect={(option) => handleDateChange(String(option.value))}
         />
-        <S.ButtonGroup>
-          <Button>Excel</Button>
-          <Button>CSV</Button>
-        </S.ButtonGroup>
       </S.SalaryControls>
       <S.Table>
         <thead>
