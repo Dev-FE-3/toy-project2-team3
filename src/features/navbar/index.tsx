@@ -22,6 +22,7 @@ const NavBox = styled.nav`
 
 const Logo = styled.img`
   width: 96px;
+  cursor: pointer;
 `;
 
 const Menu = styled.ul`
@@ -80,7 +81,11 @@ const NavBar = (): JSX.Element => {
   return (
     <>
       <NavBox>
-        <Logo src="./src/assets/images/logo.svg" alt="logo" />
+        <Logo
+          src="./src/assets/images/logo.svg"
+          alt="logo"
+          onClick={() => navigate('/')}
+        />
         <Menu>
           <MenuItem>
             <Link style={{ all: 'unset' }} to="/">
