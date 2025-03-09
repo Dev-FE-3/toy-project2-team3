@@ -23,6 +23,36 @@ const EditIcon = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
+const compressImage = (
+  file: File,
+  maxWidth: number = 800,
+  quality: number = 0.7
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    img.onload = () => {
+      const ratio = Math.min(maxWidth / img.width, 1);
+      canvas.width = img.width * ratio;
+      canvas.height = img.height * ratio;
+
+      if (!ctx) {
+        reject(new Error('Canvas context를 가져올 수 없습니다'));
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+      resolve(compressedBase64);
+    };
+
+    img.onerror = () => reject(new Error('이미지 로드 실패'));
+    img.src = URL.createObjectURL(file);
+  });
+};
+
 const UserInfoSection = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { userData } = useFetch();
@@ -38,19 +68,24 @@ const UserInfoSection = () => {
     }
   }, []);
 
-  // 프로필 이미지 변경 핸들러
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // 프로필 이미지 변경 및 압축 핸들러
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        localStorage.setItem('profileImage', reader.result);
-        setProfileImage(reader.result);
-      }
-    };
+    try {
+      console.log('압축 전 크기:', file.size, 'bytes');
+      const compressedBase64 = await compressImage(file, 800, 0.7);
+      const compressedSize = compressedBase64.length * 0.75; // base64를 바이트로 근사 계산
+      console.log('압축 후 크기:', compressedSize, 'bytes');
+      console.log('크기 감소:', file.size - compressedSize, 'bytes');
+      localStorage.setItem('profileImage', compressedBase64);
+      setProfileImage(compressedBase64);
+    } catch (error) {
+      console.error('이미지 압축 실패:', error);
+    }
   };
 
   return (

@@ -5,6 +5,8 @@ import Button from '../../../shared/button/Button';
 import { SalaryData } from './salary-section';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDate } from '@/utils/formatDate';
+import Lottie from 'lottie-react';
+import loadingAnimation from '@/assets/animations/loading.json';
 
 // 모달 props 인터페이스
 interface ModalProps {
@@ -97,7 +99,11 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
             <S.Title>급여 명세서</S.Title>
           </S.ModalHeader>
           <S.ModalBody>
-            <p>급여 데이터를 불러오는 중...</p>
+            <Lottie
+              animationData={loadingAnimation}
+              loop={true}
+              style={{ width: '180px', height: '180px' }}
+            />
           </S.ModalBody>
           <S.ModalFooter>
             <Button onClick={() => onClose()} variant="outlined">
