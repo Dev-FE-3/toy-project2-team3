@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as S from '../styles/salary-modal.styles';
-import Button from '../../../shared/button/Button';
-import { SalaryData } from './salary-section';
+import * as S from '@/pages/mypage/styles/salary-modal.styles';
+import Button from '@/shared/button/Button';
+import { SalaryData } from '@/pages/mypage/ui/salary-section';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDate } from '@/utils/formatDate';
 import Lottie from 'lottie-react';

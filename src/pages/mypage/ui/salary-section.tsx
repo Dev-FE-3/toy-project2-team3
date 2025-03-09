@@ -1,9 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
-import * as S from '../styles/salary-section.styles';
-import Modal from './salary-modal';
-import Dropdown from '../../../shared/dropdown/Dropdown';
-import Button from '../../../shared/button/Button';
-import { useFetchSalaryData } from '../useFetchSalaryData';
+import * as S from '@/pages/mypage/styles/salary-section.styles';
+import Modal from '@/pages/mypage/ui/salary-modal';
+import Dropdown from '@/shared/dropdown/Dropdown';
+import Button from '@/shared/button/Button';
+import { useFetchSalaryData } from '@/pages/mypage/useFetchSalaryData';
 import { formatCurrency } from '@/utils/formatCurrency';
 
 export interface SalaryData {
