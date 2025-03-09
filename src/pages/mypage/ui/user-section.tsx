@@ -1,7 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as S from '../styles/user-section.styles';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../../../firebase';
+import { useFetch } from '../useFetch';
 import profileDefault from '../../../assets/images/profile-default.svg';
 
 const EditIcon = ({ onClick }: { onClick: () => void }) => {
@@ -26,54 +25,17 @@ const EditIcon = ({ onClick }: { onClick: () => void }) => {
 
 const UserInfoSection = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [userData, setUserData] = useState({
-    name: '사용자',
-    position: '직책 없음',
-    joinedDate: '입사일 없음',
-    department: '부서 없음',
-    email: '이메일 없음',
+  const { userData } = useFetch();
+  const [profileImage, setProfileImage] = useState<string>(() => {
+    return localStorage.getItem('profileImage') || profileDefault;
   });
-
-  // firebase에서 사용자 데이터 가져오기
-  const fetchUserData = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const userDocRef = doc(db, 'users', user.uid);
-    const docSnap = await getDoc(userDocRef);
-    if (!docSnap.exists()) return;
-
-    const data = docSnap.data();
-
-    // 프로필 이미지 설정
-    setProfileImage(data.profileImage || profileDefault);
-
-    // 사용자 정보 설정
-    setUserData({
-      name: data.name || '사용자',
-      position: data.position || '직책 없음',
-      joinedDate: data.joinDate?.toDate()
-        ? `${data.joinDate.toDate().getFullYear()}년 ${data.joinDate.toDate().getMonth() + 1}월 ${data.joinDate.toDate().getDate()}일`
-        : `입사일 없음`,
-      department: data.department || `부서 없음`,
-      email: data.email || `이메일 없음`,
-    });
-  };
-
-  //LocalStorage에서 이미지 불러오기
-  const loadProfileImage = () => {
-    const storedImage = localStorage.getItem('profileImage');
-    setProfileImage(storedImage || profileDefault); // 로컬 스토리지 없으면 기본 이미지
-  };
 
   // 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
-    const initialize = async () => {
-      await fetchUserData(); // 사용자 정보만 가져옴
-      loadProfileImage(); // 로컬 스토리지에서 이미지 로드
-    };
-    initialize();
+    const storedImage = localStorage.getItem('profileImage');
+    if (storedImage) {
+      setProfileImage(storedImage);
+    }
   }, []);
 
   // 프로필 이미지 변경 핸들러

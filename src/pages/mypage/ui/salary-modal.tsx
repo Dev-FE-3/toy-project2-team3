@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import * as S from '../styles/salary-modal.styles';
 import Button from '../../../shared/button/Button';
 import { SalaryData } from './salary-section';
+import { formatCurrency } from '@/utils/currency';
 
 // 모달 props 인터페이스
 interface ModalProps {
@@ -16,13 +17,6 @@ interface SalaryTableProps {
   title: string;
   data: { label: string; value: number | undefined }[];
 }
-
-const formatCurrency = (value: number | undefined) => {
-  if (typeof value !== 'number' || isNaN(value)) return '0원';
-  return value < 0
-    ? `-${Math.abs(value).toLocaleString()}원`
-    : `${value.toLocaleString()}원`;
-};
 
 // 급여 테이블 컴포넌트
 const SalaryTable = ({ title, data }: SalaryTableProps) => (
