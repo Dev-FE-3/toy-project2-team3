@@ -26,8 +26,7 @@ const EditIcon = ({ onClick }: { onClick: () => void }) => {
 
 const UserInfoSection = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const [profileImage, setProfileImage] = useState<string>(profileDefault);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const [userData, setUserData] = useState({
     name: '사용자',
     position: '직책 없음',
@@ -62,9 +61,19 @@ const UserInfoSection = () => {
     });
   };
 
-  //컴포넌트 마운트 시 사용자 데이터 로드
+  //LocalStorage에서 이미지 불러오기
+  const loadProfileImage = () => {
+    const storedImage = localStorage.getItem('profileImage');
+    setProfileImage(storedImage || profileDefault); // 로컬 스토리지 없으면 기본 이미지
+  };
+
+  // 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
-    fetchUserData();
+    const initialize = async () => {
+      await fetchUserData(); // 사용자 정보만 가져옴
+      loadProfileImage(); // 로컬 스토리지에서 이미지 로드
+    };
+    initialize();
   }, []);
 
   // 프로필 이미지 변경 핸들러
@@ -73,13 +82,13 @@ const UserInfoSection = () => {
     if (!file) return;
 
     const reader = new FileReader();
+    reader.readAsDataURL(file);
     reader.onload = () => {
       if (typeof reader.result === 'string') {
         localStorage.setItem('profileImage', reader.result);
         setProfileImage(reader.result);
       }
     };
-    reader.readAsDataURL(file);
   };
 
   return (
@@ -106,7 +115,7 @@ const UserInfoSection = () => {
         </div>
         <S.ProfileImage>
           <img
-            src={profileImage}
+            src={profileImage || profileDefault}
             alt="Profile"
             style={{ width: '100%', height: '100%' }}
           />
