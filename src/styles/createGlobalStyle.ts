@@ -33,6 +33,7 @@ time, mark, audio, video {
   #root{
         height: 100%;
     width: 100%;
+    display: flex;
   }
   
 /* HTML5 display-role reset for older browsers */
@@ -43,10 +44,6 @@ footer, header, hgroup, main, menu, nav, section {
 /* HTML5 hidden-attribute fix for newer browsers */
 *[hidden] {
     display: none;
-}
-
-body {
-  height:auto;
 }
   
 menu, ol, ul {
