@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import * as S from '../styles/salary-modal.styles';
 import Button from '../../../shared/button/Button';
 import { SalaryData } from './salary-section';
-import { formatCurrency } from '@/utils/currency';
+import { formatCurrency } from '@/utils/formatCurrency';
+import { formatDate } from '@/utils/formatDate';
 
 // 모달 props 인터페이스
 interface ModalProps {
@@ -40,6 +41,7 @@ const SalaryTable = ({ title, data }: SalaryTableProps) => (
 // 급여 명세서 모달 컴포넌트
 const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
   const navigate = useNavigate();
+  const formattedDate = formatDate(selectedSalary?.rawDate);
 
   // 정정 신청 처리 핸들러
   const handleCorrectionRequest = () => {
@@ -60,17 +62,6 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
   const month = useMemo(() => {
     return getMonth(selectedSalary);
   }, [selectedSalary]);
-
-  const formattedDate = useMemo(() => {
-    if (!selectedSalary?.rawDate) return '날짜 없음';
-
-    const date = new Date(selectedSalary.rawDate);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // 두 자리로 만들기
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}년 ${month}월 ${day}일`;
-  }, [selectedSalary?.rawDate]);
 
   // 지급 항목 데이터
   const paymentData = useMemo(() => {

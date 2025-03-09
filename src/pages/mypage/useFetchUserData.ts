@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from './../../firebase';
+import { auth, db } from '../../firebase';
 
 // 사용자 데이터 타입 정의
 interface UserData {

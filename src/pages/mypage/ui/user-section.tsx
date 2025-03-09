@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as S from '../styles/user-section.styles';
-import { useFetch } from '../useFetch';
+import { useFetch } from '../useFetchUserData';
 import profileDefault from '../../../assets/images/profile-default.svg';
 
 const EditIcon = ({ onClick }: { onClick: () => void }) => {
