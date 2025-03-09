@@ -1,10 +1,19 @@
-import { ReactNode, JSX, useRef, useEffect, useState, useMemo } from 'react';
+import {
+  ReactNode,
+  JSX,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from 'react';
 import * as S from '../../pages/salary-correction/style';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Dropdown, { OptionType } from '@/shared/dropdown/Dropdown';
 import Button from '@/shared/button/Button';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { auth, app, db } from '@/firebase';
+import { collection, getDocs, Timestamp, addDoc } from 'firebase/firestore';
 
 interface SalaryCorrectionPageProps {
   children?: ReactNode;
@@ -17,27 +26,34 @@ interface FormDataType {
   details: string;
 }
 
+interface CorrectionData {
+  id: string;
+  correctionDate: Timestamp;
+  salaryDate: Timestamp;
+  title: string;
+  reason: string;
+  details: string;
+}
+
 const SalaryCorrectionPage = ({
   children,
 }: SalaryCorrectionPageProps): JSX.Element => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
-  const selectedMonth = useMemo(
-    () => searchParams.get('month'),
-    [searchParams]
-  );
-  console.log(selectedMonth);
-
+  const [user, setUser] = useState(auth.currentUser);
   const [formData, setFormData] = useState<FormDataType>({
     salaryLabel: null,
     userName: '',
     reason: '',
     details: '',
   });
-
+  const [correctionData, setCorrectionData] = useState<CorrectionData[]>([]);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const availableSalaryDates = useSelector(
     (state: RootState) => state.salary.availableSalaryDates
+  );
+  const selectedMonth = useMemo(
+    () => searchParams.get('month'),
+    [searchParams]
   );
 
   //드롭다운 객체 생성
@@ -56,7 +72,55 @@ const SalaryCorrectionPage = ({
     } else return;
   });
 
-  useEffect(() => {}, []);
+  const fetchCorrectionData = async () => {
+    if (!user) {
+      console.warn('사용자가 로그인되지 않았습니다.');
+      return;
+    }
+    try {
+      const correctionRef = collection(db, 'users', user.uid, 'correction');
+      const querySnapshot = await getDocs(correctionRef);
+      console.log(querySnapshot.docs);
+      const corrections: CorrectionData[] = querySnapshot.docs.map((doc) => {
+        console.log(doc.data());
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+        } as CorrectionData;
+      });
+      setCorrectionData(() => corrections);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const addCorrectionFrom = async (correctionForm: FormDataType) => {
+    try {
+      const docRef = await addDoc(collection(db, 'correction'), {
+        correctionDate: Timestamp.now(),
+        salaryDate: Timestamp.now(),
+        title: 'test1',
+        reason: 'testreason1',
+        details: 'testdetail1',
+      });
+
+      console.log(`문서 추가 완료! 문서 ID: ${docRef.id}`);
+    } catch (error) {
+      console.error('문서 추가 실패:', error);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    fetchCorrectionData();
+  }, [user, searchParams]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -69,6 +133,7 @@ const SalaryCorrectionPage = ({
         reason: '',
         details: '',
       }));
+      addCorrectionFrom(formData);
       console.log('제출하기 완료');
     }
   };
