@@ -1,8 +1,10 @@
-import { ReactNode, JSX, useRef, useEffect, useState } from 'react';
+import { ReactNode, JSX, useRef, useEffect, useState, useMemo } from 'react';
 import * as S from '../../pages/salary-correction/style';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Dropdown, { OptionType } from '@/shared/dropdown/Dropdown';
 import Button from '@/shared/button/Button';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 interface SalaryCorrectionPageProps {
   children?: ReactNode;
@@ -19,6 +21,14 @@ const SalaryCorrectionPage = ({
   children,
 }: SalaryCorrectionPageProps): JSX.Element => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const selectedMonth = useMemo(
+    () => searchParams.get('month'),
+    [searchParams]
+  );
+  console.log(selectedMonth);
+
   const [formData, setFormData] = useState<FormDataType>({
     salaryLabel: null,
     userName: '',
@@ -26,16 +36,27 @@ const SalaryCorrectionPage = ({
     details: '',
   });
 
-  useEffect(() => {
-    console.log('Updated formData:', formData);
-  }, [formData]);
+  const availableSalaryDates = useSelector(
+    (state: RootState) => state.salary.availableSalaryDates
+  );
 
-  const dropdownOptions: OptionType[] = [
-    { label: '24년 9월 급여', value: 1 },
-    { label: '24년 11월 급여', value: 2 },
-    { label: '25년 1월 급여', value: 3 },
-    { label: '25년 4월 급여', value: 4 },
-  ];
+  //드롭다운 객체 생성
+  const dropdownOptions: OptionType[] = useMemo(
+    () =>
+      availableSalaryDates.map((date, index) => ({
+        label: date,
+        value: index,
+      })),
+    [availableSalaryDates]
+  );
+
+  const defaultOptionValue = dropdownOptions.find((option) => {
+    if (selectedMonth) {
+      return option.label.includes(selectedMonth);
+    } else return;
+  });
+
+  useEffect(() => {}, []);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -83,6 +104,7 @@ const SalaryCorrectionPage = ({
             <Dropdown
               title="급여 일자를 선택해주세요"
               options={dropdownOptions}
+              defaultValue={defaultOptionValue}
               width="100%"
               onSelect={(option) => handleSelect(option)}
             />
