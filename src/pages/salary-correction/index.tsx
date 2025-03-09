@@ -10,7 +10,7 @@ interface SalaryCorrectionPageProps {
 
 interface FormDataType {
   salaryLabel: OptionType | null;
-  userId: string;
+  userName: string;
   reason: string;
   details: string;
 }
@@ -21,7 +21,7 @@ const SalaryCorrectionPage = ({
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormDataType>({
     salaryLabel: null,
-    userId: '',
+    userName: '',
     reason: '',
     details: '',
   });
@@ -44,7 +44,7 @@ const SalaryCorrectionPage = ({
     if (submitter.name === 'submitBtn') {
       setFormData(() => ({
         salaryLabel: null,
-        userId: '',
+        userName: '',
         reason: '',
         details: '',
       }));
@@ -87,10 +87,10 @@ const SalaryCorrectionPage = ({
               onSelect={(option) => handleSelect(option)}
             />
             <S.Input
-              value={formData.userId}
-              name="userId"
+              value={formData.userName}
+              name="userName"
               onChange={(event) => handleInputChange(event)}
-              placeholder="사번을 입력해주세요"
+              placeholder="이름을 입력해주세요"
             />
             <S.Input
               value={formData.reason}
