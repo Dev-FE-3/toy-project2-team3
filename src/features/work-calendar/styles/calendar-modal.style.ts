@@ -1,10 +1,5 @@
 import styled, { createGlobalStyle } from 'styled-components';
-import Button from '../../../shared/button/Button';
-import Dropdown, {
-  DropdownHeader,
-  DropdownList,
-  DropdownItem,
-} from '../../../shared/dropdown/Dropdown';
+import Button from '@/shared/button/Button';
 
 // 전역 스타일 적용
 export const ModalGlobalStyle = createGlobalStyle`
@@ -61,20 +56,13 @@ export const FormLabel = styled.label`
   text-align: left;
 `;
 
-export const CustomSizeDropdown = styled(Dropdown)`
-  font-size: 12px;
-  & ${DropdownHeader}, & ${DropdownList}, & ${DropdownItem} {
-    font-size: 12px;
-  }
-`;
-
 export const MemoInput = styled.input`
   ${({ theme }) => theme.typography.body3};
   color: ${({ theme }) => theme.colors.grey1};
   width: 100%;
   height: 40px;
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.colors.grey2};
   box-sizing: border-box;
   &::placeholder {
@@ -202,12 +190,6 @@ export const MintButtonModal = styled(Button)`
         color: white;
       }
     `}
-`;
-
-export const ActionButton = styled(EventModalButton)`
-  width: 120px;
-  height: 40px;
-  border-radius: 4px;
 `;
 
 export const DeleteButton = styled(Button)`

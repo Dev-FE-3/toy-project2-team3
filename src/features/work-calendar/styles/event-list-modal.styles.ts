@@ -110,5 +110,5 @@ export const EventListModalFooter = styled.div`
   width: 100%;
   padding: 15px 0;
   background-color: ${({ theme }) => theme.colors.white};
-  border-top: 1px solid #eee;
+  border-top: 3px solid ${({ theme }) => theme.colors.grey3};
 `;

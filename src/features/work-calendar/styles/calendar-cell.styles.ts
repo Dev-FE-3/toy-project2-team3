@@ -14,6 +14,7 @@ export const CalendarCellStyled = styled.div<{
   border: 1px solid ${({ theme }) => theme.colors.grey2};
   border-radius: 8px;
   gap: 2px;
+  z-index: 2;
   background-color: ${(props) =>
     props.$isCurrentMonth ? theme.colors.white : theme.colors.grey3};
   color: ${(props) =>
@@ -37,6 +38,7 @@ export const CalendarCellStyled = styled.div<{
           : theme.colors.grey3};
   }
 `;
+
 // 날짜 숫자 컨테이너
 export const DateContainer = styled.div`
   display: flex;
@@ -54,7 +56,7 @@ export const EventsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  overflow: hidden;
+  overflow: visible; /* 변경: 이벤트가 셀을 넘어가도록 허용 */
 `;
 
 // 날짜 범위 표시 (여러 날짜에 걸친 이벤트)
@@ -63,31 +65,81 @@ export const EventRangeIndicator = styled.div<{
   $isEnd?: boolean;
   $color: string;
   $hasText: boolean;
+  $position?: number;
 }>`
   background-color: ${({ $color }) => $color};
   color: ${({ theme }) => theme.colors.white};
   ${({ theme }) => theme.typography.body3};
   padding: 4px;
   height: 18px;
-  border-radius: 4px;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  position: relative;
+  z-index: ${(props) =>
+    props.$position !== undefined ? 10 - (props.$position % 10) : 1};
 
-  ${(props) =>
-    props.$isStart &&
-    css`
-      border-top-left-radius: 4px;
-      border-bottom-left-radius: 4px;
-    `}
+  /* 시작, 중간, 끝 부분에 따른 스타일 설정 */
+  ${(props) => {
+    if (props.$isStart && props.$isEnd) {
+      // 시작과 끝이 같은 날인 경우 (단일 날짜 이벤트)
+      return css`
+        border-radius: 4px;
+        margin: 0;
+        overflow: hidden;
+      `;
+    } else if (props.$isStart) {
+      // 시작 날짜인 경우
+      return css`
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        margin-right: -8px; /* 셀 패딩을 넘어서 확장 */
+        padding-right: 8px;
+        overflow: hidden;
+      `;
+    } else if (props.$isEnd) {
+      // 끝 날짜인 경우
+      return css`
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        margin-left: -8px; /* 셀 패딩을 넘어서 확장 */
+        padding-left: 8px;
+      `;
+    } else {
+      // 중간 날짜인 경우 (좌우로 넓게 확장)
+      return css`
+        border-radius: 0;
+        margin-left: -9px; /* 좌측으로 확장 (테두리 1px 포함) */
+        margin-right: -9px; /* 우측으로 확장 (테두리 1px 포함) */
+        padding-left: 8px;
+        padding-right: 8px;
+      `;
+    }
+  }}
 
+  /* 시작 부분에만 텍스트 표시 */
   ${(props) =>
-    props.$isEnd &&
+    !props.$hasText &&
     css`
-      border-top-right-radius: 4px;
-      border-bottom-right-radius: 4px;
+      justify-content: center;
     `}
+`;
+
+// 더 많은 이벤트 표시기
+export const MoreEventsIndicator = styled.div`
+  ${({ theme }) => theme.typography.body3}
+  color: ${({ theme }) => theme.colors.grey1};
+  text-align: center;
+  padding: 2px 0;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;

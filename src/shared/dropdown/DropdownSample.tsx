@@ -12,8 +12,16 @@ const DropdownSample = () => {
   ];
 
   return (
-    <div>
-      <Dropdown title="원하는 텍스트 입력" options={options} />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div>
+        <h3>기본 크기 드롭다운</h3>
+        <Dropdown title="원하는 텍스트 입력" options={options} />
+      </div>
+
+      <div>
+        <h3>작은 크기 드롭다운</h3>
+        <Dropdown title="원하는 텍스트 입력" options={options} size="small" />
+      </div>
     </div>
   );
 };
