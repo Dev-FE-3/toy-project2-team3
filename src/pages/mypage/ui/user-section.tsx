@@ -76,11 +76,8 @@ const UserInfoSection = () => {
     if (!file) return;
 
     try {
-      console.log('압축 전 크기:', file.size, 'bytes');
       const compressedBase64 = await compressImage(file, 800, 0.7);
       const compressedSize = compressedBase64.length * 0.75; // base64를 바이트로 근사 계산
-      console.log('압축 후 크기:', compressedSize, 'bytes');
-      console.log('크기 감소:', file.size - compressedSize, 'bytes');
       localStorage.setItem('profileImage', compressedBase64);
       setProfileImage(compressedBase64);
     } catch (error) {
