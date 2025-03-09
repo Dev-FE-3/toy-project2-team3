@@ -82,3 +82,16 @@ export const Textarea = styled.textarea`
     outline: none;
   }
 `;
+
+export const ListBox = styled.ul`
+  /* background-color: black;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px; */
+`;
+
+export const ListItem = styled.li`
+  /* background-color: purple; */
+`;
