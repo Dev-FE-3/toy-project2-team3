@@ -18,7 +18,6 @@ export const InfoSection = styled.section`
   min-height: 260px;
   border-top: 2px solid ${({ theme }) => theme.colors.point1};
   border-bottom: 2px solid ${({ theme }) => theme.colors.point1};
-  margin-bottom: 3rem;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -54,20 +53,30 @@ export const ProfileEditButton = styled.button`
   align-items: center;
   justify-content: center;
   position: absolute;
-  bottom: 3.1rem;
+  bottom: 2.2rem;
   right: -1px;
   cursor: pointer;
+  transition: transform 0.2s ease-in-out;
 
-  img {
-    width: 25px;
-    height: 25px;
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  &:hover svg {
+    transform: scale(1.2);
   }
 `;
 
 export const InfoWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 30px;
+  gap: 10px;
   width: 100%;
   padding: 30px;
 `;
@@ -75,7 +84,7 @@ export const InfoWrapper = styled.div`
 export const InfoItem = styled.p`
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1.5rem;
   ${({ theme }) => theme.typography.body1}
   padding: 0.5rem 0.75rem;
 

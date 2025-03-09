@@ -42,11 +42,9 @@ export const InputBox = styled.div`
 `;
 
 export const Label = styled.label`
-  font-size: 16px;
-  font-style: normal;
+  ${({ theme }) => theme.typography.body2}
   font-weight: 700;
-  line-height: 140%;
-  letter-spacing: -0.1px;
+  margin-left: 0.4rem;
 `;
 
 export const Input = styled.input`
@@ -75,11 +73,7 @@ export const ErrorText = styled.p`
   margin-top: 2px;
   color: rgba(229, 115, 115, 1);
 
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%;
-  letter-spacing: 0.1px;
+  ${({ theme }) => theme.typography.body4}
 `;
 
 export const FindSwitcher = styled.div`

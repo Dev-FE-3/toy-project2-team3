@@ -2,9 +2,8 @@ import styled from 'styled-components';
 
 export const SalarySection = styled.section`
   width: 100%;
-  min-height: 220px;
+  height: auto;
   position: relative;
-  margin-top: 5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;

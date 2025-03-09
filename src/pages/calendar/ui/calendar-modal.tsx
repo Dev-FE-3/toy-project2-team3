@@ -37,6 +37,7 @@ interface MemoModalProps {
   onSave: () => void;
   onClose: () => void;
   onDelete: () => void;
+  loading?: boolean;
 }
 
 const CalendarModal: React.FC<MemoModalProps> = ({
@@ -56,6 +57,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
   onSave,
   onClose,
   onDelete,
+  loading = false,
 }) => {
   // 이벤트 타입에 해당하는 OptionType 찾기
   const getSelectedOption = (): OptionType | undefined => {
@@ -72,20 +74,16 @@ const CalendarModal: React.FC<MemoModalProps> = ({
   // 모달이 열릴 때 스크롤바 너비를 계산하고 body 클래스 추가
   useEffect(() => {
     if (isOpen) {
-      const scrollbarWidth =
-        window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.setProperty(
-        '--scrollbar-width',
-        `${scrollbarWidth}px`
-      );
-      document.body.classList.add('modal-open');
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = '17px'; // 스크롤바 너비만큼 패딩 추가
     } else {
-      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     }
 
-    // 컴포넌트 언마운트 시 클래스 제거
     return () => {
-      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     };
   }, [isOpen]);
 
@@ -109,6 +107,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 onTitleChange(e.target.value)
               }
               placeholder="업무 제목을 입력하세요"
+              disabled={loading}
             />
           </FormRow>
 
@@ -124,9 +123,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
               width="100%"
               height="40px"
               defaultValue={getSelectedOption()}
-              onSelect={(option: OptionType) =>
-                onEventTypeChange(option.value.toString())
-              }
+              onSelect={(option) => onEventTypeChange(option.value as string)}
             />
           </FormRow>
 
@@ -139,6 +136,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 onContentChange(e.target.value)
               }
               placeholder="업무 내용을 입력하세요"
+              disabled={loading}
             />
           </FormRow>
 
@@ -152,6 +150,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   onStartDateChange(e.target.value)
                 }
+                disabled={loading}
               />
             </DateWrapper>
             <DateWrapper>
@@ -163,6 +162,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   onEndDateChange(e.target.value)
                 }
+                disabled={loading}
               />
             </DateWrapper>
           </DateContainer>
@@ -173,6 +173,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 typeStyle="rounded"
                 variant="outlined"
                 onClick={onClose}
+                disabled={loading}
               >
                 취소
               </MintButtonModal>
@@ -181,6 +182,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 typeStyle="rounded"
                 variant="outlined"
                 onClick={onDelete}
+                disabled={loading}
               >
                 삭제
               </DeleteButton>
@@ -188,8 +190,9 @@ const CalendarModal: React.FC<MemoModalProps> = ({
             <MintButtonModal
               variant={isNewEvent ? 'filled' : 'outlined'}
               onClick={onSave}
+              disabled={loading}
             >
-              {isNewEvent ? '추가' : '저장'}
+              {loading ? '처리 중...' : isNewEvent ? '추가' : '저장'}
             </MintButtonModal>
           </ButtonContainer>
         </ModalContent>
