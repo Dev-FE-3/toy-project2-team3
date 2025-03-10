@@ -7,6 +7,8 @@ import Dropdown from '../../../shared/dropdown/Dropdown';
 import Button from '../../../shared/button/Button';
 import { auth, db } from '../../../firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 export interface SalaryData {
   id: string;
