@@ -133,16 +133,3 @@ export const EventRangeIndicator = styled.div<{
       justify-content: center;
     `}
 `;
-
-// 더 많은 이벤트 표시기
-export const MoreEventsIndicator = styled.div`
-  ${({ theme }) => theme.typography.body3}
-  color: ${({ theme }) => theme.colors.grey1};
-  text-align: center;
-  padding: 2px 0;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;

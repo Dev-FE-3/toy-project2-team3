@@ -31,24 +31,9 @@ interface DropdownIconProps {
   size?: 'default' | 'small';
 }
 
-// 드롭다운 공통 style 정의
-const fontStyles = css<{ $size?: 'default' | 'small' }>`
-  ${({ theme, $size }) =>
-    $size === 'small' ? theme.typography.body3 : theme.typography.body2};
-`;
-
 const baseBoxStyles = css`
   box-sizing: border-box;
   align-items: center;
-`;
-
-const itemBaseStyles = css<{ $size?: 'default' | 'small' }>`
-  ${({ theme, $size }) =>
-    $size === 'small' ? theme.typography.body3 : theme.typography.body2}
-  padding: 8px 20px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
 `;
 
 const DropdownContainer = styled.nav<{
