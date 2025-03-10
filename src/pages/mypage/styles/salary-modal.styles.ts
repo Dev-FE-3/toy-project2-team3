@@ -10,7 +10,7 @@ export const ModalOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;
+  z-index: 100;
 `;
 
 export const ModalContent = styled.div`
@@ -48,7 +48,6 @@ export const DateText = styled.p`
 `;
 
 export const ModalBody = styled.div`
-  width: 920px;
   height: 480px;
   background: ${({ theme }) => theme.colors.point3};
   padding: 2.5rem;
@@ -62,7 +61,7 @@ export const ModalBody = styled.div`
 export const SalaryDetails = styled.div`
   display: flex;
   justify-content: flex-start;
-  gap: 5rem;
+  gap: 10rem;
   margin-left: 5rem;
 `;
 
@@ -79,7 +78,7 @@ export const TableHeader = styled.th`
 `;
 
 export const TableRow = styled.tr`
-  height: 2.5rem;
+  height: 3rem;
   text-align: left;
 `;
 
@@ -110,7 +109,7 @@ export const TotalRow = styled.div`
 `;
 
 export const TotalText = styled.p`
-  ${({ theme }) => theme.typography.body2}
+  ${({ theme }) => theme.typography.heading4}
   font-weight: bold;
 `;
 
@@ -128,15 +127,3 @@ export const ModalFooter = styled.div`
   gap: 0.625rem;
   margin-top: 1.25rem;
 `;
-
-// const Button = styled.button<{ primary?: boolean }>`
-//   width: 150px;
-//   height: 40px;
-//   background-color: ${({ primary }) => (primary ? '#14b8a6' : 'white')};
-//   color: ${({ primary }) => (primary ? 'white' : '#14b8a6')};
-//   border: 2px solid #14b8a6;
-//   border-radius: 4px;
-//   cursor: pointer;
-//   font-size: 16px;
-//   font-weight: bold;
-// `;

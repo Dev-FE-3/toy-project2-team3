@@ -5,7 +5,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   width?: number | string; // 버튼 너비 (숫자 또는 "100px" 문자열 가능)
   variant?: 'filled' | 'outlined'; // 버튼 스타일
   typeStyle?: 'rounded' | 'square'; // 버튼 모양
-  isDelete?: boolean;
+  $isDelete?: boolean;
 }
 
 // 기본 스타일
@@ -13,7 +13,7 @@ const StyledButton = styled.button<{
   $typeStyle?: 'rounded' | 'square';
   width?: number | string;
   variant?: 'filled' | 'outlined';
-  isDelete?: boolean;
+  $isDelete?: boolean;
 }>`
   box-sizing: border-box;
   white-space: nowrap;
@@ -37,8 +37,8 @@ const StyledButton = styled.button<{
   // variant에 따른 스타일 변화
   ${({ variant }) =>
     variant === 'filled'
-      ? ({ theme, isDelete }) =>
-          isDelete
+      ? ({ theme, $isDelete }) =>
+          $isDelete
             ? `
       background-color: ${theme.colors.red} ;
       color: ${theme.colors.white};
@@ -61,8 +61,8 @@ const StyledButton = styled.button<{
         border : ${theme.colors.point1} 1px solid;
       }
     `
-      : ({ theme, isDelete }) =>
-          isDelete
+      : ({ theme, $isDelete }) =>
+          $isDelete
             ? `
       background-color: ${theme.colors.white};
       color: ${theme.colors.red};
@@ -93,7 +93,7 @@ const Button: React.FC<ButtonProps> = ({
   width = 'auto',
   variant = 'filled',
   typeStyle = 'rounded',
-  isDelete = false,
+  $isDelete = false,
   ...props
 }) => {
   return (
@@ -101,7 +101,7 @@ const Button: React.FC<ButtonProps> = ({
       width={width}
       variant={variant}
       $typeStyle={typeStyle}
-      isDelete={isDelete}
+      $isDelete={$isDelete}
       {...props}
     >
       {children}

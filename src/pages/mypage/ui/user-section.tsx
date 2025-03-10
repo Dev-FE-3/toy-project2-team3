@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import * as S from '../styles/user-section.styles';
-import profileDefault from '../../../assets/images/profile-default.png';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../../firebase';
+import profileDefault from '../../../assets/images/profile-default.svg';
 
-const EditIcon: React.FC = () => {
+const EditIcon = ({ onClick }: { onClick: () => void }) => {
   return (
     <svg
+      onClick={() => {
+        onClick();
+      }}
       xmlns="http://www.w3.org/2000/svg"
       width="28"
       height="28"
@@ -19,13 +24,62 @@ const EditIcon: React.FC = () => {
   );
 };
 
-const UserInfoSection: React.FC = () => {
-  const userData = {
-    name: '백지헌',
-    position: 'Security Engineer',
-    joinedDate: '2024.04.17',
-    department: '인프라보안팀',
-    email: 'jiheonbaek@gmail.com',
+const UserInfoSection = () => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [profileImage, setProfileImage] = useState<string>(profileDefault);
+  const [userData, setUserData] = useState({
+    name: '사용자',
+    position: '직책 없음',
+    joinedDate: '입사일 없음',
+    department: '부서 없음',
+    email: '이메일 없음',
+  });
+
+  // firebase에서 사용자 데이터 가져오기
+  const fetchUserData = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const userDocRef = doc(db, 'users', user.uid);
+    const docSnap = await getDoc(userDocRef);
+    if (!docSnap.exists()) return;
+
+    const data = docSnap.data();
+
+    // 프로필 이미지 설정
+    setProfileImage(data.profileImage || profileDefault);
+
+    // 사용자 정보 설정
+    setUserData({
+      name: data.name || '사용자',
+      position: data.position || '직책 없음',
+      joinedDate: data.joinDate?.toDate()
+        ? `${data.joinDate.toDate().getFullYear()}년 ${data.joinDate.toDate().getMonth() + 1}월 ${data.joinDate.toDate().getDate()}일`
+        : `입사일 없음`,
+      department: data.department || `부서 없음`,
+      email: data.email || `이메일 없음`,
+    });
+  };
+
+  //컴포넌트 마운트 시 사용자 데이터 로드
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  // 프로필 이미지 변경 핸들러
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        localStorage.setItem('profileImage', reader.result);
+        setProfileImage(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -52,14 +106,21 @@ const UserInfoSection: React.FC = () => {
         </div>
         <S.ProfileImage>
           <img
-            src={profileDefault}
+            src={profileImage}
             alt="Profile"
             style={{ width: '100%', height: '100%' }}
           />
         </S.ProfileImage>
         <S.ProfileEditButton>
-          <EditIcon />
+          <EditIcon onClick={() => fileInputRef.current?.click()} />
         </S.ProfileEditButton>
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          accept="image/*"
+          onChange={handleImageChange}
+        />
       </S.ProfileContainer>
     </S.InfoSection>
   );
