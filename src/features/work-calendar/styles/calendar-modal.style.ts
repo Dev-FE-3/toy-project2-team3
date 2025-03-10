@@ -35,6 +35,7 @@ export const ModalContent = styled.article`
   box-sizing: border-box;
 `;
 
+// 모달 title (업무 추가)
 export const ModalTitle = styled.div`
   ${({ theme }) => theme.typography.heading3};
   margin: 0 0 10px 0;
@@ -49,6 +50,7 @@ export const FormRow = styled.div`
   margin-bottom: 10px;
 `;
 
+// 일정 제목, 일정 유형, 내용 title
 export const FormLabel = styled.label`
   ${({ theme }) => theme.typography.heading4};
   margin-bottom: 5px;
@@ -56,6 +58,7 @@ export const FormLabel = styled.label`
   text-align: left;
 `;
 
+// 일정 제목 입력란
 export const MemoInput = styled.input`
   ${({ theme }) => theme.typography.body3};
   color: ${({ theme }) => theme.colors.grey1};
@@ -70,7 +73,9 @@ export const MemoInput = styled.input`
   }
 `;
 
+// 업무 내용 text
 export const MemoTextarea = styled.textarea`
+  ${({ theme }) => theme.typography.body3};
   width: 100%;
   height: 40px;
   padding: 10px 16px;
@@ -88,7 +93,6 @@ export const MemoTextarea = styled.textarea`
 
 export const LargerTextarea = styled(MemoTextarea)`
   height: 90px;
-  ${({ theme }) => theme.typography.body3};
   vertical-align: middle;
 `;
 
@@ -105,16 +109,19 @@ export const DateWrapper = styled.div`
   width: 48%;
 `;
 
+// 시작일 종료일 title
 export const DateLabel = styled.label`
   ${({ theme }) => theme.typography.heading4};
   text-align: left;
 `;
 
+// 시작일 종료일 text
 export const DateInput = styled.input`
   width: 100%;
   height: 36px;
   padding: 8px 12px;
   border-radius: 8px;
+  ${({ theme }) => theme.typography.body3};
   border: 1px solid ${({ theme }) => theme.colors.grey2};
   box-sizing: border-box;
 `;
@@ -199,7 +206,7 @@ export const DeleteButton = styled(Button)`
   background-color: white;
       color: ${props.theme.colors.red};
       border: 1px solid ${props.theme.colors.red};
-font-size: ${props.theme.typography.menu1.fontSize};
+      font-size: ${props.theme.typography.menu1.fontSize};
        &:hover {
         background-color: ${props.theme.colors.red};
         color: white;

@@ -14,13 +14,13 @@ export const CalendarCellStyled = styled.div<{
   border: 1px solid ${({ theme }) => theme.colors.grey2};
   border-radius: 8px;
   gap: 2px;
-  z-index: 2;
   background-color: ${(props) =>
     props.$isCurrentMonth ? theme.colors.white : theme.colors.grey3};
   color: ${(props) =>
     props.$isCurrentMonth ? theme.colors.black : theme.colors.grey2};
   cursor: ${(props) => (props.$isClickable ? 'pointer' : 'default')};
-  overflow: hidden;
+  overflow: visible;
+  z-index: 1;
 
   ${(props) =>
     props.$isToday &&
@@ -56,7 +56,8 @@ export const EventsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  overflow: visible; /* 변경: 이벤트가 셀을 넘어가도록 허용 */
+  overflow: visible;
+  z-index: 1;
 `;
 
 // 날짜 범위 표시 (여러 날짜에 걸친 이벤트)
@@ -99,7 +100,7 @@ export const EventRangeIndicator = styled.div<{
         border-bottom-right-radius: 0;
         margin-right: -8px; /* 셀 패딩을 넘어서 확장 */
         padding-right: 8px;
-        overflow: hidden;
+        overflow: visible;
       `;
     } else if (props.$isEnd) {
       // 끝 날짜인 경우
@@ -110,6 +111,7 @@ export const EventRangeIndicator = styled.div<{
         border-bottom-left-radius: 0;
         margin-left: -8px; /* 셀 패딩을 넘어서 확장 */
         padding-left: 8px;
+        overflow: visible;
       `;
     } else {
       // 중간 날짜인 경우 (좌우로 넓게 확장)
@@ -119,6 +121,7 @@ export const EventRangeIndicator = styled.div<{
         margin-right: -9px; /* 우측으로 확장 (테두리 1px 포함) */
         padding-left: 8px;
         padding-right: 8px;
+        overflow: visible;
       `;
     }
   }}
