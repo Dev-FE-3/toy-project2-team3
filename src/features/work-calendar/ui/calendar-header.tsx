@@ -12,8 +12,8 @@ interface CalendarHeaderProps {
 const PrevIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="11"
-    height="14"
+    width="16"
+    height="16"
     viewBox="0 0 11 14"
     fill="none"
   >
@@ -27,8 +27,8 @@ const PrevIcon = () => (
 const NextIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="11"
-    height="14"
+    width="16"
+    height="16"
     viewBox="0 0 11 14"
     fill="none"
   >

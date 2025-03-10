@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Button from '../../../shared/button/Button';
+import Button from '@/shared/button/Button';
 
 export const HeaderContainer = styled.div`
   display: flex;
