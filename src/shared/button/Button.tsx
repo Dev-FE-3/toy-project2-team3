@@ -5,21 +5,23 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   width?: number | string; // 버튼 너비 (숫자 또는 "100px" 문자열 가능)
   variant?: 'filled' | 'outlined'; // 버튼 스타일
   typeStyle?: 'rounded' | 'square'; // 버튼 모양
-  $isDelete?: boolean;
+  isDelete?: boolean;
 }
 
 // 기본 스타일
 const StyledButton = styled.button<{
   $typeStyle?: 'rounded' | 'square';
-  width?: number | string;
-  variant?: 'filled' | 'outlined';
+  $width?: number | string;
+  $variant?: 'filled' | 'outlined';
   $isDelete?: boolean;
 }>`
   box-sizing: border-box;
   white-space: nowrap;
-  height: 40px;
+  min-height: 40px;
+  width: fit-content;
   padding: 0 40px;
-  width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
+  width: ${({ $width }) =>
+    typeof $width === 'number' ? `${$width}px` : $width};
   font: ${({ $typeStyle }) =>
     $typeStyle === 'rounded'
       ? ({ theme }) => theme.typography.menu1
@@ -35,8 +37,8 @@ const StyledButton = styled.button<{
     color 0.2s ease-in-out;
 
   // variant에 따른 스타일 변화
-  ${({ variant }) =>
-    variant === 'filled'
+  ${({ $variant }) =>
+    $variant === 'filled'
       ? ({ theme, $isDelete }) =>
           $isDelete
             ? `
@@ -90,18 +92,18 @@ const StyledButton = styled.button<{
 // 버튼 컴포넌트
 const Button: React.FC<ButtonProps> = ({
   children,
-  width = 'auto',
+  width = 'fit-content',
   variant = 'filled',
   typeStyle = 'rounded',
-  $isDelete = false,
+  isDelete = false,
   ...props
 }) => {
   return (
     <StyledButton
-      width={width}
-      variant={variant}
+      $width={width}
+      $variant={variant}
       $typeStyle={typeStyle}
-      $isDelete={$isDelete}
+      $isDelete={isDelete}
       {...props}
     >
       {children}
