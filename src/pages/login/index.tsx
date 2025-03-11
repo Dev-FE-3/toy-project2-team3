@@ -41,9 +41,7 @@ const Login = () => {
               )}
             </S.InputBox>
           </S.InputContainer>
-          <S.FindSwitcher>
-            <S.FindAccountLink>이메일/비밀번호</S.FindAccountLink> 찾기
-          </S.FindSwitcher>
+
           <Button type="submit">로그인</Button>
           <S.Switcher>
             아직 회원이 아니신가요?
