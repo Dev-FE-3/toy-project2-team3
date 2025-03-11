@@ -19,6 +19,11 @@ export const TileTitle = styled.h1`
   color: ${({ theme }) => theme.colors.black};
 `;
 
+export const TextColorPoint = styled.span`
+  ${({ theme }) => theme.typography.heading3};
+  color: ${({ theme }) => theme.colors.point1};
+`;
+
 export const TileContainer = styled.section`
   box-sizing: border-box;
   width: 100%;
@@ -45,6 +50,13 @@ export const ListTile = styled(Tile)`
 `;
 
 export const FormTile = styled(Tile)`
+  display: flex;
+  width: 100%;
+  gap: 28px;
+  background-color: ${({ theme }) => theme.colors.point2};
+`;
+
+export const InfoTile = styled(Tile)`
   display: flex;
   width: 100%;
   gap: 28px;
@@ -92,8 +104,8 @@ export const ListBox = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  overflow-y: auto; // ✅ 세로 스크롤 추가
-  overflow-x: hidden; // ✅ 가로 스크롤 제거
+  overflow-y: auto;
+  overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: ${({ theme }) => theme.colors.grey2} transparent;
 
@@ -195,4 +207,23 @@ export const ListBadge = styled.div<{
   font-weight: 700;
   border-radius: 50px;
   transition: 0.2s ease-in-out;
+`;
+
+export const InfoBox = styled.ul`
+  box-sizing: border-box;
+  background-color: ${({ theme }) => theme.colors.white};
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  padding: 24px;
+`;
+
+export const InfoList = styled.li``;
+
+export const InfoListTitle = styled.h5`
+  ${({ theme }) => theme.typography.heading4};
+`;
+
+export const InfoListData = styled.span`
+  ${({ theme }) => theme.typography.body2};
 `;

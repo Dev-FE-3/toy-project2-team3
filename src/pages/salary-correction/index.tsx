@@ -23,7 +23,11 @@ export interface CorrectionDataType {
   progress: 'approved' | 'pending' | 'rejected';
 }
 
-const progressLabel = {
+const progressLabel: {
+  approved: string;
+  pending: string;
+  rejected: string;
+} = {
   approved: '승인됨',
   pending: '처리중',
   rejected: '반려됨',
@@ -31,7 +35,17 @@ const progressLabel = {
 
 const SalaryCorrectionPage = (): JSX.Element => {
   const [user, setUser] = useState(auth.currentUser);
+  const [selectedCorrection, setSelectedCorrection] =
+    useState<CorrectionDataType>({
+      id: '',
+      correctionDate: Timestamp.now(),
+      title: '급여 정정 신청',
+      reason: '사유 없음',
+      details: '상세 사유 없음',
+      progress: 'pending',
+    });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitMode, setSubmitMode] = useState(true);
   const [formData, setFormData] = useState<FormDataType>({
     salaryLabel: null,
 
@@ -122,6 +136,16 @@ const SalaryCorrectionPage = (): JSX.Element => {
     }
   };
 
+  const formatTimestampToDate = (timestamp: Timestamp): string => {
+    const date = timestamp.toDate();
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 1월부터 시작하도록 +1
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}년 ${month}월 ${day}일`;
+  };
+
   useEffect(() => {
     //로그아웃 추적
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
@@ -192,6 +216,15 @@ const SalaryCorrectionPage = (): JSX.Element => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleListItemClick = (item: CorrectionDataType) => {
+    if (!item) {
+      console.log('리스트 정보 불러오기 실패');
+    }
+    setSubmitMode(false);
+    setSelectedCorrection(item);
+  };
+
   return (
     <>
       <S.BackLink onClick={() => navigate(-1)}>&lt; 이전 페이지로</S.BackLink>
@@ -200,7 +233,7 @@ const SalaryCorrectionPage = (): JSX.Element => {
         <S.ListTile>
           <S.TileTitle>신청 내역</S.TileTitle>
           <S.ListBox>
-            <S.AddListBtn>
+            <S.AddListBtn onClick={() => setSubmitMode(true)}>
               <S.IconWrapper
                 width="16"
                 height="16"
@@ -213,7 +246,7 @@ const SalaryCorrectionPage = (): JSX.Element => {
             </S.AddListBtn>
             {correctionData.map(
               (item: CorrectionDataType): JSX.Element => (
-                <S.ListItem>
+                <S.ListItem onClick={() => handleListItemClick(item)}>
                   <S.ListTitle>{item.title + ' 정정 신청'}</S.ListTitle>
                   <S.ListBadge $progress={item.progress}>
                     {progressLabel[item.progress]}
@@ -223,47 +256,78 @@ const SalaryCorrectionPage = (): JSX.Element => {
             )}
           </S.ListBox>
         </S.ListTile>
-        <S.FormTile onSubmit={() => {}}>
-          <S.TileTitle>정정 신청서 작성</S.TileTitle>
 
-          <S.InputForm
-            onSubmit={(event) => {
-              handleSubmit(event);
-            }}
-          >
-            <Dropdown
-              title="급여 일자를 선택해주세요"
-              options={dropdownOptions}
-              defaultValue={defaultOption}
-              width="100%"
-              onSelect={(option) => handleSelect(option)}
-            />
-            <S.Input
-              value={formData.reason}
-              name="reason"
-              onChange={(event) => handleInputChange(event)}
-              placeholder="정정 사유를 입력해주세요"
-              disabled={isSubmitting}
-            />
-            <S.Textarea
-              value={formData.details}
-              name="details"
-              onChange={(event) => handleInputChange(event)}
-              placeholder="상세 설명을 입력해주세요"
-              rows={1}
-              disabled={isSubmitting}
-            />
-            <Button
-              name="submitBtn"
-              type="submit"
-              typeStyle="rounded"
-              variant="filled"
-              disabled={isSubmitting}
+        {isSubmitMode ? (
+          <S.FormTile>
+            <S.TileTitle>정정 신청서 작성</S.TileTitle>
+            <S.InputForm
+              onSubmit={(event) => {
+                handleSubmit(event);
+              }}
             >
-              {isSubmitting ? '제출 중...' : '제출하기'}
-            </Button>
-          </S.InputForm>
-        </S.FormTile>
+              <Dropdown
+                title="급여 일자를 선택해주세요"
+                options={dropdownOptions}
+                defaultValue={defaultOption}
+                width="100%"
+                onSelect={(option) => handleSelect(option)}
+              />
+              <S.Input
+                value={formData.reason}
+                name="reason"
+                onChange={(event) => handleInputChange(event)}
+                placeholder="정정 사유를 입력해주세요"
+                disabled={isSubmitting}
+              />
+              <S.Textarea
+                value={formData.details}
+                name="details"
+                onChange={(event) => handleInputChange(event)}
+                placeholder="상세 설명을 입력해주세요"
+                rows={1}
+                disabled={isSubmitting}
+              />
+              <Button
+                name="submitBtn"
+                type="submit"
+                typeStyle="rounded"
+                variant="filled"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? '제출 중...' : '제출하기'}
+              </Button>
+            </S.InputForm>
+          </S.FormTile>
+        ) : (
+          <S.InfoTile>
+            <S.TileTitle>
+              <S.TextColorPoint>{selectedCorrection.title}</S.TextColorPoint>{' '}
+              {' 정정신청 내역'}
+            </S.TileTitle>
+            <S.InfoBox>
+              <S.InfoList>
+                <S.InfoListTitle>정정 신청일 </S.InfoListTitle>
+                <S.InfoListData>
+                  {formatTimestampToDate(selectedCorrection.correctionDate)}
+                </S.InfoListData>
+              </S.InfoList>
+              <S.InfoList>
+                <S.InfoListTitle>진행상황 </S.InfoListTitle>
+                <S.InfoListData>
+                  {progressLabel[selectedCorrection.progress]}
+                </S.InfoListData>
+              </S.InfoList>
+              <S.InfoList>
+                <S.InfoListTitle>사유 </S.InfoListTitle>
+                <S.InfoListData>{selectedCorrection.reason}</S.InfoListData>
+              </S.InfoList>
+              <S.InfoList>
+                <S.InfoListTitle>상세 사유 </S.InfoListTitle>
+                <S.InfoListData>{selectedCorrection.details}</S.InfoListData>
+              </S.InfoList>
+            </S.InfoBox>
+          </S.InfoTile>
+        )}
       </S.TileContainer>
     </>
   );
