@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { auth, db } from '@/firebase';
 import { collection, getDocs, Timestamp, addDoc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 
 interface FormDataType {
   salaryLabel: OptionType | null;
@@ -138,7 +139,6 @@ const SalaryCorrectionPage = (): JSX.Element => {
 
   const formatTimestampToDate = (timestamp: Timestamp): string => {
     const date = timestamp.toDate();
-
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // 1월부터 시작하도록 +1
     const day = String(date.getDate()).padStart(2, '0');
@@ -182,7 +182,8 @@ const SalaryCorrectionPage = (): JSX.Element => {
     if (submitter.name !== 'submitBtn') return;
     const validationError = validateFormData(formData);
     if (validationError) {
-      alert(validationError);
+      // alert(validationError);
+      toast.warn(validationError);
       return;
     }
     setIsSubmitting(true);
@@ -194,9 +195,9 @@ const SalaryCorrectionPage = (): JSX.Element => {
         reason: '',
         details: '',
       }));
-      console.log('제출하기 작업 완료');
+      toast.success('제출되었습니다');
     } catch (error) {
-      console.warn(error);
+      console.log(error);
     } finally {
       setIsSubmitting(false);
     }
