@@ -7,11 +7,9 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { auth, db } from '@/firebase';
 import { collection, getDocs, Timestamp, addDoc } from 'firebase/firestore';
-import CorrectionList from './ui/correctionList';
 
 interface FormDataType {
   salaryLabel: OptionType | null;
-  personInCharge: string;
   reason: string;
   details: string;
 }
@@ -22,14 +20,21 @@ export interface CorrectionDataType {
   title: string;
   reason: string;
   details: string;
+  progress: 'approved' | 'pending' | 'rejected';
 }
+
+const progressLabel = {
+  approved: '승인됨',
+  pending: '처리중',
+  rejected: '반려됨',
+};
 
 const SalaryCorrectionPage = (): JSX.Element => {
   const [user, setUser] = useState(auth.currentUser);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormDataType>({
     salaryLabel: null,
-    personInCharge: '',
+
     reason: '',
     details: '',
   });
@@ -91,7 +96,6 @@ const SalaryCorrectionPage = (): JSX.Element => {
 
   const validateFormData = (formData: FormDataType): string | null => {
     if (!formData.salaryLabel) return '정정할 급여를 선택해주세요.';
-    if (!formData.personInCharge.trim()) return '담당자를 입력해주세요.';
     if (!formData.reason.trim()) return '사유를 입력해주세요.';
     if (!formData.details.trim()) return '상세 사유를 입력해주세요.';
     return null;
@@ -107,9 +111,9 @@ const SalaryCorrectionPage = (): JSX.Element => {
       await addDoc(correctionRef, {
         correctionDate: Timestamp.now(),
         title: correctionForm.salaryLabel?.label,
-        personInCharge: correctionForm.personInCharge.trim(),
         reason: correctionForm.reason.trim(),
         details: correctionForm.details.trim(),
+        progress: 'pending',
       });
 
       console.log(`추가 성공, 문서 ID: ${correctionRef.id}`);
@@ -141,6 +145,10 @@ const SalaryCorrectionPage = (): JSX.Element => {
     fetchCorrectionData();
   }, [user, searchParams]);
 
+  useEffect(() => {
+    console.log(correctionData);
+  }, [correctionData]);
+
   //제출하기 버튼 동작함수
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -159,7 +167,6 @@ const SalaryCorrectionPage = (): JSX.Element => {
       await fetchCorrectionData();
       setFormData(() => ({
         salaryLabel: null,
-        personInCharge: '',
         reason: '',
         details: '',
       }));
@@ -191,7 +198,30 @@ const SalaryCorrectionPage = (): JSX.Element => {
       <S.Title>급여 정정 신청하기</S.Title>
       <S.TileContainer>
         <S.ListTile>
-          <CorrectionList correctionData={correctionData} />
+          <S.TileTitle>신청 내역</S.TileTitle>
+          <S.ListBox>
+            <S.AddListBtn>
+              <S.IconWrapper
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M7.37054 9.11714H0.595703V6.88314H7.37054V0.181152H9.62882V6.88314H16.4037V9.11714H9.62882V15.8191H7.37054V9.11714Z" />
+              </S.IconWrapper>
+            </S.AddListBtn>
+            {correctionData.map(
+              (item: CorrectionDataType): JSX.Element => (
+                <S.ListItem>
+                  <S.ListTitle>{item.title + ' 정정 신청'}</S.ListTitle>
+                  <S.ListBadge $progress={item.progress}>
+                    {progressLabel[item.progress]}
+                  </S.ListBadge>
+                </S.ListItem>
+              )
+            )}
+          </S.ListBox>
         </S.ListTile>
         <S.FormTile onSubmit={() => {}}>
           <S.TileTitle>정정 신청서 작성</S.TileTitle>
@@ -207,13 +237,6 @@ const SalaryCorrectionPage = (): JSX.Element => {
               defaultValue={defaultOption}
               width="100%"
               onSelect={(option) => handleSelect(option)}
-            />
-            <S.Input
-              value={formData.personInCharge}
-              name="personInCharge"
-              onChange={(event) => handleInputChange(event)}
-              placeholder="정정을 요청할 담당자를 입력해주세요"
-              disabled={isSubmitting}
             />
             <S.Input
               value={formData.reason}
