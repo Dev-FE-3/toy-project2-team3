@@ -92,7 +92,9 @@ const SignUp = () => {
             </S.InputBox>
           </S.InputContainer>
 
-          <Button type="submit">제출하기</Button>
+          <Button type="submit" style={{ width: '100%' }}>
+            제출하기
+          </Button>
           <S.Switcher>
             이미 계정이 있나요?
             <S.SignUpLink to="/login">로그인</S.SignUpLink>

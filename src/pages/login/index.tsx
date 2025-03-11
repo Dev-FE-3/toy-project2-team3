@@ -42,7 +42,9 @@ const Login = () => {
             </S.InputBox>
           </S.InputContainer>
 
-          <Button type="submit">로그인</Button>
+          <Button type="submit" style={{ width: '100%' }}>
+            로그인
+          </Button>
           <S.Switcher>
             아직 회원이 아니신가요?
             <S.SignUpLink to="/signup">회원가입</S.SignUpLink>
