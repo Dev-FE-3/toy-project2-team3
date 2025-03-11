@@ -1,14 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ModalGlobalStyle, ModalOverlay } from '../styles/calendar-modal.style';
-import {
-  CompactModalContent,
-  MessageContainer,
-  ConfirmationTitle,
-  CancelButton,
-  ConfirmDeleteButton,
-  ConfirmButtonContainer,
-} from '../styles/confirmation-modal.style';
+import * as S from '../styles/confirmation-modal.style';
 
 import { ReactNode } from 'react';
 
@@ -33,30 +26,30 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     <>
       <ModalGlobalStyle />
       <ModalOverlay role="dialog" aria-modal="true" onClick={onCancel}>
-        <CompactModalContent
+        <S.CompactModalContent
           onClick={(e: React.MouseEvent) => e.stopPropagation()}
         >
-          <ConfirmationTitle>{title}</ConfirmationTitle>
-          <MessageContainer>{message}</MessageContainer>
-          <ConfirmButtonContainer>
-            <CancelButton
+          <S.ConfirmationTitle>{title}</S.ConfirmationTitle>
+          <S.MessageContainer>{message}</S.MessageContainer>
+          <S.ConfirmButtonContainer>
+            <S.CancelButton
               typeStyle="rounded"
               variant="outlined"
               onClick={onCancel}
               style={{ width: '112px', height: '40px' }}
             >
               취소
-            </CancelButton>
-            <ConfirmDeleteButton
+            </S.CancelButton>
+            <S.ConfirmDeleteButton
               typeStyle="rounded"
               variant="filled"
               onClick={onConfirm}
               style={{ width: '112px', height: '40px' }}
             >
               삭제
-            </ConfirmDeleteButton>
-          </ConfirmButtonContainer>
-        </CompactModalContent>
+            </S.ConfirmDeleteButton>
+          </S.ConfirmButtonContainer>
+        </S.CompactModalContent>
       </ModalOverlay>
     </>,
     document.body

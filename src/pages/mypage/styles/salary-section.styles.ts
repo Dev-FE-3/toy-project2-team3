@@ -4,6 +4,7 @@ export const SalarySection = styled.section`
   width: 100%;
   height: auto;
   position: relative;
+  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;

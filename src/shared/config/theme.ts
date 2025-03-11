@@ -11,6 +11,7 @@ declare module 'styled-components' {
       black: string;
       grey1: string;
       grey2: string;
+      grey3: string;
       orange: string;
       red: string;
       green: string;
@@ -92,6 +93,7 @@ export const theme: DefaultTheme = {
     black: '#000000',
     grey1: '#4D4D4D',
     grey2: '#B2B2B2',
+    grey3: '#f0f0f0',
     orange: '#FFB74D',
     red: '#E57373',
     green: '#4DB6AC',

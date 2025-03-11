@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   width: 100%;
+  flex: 1;
   background-color: ${({ theme }) => theme.colors.white};
   display: flex;
   flex-direction: column;
@@ -10,7 +11,6 @@ export const Container = styled.div`
 
 export const ContentWrapper = styled.div`
   margin-top: 12rem;
-  margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   gap: 60px;

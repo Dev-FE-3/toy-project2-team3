@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import * as S from '../styles/user-section.styles';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../../../firebase';
-import profileDefault from '../../../assets/images/profile-default.svg';
+import React, { useRef, useEffect, useState } from 'react';
+import * as S from '@/pages/mypage/styles/user-section.styles';
+import { useFetch } from '@/pages/mypage/useFetchUserData';
+import profileDefault from '@/assets/images/profile_default.svg';
 
 const EditIcon = ({ onClick }: { onClick: () => void }) => {
   return (
@@ -24,62 +23,66 @@ const EditIcon = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
+const compressImage = (
+  file: File,
+  maxWidth: number = 800,
+  quality: number = 0.7
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    img.onload = () => {
+      const ratio = Math.min(maxWidth / img.width, 1);
+      canvas.width = img.width * ratio;
+      canvas.height = img.height * ratio;
+
+      if (!ctx) {
+        reject(new Error('Canvas context를 가져올 수 없습니다'));
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+      resolve(compressedBase64);
+    };
+
+    img.onerror = () => reject(new Error('이미지 로드 실패'));
+    img.src = URL.createObjectURL(file);
+  });
+};
+
 const UserInfoSection = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const [profileImage, setProfileImage] = useState<string>(profileDefault);
-  const [userData, setUserData] = useState({
-    name: '사용자',
-    position: '직책 없음',
-    joinedDate: '입사일 없음',
-    department: '부서 없음',
-    email: '이메일 없음',
+  const { userData } = useFetch();
+  const [profileImage, setProfileImage] = useState<string>(() => {
+    return localStorage.getItem('profileImage') || profileDefault;
   });
 
-  // firebase에서 사용자 데이터 가져오기
-  const fetchUserData = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const userDocRef = doc(db, 'users', user.uid);
-    const docSnap = await getDoc(userDocRef);
-    if (!docSnap.exists()) return;
-
-    const data = docSnap.data();
-
-    // 프로필 이미지 설정
-    setProfileImage(data.profileImage || profileDefault);
-
-    // 사용자 정보 설정
-    setUserData({
-      name: data.name || '사용자',
-      position: data.position || '직책 없음',
-      joinedDate: data.joinDate?.toDate()
-        ? `${data.joinDate.toDate().getFullYear()}년 ${data.joinDate.toDate().getMonth() + 1}월 ${data.joinDate.toDate().getDate()}일`
-        : `입사일 없음`,
-      department: data.department || `부서 없음`,
-      email: data.email || `이메일 없음`,
-    });
-  };
-
-  //컴포넌트 마운트 시 사용자 데이터 로드
+  // 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
-    fetchUserData();
+    const storedImage = localStorage.getItem('profileImage');
+    if (storedImage) {
+      setProfileImage(storedImage);
+    }
   }, []);
 
-  // 프로필 이미지 변경 핸들러
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // 프로필 이미지 변경 및 압축 핸들러
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        localStorage.setItem('profileImage', reader.result);
-        setProfileImage(reader.result);
-      }
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressedBase64 = await compressImage(file, 800, 0.7);
+      const compressedSize = compressedBase64.length * 0.75; // base64를 바이트로 근사 계산
+      localStorage.setItem('profileImage', compressedBase64);
+      setProfileImage(compressedBase64);
+    } catch (error) {
+      console.error('이미지 압축 실패:', error);
+    }
   };
 
   return (
@@ -106,7 +109,7 @@ const UserInfoSection = () => {
         </div>
         <S.ProfileImage>
           <img
-            src={profileImage}
+            src={profileImage || profileDefault}
             alt="Profile"
             style={{ width: '100%', height: '100%' }}
           />
