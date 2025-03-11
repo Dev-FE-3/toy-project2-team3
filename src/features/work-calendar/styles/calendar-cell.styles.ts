@@ -20,7 +20,6 @@ export const CalendarCellStyled = styled.div<{
     props.$isCurrentMonth ? theme.colors.black : theme.colors.grey2};
   cursor: ${(props) => (props.$isClickable ? 'pointer' : 'default')};
   overflow: visible;
-  z-index: 1;
 
   ${(props) =>
     props.$isToday &&
@@ -57,7 +56,6 @@ export const EventsContainer = styled.div`
   flex-direction: column;
   gap: 4px;
   overflow: visible;
-  z-index: 1;
 `;
 
 // 날짜 범위 표시 (여러 날짜에 걸친 이벤트)
@@ -79,8 +77,6 @@ export const EventRangeIndicator = styled.div<{
   display: flex;
   align-items: center;
   position: relative;
-  z-index: ${(props) =>
-    props.$position !== undefined ? 10 - (props.$position % 10) : 1};
 
   /* 시작, 중간, 끝 부분에 따른 스타일 설정 */
   ${(props) => {
