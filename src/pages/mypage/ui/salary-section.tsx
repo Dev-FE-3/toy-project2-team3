@@ -1,14 +1,10 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { setAvailableSalaryDates } from '@/redux/salary-slice';
-import * as S from '../styles/salary-section.styles';
-import Modal from './salary-modal';
-import Dropdown from '../../../shared/dropdown/Dropdown';
-import Button from '../../../shared/button/Button';
-import { auth, db } from '../../../firebase';
-import { collection, getDocs } from 'firebase/firestore';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+import { useState, useMemo, useCallback } from 'react';
+import * as S from '@/pages/mypage/styles/salary-section.styles';
+import Modal from '@/pages/mypage/ui/salary-modal';
+import Dropdown from '@/shared/dropdown/Dropdown';
+import Button from '@/shared/button/Button';
+import { useFetchSalaryData } from '@/pages/mypage/useFetchSalaryData';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 export interface SalaryData {
   id: string;
@@ -34,49 +30,10 @@ interface DropdownOption {
 }
 
 const SalaryInfoSection = () => {
-  const dispatch = useDispatch();
+  const { salaryData } = useFetchSalaryData();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [salaryData, setSalaryData] = useState<SalaryData[]>([]);
   const [selectedSalary, setSelectedSalary] = useState<SalaryData | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
-  const user = auth.currentUser;
-
-  //Firebase에서 급여 데이터 가져오기
-  const fetchSalaryData = useCallback(async () => {
-    if (!user) return;
-
-    const salaryRef = collection(db, 'users', user.uid, 'salary');
-    const querySnapshot = await getDocs(salaryRef);
-    const salaries: SalaryData[] = querySnapshot.docs.map((doc) => {
-      const data = doc.data();
-
-      // Firestore Timestamp -> Date 변환
-      const formattedDate = data.date.toDate();
-      const rawDate = formattedDate.getTime();
-      const formattedDateString = `${formattedDate.getFullYear()}년 ${formattedDate.getMonth() + 1}월 ${formattedDate.getDate()}일`;
-
-      return {
-        id: doc.id,
-        ...data,
-        rawDate,
-        date: formattedDateString, // 변환된 날짜 값 저장
-      } as SalaryData;
-    });
-
-    salaries.sort((a, b) => b.rawDate - a.rawDate);
-
-    setSalaryData(salaries);
-
-    // Redux에 "급여 일자 리스트" 저장
-    const salaryDates = salaries.map((salary) => salary.date);
-    dispatch(setAvailableSalaryDates(salaryDates));
-  }, [user, dispatch]);
-
-  //컴포넌트 마운트 시 급여 데이터 로드
-  useEffect(() => {
-    fetchSalaryData();
-  }, [fetchSalaryData]);
 
   const handleModalOpen = useCallback((salaryDetail: SalaryData) => {
     setSelectedSalary(salaryDetail);
@@ -86,12 +43,6 @@ const SalaryInfoSection = () => {
   const handleModalClose = useCallback(() => {
     setIsModalOpen(false);
     setSelectedSalary(null);
-  }, []);
-
-  const formatCurrency = useCallback((value: number) => {
-    return value < 0
-      ? `-${Math.abs(value).toLocaleString()}원`
-      : `${value.toLocaleString()}원`;
   }, []);
 
   // 드롭다운 옵션 구성

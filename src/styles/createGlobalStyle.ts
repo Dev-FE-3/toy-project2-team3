@@ -34,6 +34,7 @@ html{
 
   #root{
     width: 100%;
+    display: flex;
     height:100%;
   }
   
