@@ -4,7 +4,7 @@ import {
   ModalTitle,
   ButtonContainer,
 } from './calendar-modal.style';
-import Button from '../../../shared/button/Button';
+import Button from '@/shared/button/Button';
 
 export const CompactModalContent = styled(ModalContent)`
   width: 480px;

@@ -16,42 +16,38 @@ export interface DropdownProps {
   height?: string;
   fontSize?: string;
   className?: string;
+  size?: 'default' | 'small';
 }
 
 export interface DropdownTextProps {
   $hasPlaceHolder: boolean;
   $hasSelected: boolean;
+  $size?: 'default' | 'small';
 }
 
 // 드롭다운 아이콘 색상 변경
 interface DropdownIconProps {
   isMint?: boolean;
+  size?: 'default' | 'small';
 }
-
-// 드롭다운 공통 style 정의
-const fontStyles = css`
-  ${({ theme }) => theme.typography.body2};
-`;
 
 const baseBoxStyles = css`
   box-sizing: border-box;
   align-items: center;
 `;
 
-const itemBaseStyles = css`
-  ${fontStyles}
-  padding: 8px 20px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-`;
-
-const DropdownContainer = styled.nav<{ width?: string; height?: string }>`
+const DropdownContainer = styled.nav<{
+  width?: string;
+  height?: string;
+  $size?: 'default' | 'small';
+}>`
   ${baseBoxStyles}
-  width: ${(props) => props.width || '260px'};
+  width: ${(props) =>
+    props.width || (props.$size === 'small' ? '365px' : '260px')};
   height: ${(props) => props.height || '40px'};
   position: relative;
-  ${fontStyles}
+  ${({ theme, $size }) =>
+    $size === 'small' ? theme.typography.body3 : theme.typography.body2}
 
   ul {
     list-style-type: none;
@@ -64,13 +60,19 @@ const DropdownHeader = styled.button<{
   $hasSelected?: boolean;
   width?: string;
   height?: string;
+  $size?: 'default' | 'small';
 }>`
   ${baseBoxStyles}
-  ${itemBaseStyles}
+  ${({ theme, $size }) =>
+    $size === 'small' ? theme.typography.body3 : theme.typography.body2}
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
   width: ${(props) => props.width || '100%'};
   height: ${(props) => props.height || '40px'};
   justify-content: space-between;
-  border-radius: 4px;
+  border-radius: ${(props) => (props.$size === 'small' ? '8px' : '4px')};
   flex-shrink: 0;
   text-align: left;
 
@@ -83,14 +85,15 @@ const DropdownHeader = styled.button<{
 `;
 
 // 드롭다운 list
-const DropdownList = styled.ul`
-  ${fontStyles}
+const DropdownList = styled.ul<{ $size?: 'default' | 'small' }>`
+  ${({ theme, $size }) =>
+    $size === 'small' ? theme.typography.body3 : theme.typography.body2}
   position: absolute;
   width: 100%;
   top: 100%;
   background: ${({ theme }) => theme.colors.white};
   border: 1px solid ${({ theme }) => theme.colors.grey2};
-  border-radius: 4px;
+  border-radius: ${(props) => (props.$size === 'small' ? '8px' : '4px')};
   z-index: 1;
   box-sizing: border-box;
   padding: 0;
@@ -121,8 +124,9 @@ const DropdownList = styled.ul`
 `;
 
 // 드롭다운 item
-const DropdownItem = styled.li`
-  ${fontStyles}
+const DropdownItem = styled.li<{ $size?: 'default' | 'small' }>`
+  ${({ theme, $size }) =>
+    $size === 'small' ? theme.typography.body3 : theme.typography.body2}
   width: 100%;
   box-sizing: border-box;
   height: 40px;
@@ -151,22 +155,29 @@ const RotatableIcon = styled.figure<{ $isOpen: boolean }>`
 `;
 
 // DropdownIcon 컴포넌트
-const StyledSVG = styled.svg<{ isMint?: boolean }>`
+const StyledSVG = styled.svg<{ isMint?: boolean; size?: 'default' | 'small' }>`
+  width: ${(props) => (props.size === 'small' ? '14px' : '18px')};
+  height: ${(props) => (props.size === 'small' ? '9px' : '12px')};
+
   & path {
     fill: ${({ isMint, theme }) =>
       isMint ? theme.colors.point1 : theme.colors.white};
   }
 `;
 
-const DropdownIcon: React.FC<DropdownIconProps> = ({ isMint = false }) => {
+const DropdownIcon: React.FC<DropdownIconProps> = ({
+  isMint = false,
+  size = 'default',
+}) => {
   return (
     <StyledSVG
-      width={18}
-      height={12}
+      width={size === 'small' ? 14 : 18}
+      height={size === 'small' ? 9 : 12}
       viewBox="0 0 18 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       isMint={isMint}
+      size={size}
     >
       <g id="Frame 2608833">
         <path
@@ -181,6 +192,8 @@ const DropdownIcon: React.FC<DropdownIconProps> = ({ isMint = false }) => {
 const DropdownText = styled.strong<DropdownTextProps>`
   color: ${({ $hasSelected, theme }) =>
     $hasSelected ? theme.colors.point1 : theme.colors.white};
+  ${({ $size, theme }) =>
+    $size === 'small' ? theme.typography.body3 : theme.typography.body2};
 `;
 
 export {
@@ -190,9 +203,7 @@ export {
   DropdownList,
   DropdownItem,
   DropdownText,
-  fontStyles,
   baseBoxStyles,
-  itemBaseStyles,
 };
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -203,8 +214,8 @@ const Dropdown: React.FC<DropdownProps> = ({
   placeholder,
   width,
   height,
-  fontSize,
   className,
+  size = 'default',
 }) => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [selectedOption, setSelectedOption] = useState<OptionType | undefined>(
@@ -249,16 +260,19 @@ const Dropdown: React.FC<DropdownProps> = ({
       width={width}
       height={height}
       className={className}
+      $size={size}
     >
       <DropdownHeader
         onClick={dropDownHandler}
         $hasSelected={!!selectedOption}
         width={width}
         height={height}
+        $size={size}
       >
         <DropdownText
           $hasPlaceHolder={!selectedOption}
           $hasSelected={!!selectedOption}
+          $size={size}
         >
           {selectedOption ? selectedOption.label : placeholder || title}
         </DropdownText>
@@ -266,16 +280,17 @@ const Dropdown: React.FC<DropdownProps> = ({
         {/* 선택 옵션에 따른 아이콘 회전과 색상 변경 */}
         <RotatableIcon $isOpen={showDropDown}>
           {/* 상태에 따라 다른 아이콘 색상 적용 */}
-          <DropdownIcon isMint={!!selectedOption} />
+          <DropdownIcon isMint={!!selectedOption} size={size} />
         </RotatableIcon>
       </DropdownHeader>
 
       {showDropDown && (
-        <DropdownList>
+        <DropdownList $size={size}>
           {options.map((option, index) => (
             <DropdownItem
               key={index}
               onClick={() => optionClickHandler(option)}
+              $size={size}
             >
               {option.label}
             </DropdownItem>

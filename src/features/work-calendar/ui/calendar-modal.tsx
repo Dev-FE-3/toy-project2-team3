@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { OptionType } from '@/shared/dropdown/Dropdown';
+import Dropdown, { OptionType } from '@/shared/dropdown/Dropdown';
 import * as S from '../styles/calendar-modal.style';
 
 interface MemoModalProps {
@@ -96,7 +96,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
 
           <S.FormRow>
             <S.FormLabel>일정 유형</S.FormLabel>
-            <S.CustomSizeDropdown
+            <Dropdown
               title="일정 유형을 선택 해주세요"
               options={[
                 { label: '회의', value: '1' },
@@ -104,9 +104,9 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 { label: '휴가', value: '3' },
               ]}
               width="100%"
-              height="40px"
               defaultValue={getSelectedOption()}
               onSelect={(option) => onEventTypeChange(option.value as string)}
+              size="small"
             />
           </S.FormRow>
 

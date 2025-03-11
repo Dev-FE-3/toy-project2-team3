@@ -293,7 +293,7 @@ const CalendarMain: React.FC = () => {
         const startTimestamp = startDate.getTime();
         const endTimestamp = endDate.getTime();
 
-        // 현재 날짜가 시작일과 종료일 사이에 있는지 확인
+        // 현재 날짜가 시작일과 종료일 사이에 있는지 확인 (이벤트 기간내에 있는지 확인)
         if (dateTimestamp >= startTimestamp && dateTimestamp <= endTimestamp) {
           result.push({
             event,
@@ -442,7 +442,6 @@ const CalendarMain: React.FC = () => {
       const totalStartEvents = uniqueEventIds.size;
 
       if (totalStartEvents >= 3) {
-        // 3개 이상이면 추가 불가 (4가 아닌 3으로 수정)
         toast.error(
           `시작일(${startDate})에 이미 3개의 일정이 있어 추가할 수 없습니다.`
         );
