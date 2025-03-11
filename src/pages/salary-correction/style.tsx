@@ -7,6 +7,9 @@ export const BackLink = styled.a`
   cursor: pointer;
   ${({ theme }) => theme.typography.body2}
   font-weight : bold;
+  & path {
+    fill: ${({ theme }) => theme.colors.black};
+  }
 `;
 
 export const Title = styled.h1`

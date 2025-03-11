@@ -228,7 +228,18 @@ const SalaryCorrectionPage = (): JSX.Element => {
 
   return (
     <>
-      <S.BackLink onClick={() => navigate(-1)}>&lt; 이전 페이지로</S.BackLink>
+      <S.BackLink onClick={() => navigate(-1)}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="11"
+          height="14"
+          viewBox="0 0 11 14"
+          fill="none"
+        >
+          <path d="M0.499999 6.13398C-0.166667 6.51888 -0.166667 7.48112 0.5 7.86603L9.5 13.0622C10.1667 13.4471 11 12.966 11 12.1962V1.80385C11 1.03405 10.1667 0.552922 9.5 0.937822L0.499999 6.13398Z" />
+        </svg>{' '}
+        이전 페이지로
+      </S.BackLink>
       <S.Title>급여 정정 신청하기</S.Title>
       <S.TileContainer>
         <S.ListTile>
