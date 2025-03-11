@@ -104,7 +104,6 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 { label: '휴가', value: '3' },
               ]}
               width="100%"
-              height="40px"
               defaultValue={getSelectedOption()}
               onSelect={(option) => onEventTypeChange(option.value as string)}
               size="small"
