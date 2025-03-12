@@ -84,7 +84,6 @@ const SalaryCorrectionPage = (): JSX.Element => {
       (option) => selectedMonth && option.label.includes(selectedMonth)
     );
   }, [dropdownOptions, selectedMonth]);
-
   //정정 내역 데이터 불러오기
   const fetchCorrectionData = async () => {
     //로그아웃 필터링
@@ -103,12 +102,17 @@ const SalaryCorrectionPage = (): JSX.Element => {
           } as CorrectionDataType;
         }
       );
-      setCorrectionData(() => corrections);
+      const sortedCorrections = corrections.sort((a, b) =>
+        a.correctionDate.seconds > b.correctionDate.seconds ? -1 : 1
+      );
+      setCorrectionData(() => sortedCorrections);
+      console.log('sorted :', sortedCorrections);
     } catch (err) {
       console.log(err);
     }
   };
 
+  //유효성 검사 함수
   const validateFormData = (formData: FormDataType): string | null => {
     if (!formData.salaryLabel) return '정정할 급여를 선택해주세요.';
     if (!formData.reason.trim()) return '사유를 입력해주세요.';
@@ -116,6 +120,7 @@ const SalaryCorrectionPage = (): JSX.Element => {
     return null;
   };
 
+  //파이어 베이스 post 처리 함수
   const postCorrectionFrom = async (correctionForm: FormDataType) => {
     if (!user?.uid) {
       console.warn('사용자가 로그인되지 않았습니다.');
@@ -137,6 +142,7 @@ const SalaryCorrectionPage = (): JSX.Element => {
     }
   };
 
+  //타임스탬프 -> 날짜 형식 문자열로 변환
   const formatTimestampToDate = (timestamp: Timestamp): string => {
     const date = timestamp.toDate();
     const year = date.getFullYear();
