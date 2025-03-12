@@ -65,3 +65,16 @@ export const ButtonWrapper = styled.div`
   justify-content: center;
   width: 100%;
 `;
+
+export const MessageWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+`;
+
+export const Message = styled.div`
+  ${({ theme }) => theme.typography.body2}
+  color:   ${({ theme }) => theme.colors.grey2}
+`;

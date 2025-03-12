@@ -71,45 +71,56 @@ const SalaryInfoSection = () => {
   return (
     <S.SalarySection>
       <S.Title style={{ position: 'relative', top: '0' }}>급여 내역</S.Title>
-      <S.SalaryControls>
-        <Dropdown
-          title="급여 일자를 선택해주세요"
-          options={options}
-          onSelect={(option) => handleDateChange(String(option.value))}
-        />
-      </S.SalaryControls>
-      <S.Table>
-        <thead>
-          <S.TableRow>
-            <S.TableHeader>급여일</S.TableHeader>
-            <S.TableHeader style={{ color: '#14b8a6' }}>
-              총 지급액
-            </S.TableHeader>
-            <S.TableHeader>실지급액</S.TableHeader>
-            <S.TableHeader style={{ color: '#14b8a6' }}>
-              급여 명세서
-            </S.TableHeader>
-          </S.TableRow>
-        </thead>
-        <tbody>
-          {filteredData.slice(0, 3).map((salary, index) => (
-            <S.TableRow key={index}>
-              <S.TableData>{salary.date}</S.TableData>
-              <S.TableData style={{ color: '#14b8a6' }}>
-                {formatCurrency(salary.totalPayment)}
-              </S.TableData>
-              <S.TableData>{formatCurrency(salary.actualPayment)}</S.TableData>
-              <S.TableData>
-                <S.ButtonWrapper>
-                  <Button onClick={() => handleModalOpen(salary)}>
-                    급여 명세서 확인
-                  </Button>
-                </S.ButtonWrapper>
-              </S.TableData>
-            </S.TableRow>
-          ))}
-        </tbody>
-      </S.Table>
+      {salaryData.length > 0 ? (
+        <>
+          <S.SalaryControls>
+            <Dropdown
+              title="급여 일자를 선택해주세요"
+              options={options}
+              onSelect={(option) => handleDateChange(String(option.value))}
+            />
+          </S.SalaryControls>{' '}
+          <S.Table>
+            <thead>
+              <S.TableRow>
+                <S.TableHeader>급여일</S.TableHeader>
+                <S.TableHeader style={{ color: '#14b8a6' }}>
+                  총 지급액
+                </S.TableHeader>
+                <S.TableHeader>실지급액</S.TableHeader>
+                <S.TableHeader style={{ color: '#14b8a6' }}>
+                  급여 명세서
+                </S.TableHeader>
+              </S.TableRow>
+            </thead>
+
+            <tbody>
+              {filteredData.slice(0, 3).map((salary, index) => (
+                <S.TableRow key={index}>
+                  <S.TableData>{salary.date}</S.TableData>
+                  <S.TableData style={{ color: '#14b8a6' }}>
+                    {formatCurrency(salary.totalPayment)}
+                  </S.TableData>
+                  <S.TableData>
+                    {formatCurrency(salary.actualPayment)}
+                  </S.TableData>
+                  <S.TableData>
+                    <S.ButtonWrapper>
+                      <Button onClick={() => handleModalOpen(salary)}>
+                        급여 명세서 확인
+                      </Button>
+                    </S.ButtonWrapper>
+                  </S.TableData>
+                </S.TableRow>
+              ))}
+            </tbody>
+          </S.Table>
+        </>
+      ) : (
+        <S.MessageWrapper>
+          <S.Message>급여 내역이 없습니다.</S.Message>
+        </S.MessageWrapper>
+      )}
       <Modal
         isOpen={isModalOpen}
         onClose={handleModalClose}
