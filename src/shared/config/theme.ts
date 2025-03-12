@@ -149,7 +149,7 @@ export const theme: DefaultTheme = {
       lineHeight: '150%',
     },
     body3: {
-      fontSize: '1.2rem,',
+      fontSize: '1.2rem',
       fontWeight: 400,
       fontFamily: "'Noto Sans', sans-serif",
       letterSpacing: '0rem',
