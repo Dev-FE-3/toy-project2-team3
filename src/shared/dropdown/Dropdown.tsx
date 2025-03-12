@@ -27,7 +27,7 @@ export interface DropdownTextProps {
 
 // 드롭다운 아이콘 색상 변경
 interface DropdownIconProps {
-  isMint?: boolean;
+  $isMint?: boolean;
   size?: 'default' | 'small';
 }
 
@@ -155,18 +155,18 @@ const RotatableIcon = styled.figure<{ $isOpen: boolean }>`
 `;
 
 // DropdownIcon 컴포넌트
-const StyledSVG = styled.svg<{ isMint?: boolean; size?: 'default' | 'small' }>`
+const StyledSVG = styled.svg<{ $isMint?: boolean; size?: 'default' | 'small' }>`
   width: ${(props) => (props.size === 'small' ? '14px' : '18px')};
   height: ${(props) => (props.size === 'small' ? '9px' : '12px')};
 
   & path {
-    fill: ${({ isMint, theme }) =>
-      isMint ? theme.colors.point1 : theme.colors.white};
+    fill: ${({ $isMint, theme }) =>
+      $isMint ? theme.colors.point1 : theme.colors.white};
   }
 `;
 
 const DropdownIcon: React.FC<DropdownIconProps> = ({
-  isMint = false,
+  $isMint = false,
   size = 'default',
 }) => {
   return (
@@ -176,7 +176,7 @@ const DropdownIcon: React.FC<DropdownIconProps> = ({
       viewBox="0 0 18 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      isMint={isMint}
+      $isMint={$isMint}
       size={size}
     >
       <g id="Frame 2608833">
@@ -280,7 +280,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         {/* 선택 옵션에 따른 아이콘 회전과 색상 변경 */}
         <RotatableIcon $isOpen={showDropDown}>
           {/* 상태에 따라 다른 아이콘 색상 적용 */}
-          <DropdownIcon isMint={!!selectedOption} size={size} />
+          <DropdownIcon $isMint={!!selectedOption} size={size} />
         </RotatableIcon>
       </DropdownHeader>
 
