@@ -38,11 +38,11 @@ const groupAndSortEvents = (
   events: EventData[],
   rangeInfo: RangeInfo[]
 ): {
-  rangeEvents: Array<{ event: EventData; rangeInfo: RangeInfo }>;
+  rangeEvents: { event: EventData; rangeInfo: RangeInfo }[];
   regularEvents: EventData[];
 } => {
   // 범위 이벤트 그룹화
-  const rangeEvents: Array<{ event: EventData; rangeInfo: RangeInfo }> = [];
+  const rangeEvents: { event: EventData; rangeInfo: RangeInfo }[] = [];
 
   // 범위 정보를 가진 이벤트 찾아서 매핑
   rangeInfo.forEach((info) => {
