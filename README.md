@@ -152,18 +152,35 @@
 
 FSD 폴더 구조 방식을 사용해 확장성과 유지보수성, 높은 재사용성을 통해 생산성 향상 도모.
 
-toy-project1-team1-salary-rectifier
-├─ src
-│ ├─ app
-│ ├─ assets
-│ │ ├─ animations
-│ │ ├─ fonts
-│ │ └─ images
-│ ├─ features
-│ │ ├─ auth
-│ │ ├─ navbar
-│ │ ├─ salary-correction
-│ │ └─ work-calendar
+salary-rectifier-project/ 📦
+├── 📁 src/
+│ ├── 📁 assets/
+│ ├── 📁 features/
+│ ├── 📁 pages/
+│ ├── 📁 providers/
+│ ├── 📁 redux/
+│ ├── 📁 shared/
+│ ├── 📁 styles/
+│ ├── 📁 utils/
+│ ├── 📄 App.css
+│ ├── 📄 App.tsx
+│ ├── 📄 declarations.d.ts
+│ ├── 📄 firebase.tsx
+│ ├── 📄 global.d.ts
+│ ├── 📄 main.tsx
+├── 📄 .env
+├── 📄 .gitignore
+├── 📄 .prettierrc
+├── 📄 eslint.config.js
+├── 📄 image.png
+├── 📄 index.html
+├── 📄 package-lock.json
+├── 📄 package.json
+├── 📄 README.md
+├── 📄 server.js
+├── 📄 tsconfig.json
+├── 📄 tsconfig.node.json
+├── 📄 vite.config.js
 
 #### ✔️ 브랜치
 
