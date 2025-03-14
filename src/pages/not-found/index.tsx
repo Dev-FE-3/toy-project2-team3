@@ -1,10 +1,18 @@
 import CurationImg from '@/assets/images/curation.svg';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Container = styled.div`
   width: 100%;
   height: 100%;
 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const TextWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -34,13 +42,20 @@ const StyledImg = styled.img`
   bottom: 0;
 `;
 
+const LinkStyled = styled(Link)`
+  color: ${({ theme }) => theme.colors.point1};
+  ${({ theme }) => theme.typography.body2};
+  text-decoration: none;
+`;
+
 const NotFoundPage = () => {
   return (
     <Container>
-      <div>
+      <TextWrapper>
         <Code>404</Code>
         <Message>요청하신 페이지를 찾을 수 없어요!</Message>
-      </div>
+        <LinkStyled to="/login">홈으로 이동</LinkStyled>
+      </TextWrapper>
       <StyledImg src={CurationImg} alt="Curation Icon" />
     </Container>
   );
