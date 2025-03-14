@@ -3,6 +3,11 @@
 </p>
 <br>
 
+## ✅ 저장소 복제
+
+```bash
+git clone https://github.com/Dev-FE-3/toy-project2-team3.git
+```
 
 ## ✅ 설치
 
@@ -12,24 +17,11 @@ npm install
 
 ## ✅ 실행
 
-### ✔️ 서버 실행
-
-```
-npm run server
-```
-
 ### ✔️ 클라이언트 실행
 
 ```
 npm run dev
 ```
-
-## ✅ 저장소 복제
-
-```bash
-git clone https://github.com/Dev-FE-3/toy-project2-team3.git
-```
-
 
 <br>
 
