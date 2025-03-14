@@ -10,6 +10,7 @@ export const BackLink = styled.a`
   & path {
     fill: ${({ theme }) => theme.colors.black};
   }
+  margin-bottom: 0.2rem;
 `;
 
 export const Title = styled.h1`
@@ -20,6 +21,7 @@ export const Title = styled.h1`
 export const TileTitle = styled.h1`
   ${({ theme }) => theme.typography.heading3};
   color: ${({ theme }) => theme.colors.black};
+  margin-left: 0.8rem;
 `;
 
 export const TextColorPoint = styled.span`
@@ -62,7 +64,7 @@ export const FormTile = styled(Tile)`
 export const InfoTile = styled(Tile)`
   display: flex;
   width: 100%;
-  gap: 28px;
+  gap: 16px;
   background-color: ${({ theme }) => theme.colors.point2};
 `;
 
@@ -102,7 +104,7 @@ export const Textarea = styled.textarea`
 
 export const ListBox = styled.ul`
   box-sizing: border-box;
-  margin-top: 28px;
+  margin-top: 16px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -219,14 +221,26 @@ export const InfoBox = styled.ul`
   height: 100%;
   border-radius: 8px;
   padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
 `;
 
-export const InfoList = styled.li``;
+export const InfoList = styled.li`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
 
 export const InfoListTitle = styled.h5`
   ${({ theme }) => theme.typography.heading4};
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid #2ac1bc;
+  padding-left: 0.2rem;
 `;
 
 export const InfoListData = styled.span`
   ${({ theme }) => theme.typography.body2};
+  padding-left: 0.4rem;
 `;
