@@ -179,7 +179,6 @@ salary-rectifier-project/ 📦
 │ ├── 📁 features/
 │ ├── 📁 pages/
 │ ├── 📁 providers/
-
 │ ├── 📁 redux/
 │ ├── 📁 shared/
 │ ├── 📁 styles/
