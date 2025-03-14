@@ -6,6 +6,7 @@ import ConfirmationModal from './confirmation-modal';
 import EventListModal from './event-list-modal';
 import { toast } from 'react-toastify';
 import * as S from '../styles/calendar-main.styles';
+import loadingAnimation from '@/assets/animations/loading.json';
 
 // Firebase 임포트
 import { db } from '@/firebase';
@@ -22,6 +23,7 @@ import {
 } from 'firebase/firestore';
 
 import { auth } from '../../../firebase';
+import Lottie from 'lottie-react';
 
 const USERS_COLLECTION = 'users';
 
@@ -788,8 +790,20 @@ const CalendarMain: React.FC = () => {
           </S.WeekdaysContainer>
 
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '20px' }}>
-              로딩 중...
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignContent: 'center',
+              }}
+            >
+              <Lottie
+                animationData={loadingAnimation}
+                loop={true}
+                style={{ width: '180px', height: '180px' }}
+              />
             </div>
           ) : (
             <S.CalendarGrid>
