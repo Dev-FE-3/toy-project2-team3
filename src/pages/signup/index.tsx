@@ -64,6 +64,10 @@ const SignUp = () => {
                     value: 8,
                     message: '비밀번호는 8자리 이상이어야 합니다.',
                   },
+                  maxLength: {
+                    value: 16,
+                    message: '비밀번호는 16자리 이하여야 합니다.',
+                  },
                 })}
                 type="password"
                 placeholder="사용할 비밀번호를 입력하세요(8자리 이상)"
