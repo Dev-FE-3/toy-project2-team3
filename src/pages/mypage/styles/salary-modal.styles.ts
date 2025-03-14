@@ -14,11 +14,9 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  width: 1000px;
-  height: 670px;
   background: ${({ theme }) => theme.colors.white};
   border-radius: 16px;
-  padding: 2.5rem;
+  padding: 3.6rem 4rem 2.8rem;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -28,29 +26,27 @@ export const ModalContent = styled.div`
 export const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: end;
+  margin: 0 1.2rem 1.2rem;
 `;
 
 export const Title = styled.h2`
   ${({ theme }) => theme.typography.heading2}
-  margin-top: 1.25rem;
-  margin-bottom: 0.5rem;
+
   span {
     color: ${({ theme }) => theme.colors.point1};
   }
 `;
 
 export const DateText = styled.p`
-  ${({ theme }) => theme.typography.body2}
-  color: ${({ theme }) => theme.colors.grey1};
-  margin-top: 1.25rem;
-  margin-bottom: 0.5rem;
+  ${({ theme }) => theme.typography.body3}
+  color: ${({ theme }) => theme.colors.grey2};
 `;
 
 export const ModalBody = styled.div`
   height: 480px;
   background: ${({ theme }) => theme.colors.point3};
-  padding: 2.5rem;
+  padding: 4rem 4.8rem;
   border-radius: 10px;
   flex-grow: 1;
   display: flex;
@@ -62,7 +58,6 @@ export const SalaryDetails = styled.div`
   display: flex;
   justify-content: flex-start;
   gap: 10rem;
-  margin-left: 5rem;
 `;
 
 export const SalaryTable = styled.table`
@@ -73,7 +68,6 @@ export const SalaryTable = styled.table`
 export const TableHeader = styled.th`
   ${({ theme }) => theme.typography.heading3}
   text-align: left;
-  padding-top: 5rem;
   padding-bottom: 2.25rem;
 `;
 
@@ -97,7 +91,6 @@ export const TotalSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  margin-top: 1.25rem;
 `;
 
 export const TotalRow = styled.div`
@@ -110,6 +103,7 @@ export const TotalRow = styled.div`
 
 export const TotalText = styled.p`
   ${({ theme }) => theme.typography.heading4}
+
   font-weight: bold;
 `;
 
@@ -125,5 +119,6 @@ export const ModalFooter = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 0.625rem;
-  margin-top: 1.25rem;
+  margin-top: 2rem;
+  margin-right: 1.2rem;
 `;

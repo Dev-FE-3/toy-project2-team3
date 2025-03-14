@@ -69,11 +69,11 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
   const paymentData = useMemo(() => {
     if (!selectedSalary) return [];
     return [
-      { label: '기본급 :', value: selectedSalary.base },
-      { label: '상여금 :', value: selectedSalary.bonus },
-      { label: '직책수당 :', value: selectedSalary.position },
-      { label: '특근수당 :', value: selectedSalary.overtime },
-      { label: '야근수당 :', value: selectedSalary.night },
+      { label: '기본급', value: selectedSalary.base },
+      { label: '상여금', value: selectedSalary.bonus },
+      { label: '직책수당', value: selectedSalary.position },
+      { label: '특근수당', value: selectedSalary.overtime },
+      { label: '야근수당', value: selectedSalary.night },
     ];
   }, [selectedSalary]);
 
@@ -81,10 +81,10 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
   const deductionData = useMemo(() => {
     if (!selectedSalary) return [];
     return [
-      { label: '건강보험 :', value: selectedSalary.health },
-      { label: '장기요양보험 :', value: selectedSalary.care },
-      { label: '고용보험 :', value: selectedSalary.job },
-      { label: '소득세 :', value: selectedSalary.tax },
+      { label: '건강보험', value: selectedSalary.health },
+      { label: '장기요양보험', value: selectedSalary.care },
+      { label: '고용보험', value: selectedSalary.job },
+      { label: '소득세', value: selectedSalary.tax },
     ];
   }, [selectedSalary]);
 
