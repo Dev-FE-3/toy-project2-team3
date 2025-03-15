@@ -24,6 +24,7 @@ import {
 
 import { auth } from '../../../firebase';
 import Lottie from 'lottie-react';
+import { env } from 'process';
 
 const USERS_COLLECTION = 'users';
 
@@ -271,7 +272,6 @@ const CalendarMain: React.FC = () => {
 
   // 특정 날짜에 표시할 이벤트 정보 계산 (날짜 범위 포함)
   const getEventsForDate = (date: Date): DateEventInfo[] => {
-    const result: DateEventInfo[] = [];
     const currentDateNoTime = new Date(
       date.getFullYear(),
       date.getMonth(),
@@ -279,37 +279,32 @@ const CalendarMain: React.FC = () => {
     );
     const dateTimestamp = currentDateNoTime.getTime();
 
-    allEventsData.forEach((event) => {
-      if (event.startDate && event.endDate) {
-        const startDateParts = event.startDate.split('-').map(Number);
-        const endDateParts = event.endDate.split('-').map(Number);
+    // 날짜 변환 헬퍼 함수
+    const getDateTimestamp = (dateString: string): number => {
+      const dateParts = dateString.split('-').map(Number);
+      return new Date(dateParts[0], dateParts[1] - 1, dateParts[2]).getTime();
+    };
 
-        const startDate = new Date(
-          startDateParts[0],
-          startDateParts[1] - 1,
-          startDateParts[2]
-        );
-        const endDate = new Date(
-          endDateParts[0],
-          endDateParts[1] - 1,
-          endDateParts[2]
-        );
+    return allEventsData
+      .filter((event) => {
+        if (!event.startDate || !event.endDate) return false;
 
-        const startTimestamp = startDate.getTime();
-        const endTimestamp = endDate.getTime();
+        const startTimestamp = getDateTimestamp(event.startDate);
+        const endTimestamp = getDateTimestamp(event.endDate);
 
         // 현재 날짜가 시작일과 종료일 사이에 있는지 확인 (이벤트 기간내에 있는지 확인)
-        if (dateTimestamp >= startTimestamp && dateTimestamp <= endTimestamp) {
-          result.push({
-            event,
-            isStart: dateTimestamp === startTimestamp,
-            isEnd: dateTimestamp === endTimestamp,
-          });
-        }
-      }
-    });
+        return dateTimestamp >= startTimestamp && dateTimestamp <= endTimestamp;
+      })
+      .map((event) => {
+        const startTimestamp = getDateTimestamp(event.startDate);
+        const endTimestamp = getDateTimestamp(event.endDate);
 
-    return result;
+        return {
+          event,
+          isStart: dateTimestamp === startTimestamp,
+          isEnd: dateTimestamp === endTimestamp,
+        };
+      });
   };
 
   // 날짜 클릭 핸들러(모달 열기) - 기존 일정이 있으면 이벤트 목록 모달, 없으면 새 일정 모드
