@@ -1,4 +1,5 @@
 import React from 'react';
+import { getEventTypeName } from './calendar-utils/calendar-utils';
 import { theme } from '@/shared/config/theme';
 import ReactDOM from 'react-dom';
 import { toast } from 'react-toastify';
@@ -25,22 +26,8 @@ interface EventListModalProps {
   onClose: () => void;
 }
 
-// 이벤트 타입 이름 가져오기
-const getEventTypeName = (typeValue: string): string => {
-  switch (typeValue) {
-    case '1':
-      return '회의';
-    case '2':
-      return '출장';
-    case '3':
-      return '휴가';
-    default:
-      return '';
-  }
-};
-
 // 이벤트 타입 색상 가져오기
-const getEventTypeColor = (typeValue: string): string => {
+const getEventColor = (typeValue: string): string => {
   switch (typeValue) {
     case '1':
       return theme.colors.orange;
@@ -99,7 +86,7 @@ const EventListModal: React.FC<EventListModalProps> = ({
                   >
                     <S.EventTitle>{event.title}</S.EventTitle>
                     <S.EventTypeTag
-                      style={{ backgroundColor: getEventTypeColor(event.type) }}
+                      style={{ backgroundColor: getEventColor(event.type) }}
                     >
                       {getEventTypeName(event.type)}
                     </S.EventTypeTag>

@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
-export interface OptionType {
+interface OptionType {
   label: string;
   value: string | number;
 }
 
-export interface DropdownProps {
+interface DropdownProps {
   title: string;
   options: OptionType[];
   onSelect?: (option: OptionType) => void;
@@ -19,7 +19,7 @@ export interface DropdownProps {
   size?: 'default' | 'small';
 }
 
-export interface DropdownTextProps {
+interface DropdownTextProps {
   $hasPlaceHolder: boolean;
   $hasSelected: boolean;
   $size?: 'default' | 'small';
@@ -205,6 +205,8 @@ export {
   DropdownText,
   baseBoxStyles,
 };
+
+export type { OptionType };
 
 const Dropdown: React.FC<DropdownProps> = ({
   title,

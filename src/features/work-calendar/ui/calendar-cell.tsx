@@ -71,18 +71,11 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
   rangeInfo = [],
   onDateClick,
 }) => {
-  // 이벤트를 그룹화하고 정렬
+  // 이벤트를 그룹화하고 정렬하지 않음
   const { rangeEvents, regularEvents } = groupAndSortEvents(events, rangeInfo);
 
-  // 이벤트 유형별로 정렬하여 동일한 유형의 이벤트가 서로 가깝게 배치되도록 함
-  const sortedRangeEvents = [...rangeEvents].sort((a, b) =>
-    a.event.type.localeCompare(b.event.type)
-  );
-
-  const sortedRegularEvents = [...regularEvents].sort((a, b) =>
-    a.type.localeCompare(b.type)
-  );
-
+  const sortedRangeEvents = [...rangeEvents];
+  const sortedRegularEvents = [...regularEvents];
   // 최대 표시할 이벤트 수
 
   const totalEvents = events.length;
