@@ -206,27 +206,30 @@ const CalendarMain: React.FC = () => {
         'calendarEvents'
       );
       const eventsSnapshot = await getDocs(eventsCollection);
-      const eventsData: EventsData = {};
-      const allEvents: EventData[] = [];
 
-      eventsSnapshot.forEach((doc) => {
-        const eventData = doc.data() as EventData;
-        // dateKey를 기준으로 사용
-        const dateKey =
-          eventData.dateKey || formatDateKey(new Date(eventData.startDate));
+      const { eventsData, allEvents } = eventsSnapshot.docs.reduce(
+        (acc, doc) => {
+          const eventData = doc.data() as EventData;
 
-        if (!eventsData[dateKey]) {
-          eventsData[dateKey] = [];
-        }
+          const dateKey =
+            eventData.dateKey || formatDateKey(new Date(eventData.startDate));
 
-        const eventWithId = {
-          ...eventData,
-          id: doc.id,
-        };
+          const eventWithId = {
+            ...eventData,
+            id: doc.id,
+          };
 
-        eventsData[dateKey].push(eventWithId);
-        allEvents.push(eventWithId);
-      });
+          if (!acc.eventsData[dateKey]) {
+            acc.eventsData[dateKey] = [];
+          }
+          acc.eventsData[dateKey].push(eventWithId);
+
+          acc.allEvents.push(eventWithId);
+
+          return acc;
+        },
+        { eventsData: {} as EventsData, allEvents: [] as EventData[] }
+      );
 
       setEvents(eventsData);
       setAllEventsData(allEvents);
