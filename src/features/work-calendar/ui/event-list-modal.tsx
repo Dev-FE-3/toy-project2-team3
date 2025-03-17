@@ -44,8 +44,10 @@ const getEventColor = (typeValue: string): string => {
 const formatDateDisplay = (dateString: string): string => {
   if (!dateString) return '';
 
-  const [year, month, day] = dateString.split('-');
-  return `${year}년 ${month}월 ${day}일`;
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
+
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
 };
 
 const EventListModal: React.FC<EventListModalProps> = ({
