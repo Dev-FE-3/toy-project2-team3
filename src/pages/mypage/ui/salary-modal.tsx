@@ -13,6 +13,8 @@ interface ModalProps {
   isOpen: boolean;
   onClose: (keepState?: boolean) => void;
   selectedSalary: SalaryData | null;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
 // 테이블 props 인터페이스
@@ -41,7 +43,13 @@ const SalaryTable = ({ title, data }: SalaryTableProps) => (
 );
 
 // 급여 명세서 모달 컴포넌트
-const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
+const Modal = ({
+  isOpen,
+  onClose,
+  selectedSalary,
+  isLoading = false,
+  error = null,
+}: ModalProps) => {
   const navigate = useNavigate();
   const formattedDate = formatDate(selectedSalary?.rawDate);
 
@@ -88,8 +96,8 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
 
   if (!isOpen) return null;
 
-  // 급여 데이터가 업는 경우 로딩 메세지
-  if (!selectedSalary) {
+  // 로딩
+  if (isLoading) {
     return (
       <S.ModalOverlay>
         <S.ModalContent>
@@ -102,6 +110,48 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
               loop={true}
               style={{ width: '180px', height: '180px' }}
             />
+          </S.ModalBody>
+          <S.ModalFooter>
+            <Button onClick={() => onClose()} variant="outlined">
+              닫기
+            </Button>
+          </S.ModalFooter>
+        </S.ModalContent>
+      </S.ModalOverlay>
+    );
+  }
+
+  // 에러
+  if (error) {
+    return (
+      <S.ModalOverlay>
+        <S.ModalContent>
+          <S.ModalHeader>
+            <S.Title>급여 명세서</S.Title>
+          </S.ModalHeader>
+          <S.ModalBody>
+            <p>에러 발생</p>
+          </S.ModalBody>
+          <S.ModalFooter>
+            <Button onClick={() => onClose()} variant="outlined">
+              닫기
+            </Button>
+          </S.ModalFooter>
+        </S.ModalContent>
+      </S.ModalOverlay>
+    );
+  }
+
+  // 데이터가 없는 경우 (selectedSalary가 null이고 로딩/에러가 아닌 경우)
+  if (!selectedSalary) {
+    return (
+      <S.ModalOverlay>
+        <S.ModalContent>
+          <S.ModalHeader>
+            <S.Title>급여 명세서</S.Title>
+          </S.ModalHeader>
+          <S.ModalBody>
+            <p>선택된 급여 데이터가 없습니다.</p>
           </S.ModalBody>
           <S.ModalFooter>
             <Button onClick={() => onClose()} variant="outlined">

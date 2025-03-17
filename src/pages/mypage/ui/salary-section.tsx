@@ -13,10 +13,12 @@ interface DropdownOption {
 }
 
 const SalaryInfoSection = () => {
-  const { salaryData } = useFetchSalaryData();
+  const { salaryData, isLoading, error } = useFetchSalaryData();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSalary, setSelectedSalary] = useState<SalaryData | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [isModalLoading, setIsModalLoading] = useState(false);
+  const [modalError, setModalError] = useState<string | null>(null);
 
   const handleModalOpen = useCallback((salaryDetail: SalaryData) => {
     setSelectedSalary(salaryDetail);
@@ -26,6 +28,7 @@ const SalaryInfoSection = () => {
   const handleModalClose = useCallback(() => {
     setIsModalOpen(false);
     setSelectedSalary(null);
+    setModalError(null);
   }, []);
 
   // 드롭다운 옵션 구성
@@ -54,7 +57,17 @@ const SalaryInfoSection = () => {
   return (
     <S.SalarySection>
       <S.Title>급여 내역</S.Title>
-      {salaryData.length > 0 ? (
+      {isLoading ? (
+        <S.MessageWrapper>
+          <S.Message>급여 데이터를 불러오는 중입니다...</S.Message>
+        </S.MessageWrapper>
+      ) : error ? (
+        <S.MessageWrapper>
+          <S.Message>
+            데이터를 불러오는 중 오류가 발생했습니다: {error}
+          </S.Message>
+        </S.MessageWrapper>
+      ) : salaryData.length > 0 ? (
         <>
           <S.SalaryControls>
             <Dropdown
@@ -104,6 +117,8 @@ const SalaryInfoSection = () => {
         isOpen={isModalOpen}
         onClose={handleModalClose}
         selectedSalary={selectedSalary}
+        isLoading={isModalLoading}
+        error={modalError}
       />
     </S.SalarySection>
   );
