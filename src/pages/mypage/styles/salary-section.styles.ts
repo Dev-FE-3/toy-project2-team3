@@ -14,8 +14,8 @@ export const SalarySection = styled.section`
 export const Title = styled.h2`
   ${({ theme }) => theme.typography.heading2}
   margin-bottom: 1rem;
-  position: absolute;
-  top: -50px;
+  position: relative;
+  top: 0;
   left: 0;
 `;
 
@@ -30,7 +30,7 @@ export const TableRow = styled.tr`
   height: 50px;
 `;
 
-export const TableHeader = styled.th`
+export const TableHeader = styled.th<{ highlight?: boolean }>`
   padding: 0.75rem;
   ${({ theme }) => theme.typography.body2}
   font-weight: bold;
@@ -38,14 +38,18 @@ export const TableHeader = styled.th`
   text-align: center;
   border-bottom: 1px solid ${({ theme }) => theme.colors.black};
   width: 25%;
+  color: ${(props) =>
+    props.highlight ? props.theme.colors.point1 : 'inherit'};
 `;
 
-export const TableData = styled.td`
+export const TableData = styled.td<{ highlight?: boolean }>`
   padding: 0.75rem;
   ${({ theme }) => theme.typography.body2}
   border-bottom: 1px solid ${({ theme }) => theme.colors.grey2};
   width: 25%;
   text-align: center;
+  color: ${(props) =>
+    props.highlight ? props.theme.colors.point1 : 'inherit'};
 `;
 
 export const SalaryControls = styled.div`

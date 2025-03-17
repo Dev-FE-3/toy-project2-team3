@@ -53,7 +53,7 @@ const SalaryInfoSection = () => {
 
   return (
     <S.SalarySection>
-      <S.Title style={{ position: 'relative', top: '0' }}>급여 내역</S.Title>
+      <S.Title>급여 내역</S.Title>
       {salaryData.length > 0 ? (
         <>
           <S.SalaryControls>
@@ -67,13 +67,9 @@ const SalaryInfoSection = () => {
             <thead>
               <S.TableRow>
                 <S.TableHeader>급여일</S.TableHeader>
-                <S.TableHeader style={{ color: '#14b8a6' }}>
-                  총 지급액
-                </S.TableHeader>
+                <S.TableHeader highlight>총 지급액</S.TableHeader>
                 <S.TableHeader>실지급액</S.TableHeader>
-                <S.TableHeader style={{ color: '#14b8a6' }}>
-                  급여 명세서
-                </S.TableHeader>
+                <S.TableHeader highlight>급여 명세서</S.TableHeader>
               </S.TableRow>
             </thead>
 
@@ -81,7 +77,7 @@ const SalaryInfoSection = () => {
               {filteredData.slice(0, 3).map((salary, index) => (
                 <S.TableRow key={index}>
                   <S.TableData>{salary.date}</S.TableData>
-                  <S.TableData style={{ color: '#14b8a6' }}>
+                  <S.TableData highlight>
                     {formatCurrency(salary.totalPayment)}
                   </S.TableData>
                   <S.TableData>
