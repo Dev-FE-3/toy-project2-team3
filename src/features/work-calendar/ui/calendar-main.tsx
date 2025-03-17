@@ -12,8 +12,6 @@ import {
   EventsData,
   formatDateKey,
   loadCalendarData,
-  addEvent,
-  updateEvent,
   deleteEvent,
   deleteEventsForMonth,
 } from './calendar-firebase-service';
@@ -152,10 +150,10 @@ const CalendarMain: React.FC = () => {
     setModalOpen(true);
   };
 
-  // 특정 날짜에 표시할 이벤트 정보 계산 (날짜 범위 포함)
-  const getEventsForSelectedDate = (date: Date): DateEventInfo[] => {
-    return getEventsForDate(date, allEventsData);
-  };
+  // // 특정 날짜에 표시할 이벤트 정보 계산 (날짜 범위 포함)
+  // const getEventsForSelectedDate = (date: Date): DateEventInfo[] => {
+  //   return getEventsForDate(date, allEventsData);
+  // };
 
   // 날짜 클릭 핸들러(모달 열기) - 기존 일정이 있으면 이벤트 목록 모달, 없으면 새 일정 모드
   const handleDateClick = (date: Date): void => {
@@ -163,7 +161,7 @@ const CalendarMain: React.FC = () => {
     const dateEvents = events[dateKey] || [];
 
     // 날짜 범위에 포함된 이벤트 확인
-    const eventsInRange = getEventsForSelectedDate(date);
+    const eventsInRange = getEventsForDate(date, allEventsData);
     const allDateEvents = [...dateEvents];
 
     // dateKey에 없지만 날짜 범위에 포함된 이벤트 추가
@@ -377,7 +375,10 @@ const CalendarMain: React.FC = () => {
                 const dateEvents = events[dateKey] || [];
 
                 // 날짜 범위에 포함된 이벤트 확인
-                const eventsInRange = getEventsForSelectedDate(dayData.date);
+                const eventsInRange = getEventsForDate(
+                  dayData.date,
+                  allEventsData
+                );
 
                 // 표시할 이벤트 데이터 만들기
                 const displayEvents = [...dateEvents];
@@ -422,7 +423,7 @@ const CalendarMain: React.FC = () => {
         <EventListModal
           isOpen={showEventList}
           selectedDate={selectedDate}
-          events={getEventsForSelectedDate(selectedDate).map(
+          events={getEventsForDate(selectedDate, allEventsData).map(
             (item) => item.event
           )}
           onSelectEvent={handleEventSelect}
