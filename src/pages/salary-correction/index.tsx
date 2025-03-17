@@ -8,6 +8,7 @@ import { RootState } from '@/redux/store';
 import { auth, db } from '@/firebase';
 import { collection, getDocs, Timestamp, addDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
+import { formatDate } from '@/utils/formatDate';
 
 interface FormDataType {
   salaryLabel: OptionType | null;
@@ -144,12 +145,8 @@ const SalaryCorrectionPage = (): JSX.Element => {
 
   //타임스탬프 -> 날짜 형식 문자열로 변환
   const formatTimestampToDate = (timestamp: Timestamp): string => {
-    const date = timestamp.toDate();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // 1월부터 시작하도록 +1
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}년 ${month}월 ${day}일`;
+    const rawDate = timestamp.toDate().getTime();
+    return formatDate(rawDate);
   };
 
   useEffect(() => {
