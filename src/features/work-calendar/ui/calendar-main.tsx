@@ -25,7 +25,6 @@ import {
   isToday,
   getEventsForDate,
   generateCalendarDays,
-  DateEventInfo,
 } from './calendar-utils/calendar-utils';
 
 // Firebase 서비스 함수들 가져오기
@@ -73,7 +72,6 @@ const CalendarMain: React.FC = () => {
     handleStartDateChange,
     handleEndDateChange,
     saveEvent,
-    loading: eventLoading,
     initializeForm,
     setEventData,
   } = useCalendarEvents({
