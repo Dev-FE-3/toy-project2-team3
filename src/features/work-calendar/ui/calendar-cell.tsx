@@ -53,10 +53,8 @@ const groupAndSortEvents = (
   });
 
   // 범위에 포함되지 않은 일반 이벤트
-  const rangeEventIds = rangeInfo.map((info) => info.eventId);
-  const regularEvents = events.filter(
-    (event) => !rangeEventIds.includes(event.id)
-  );
+  const rangeEventIds = new Set(rangeInfo.map((info) => info.eventId));
+  const regularEvents = events.filter((event) => !rangeEventIds.has(event.id));
 
   return { rangeEvents, regularEvents };
 };
