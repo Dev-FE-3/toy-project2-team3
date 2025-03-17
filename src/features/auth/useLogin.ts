@@ -28,8 +28,6 @@ export const useLogin = () => {
         data.email,
         data.password
       );
-      console.log(userCredential.user); // 임시
-
       toast.success('로그인 성공!');
       navigate('/');
     } catch (error) {
