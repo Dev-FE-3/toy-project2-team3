@@ -66,6 +66,8 @@ export const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  margin-bottom: 36px;
 `;
 
 export const ErrorText = styled.p`
@@ -74,21 +76,6 @@ export const ErrorText = styled.p`
   color: rgba(229, 115, 115, 1);
 
   ${({ theme }) => theme.typography.body4}
-`;
-
-export const FindSwitcher = styled.div`
-  ${({ theme }) => theme.typography.body4}
-
-  display: flex;
-  justify-content: end;
-  gap: 2px;
-
-  margin-top: 4px;
-  margin-bottom: 36px;
-`;
-
-export const FindAccountLink = styled.p`
-  color: ${({ theme }) => theme.colors.point1};
 `;
 
 export const Switcher = styled.div`

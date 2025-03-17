@@ -1,10 +1,5 @@
 import styled, { createGlobalStyle } from 'styled-components';
-import Button from '../../../shared/button/Button';
-import Dropdown, {
-  DropdownHeader,
-  DropdownList,
-  DropdownItem,
-} from '../../../shared/dropdown/Dropdown';
+import Button from '@/shared/button/Button';
 
 // 전역 스타일 적용
 export const ModalGlobalStyle = createGlobalStyle`
@@ -33,13 +28,14 @@ export const ModalContent = styled.article`
   width: 400px;
   height: 550px;
   display: flex;
-  padding: 20px;
+  padding: 25px 25px;
   flex-direction: column;
   align-items: center;
   gap: 10px;
   box-sizing: border-box;
 `;
 
+// 모달 title (업무 추가)
 export const ModalTitle = styled.div`
   ${({ theme }) => theme.typography.heading3};
   margin: 0 0 10px 0;
@@ -54,6 +50,7 @@ export const FormRow = styled.div`
   margin-bottom: 10px;
 `;
 
+// 일정 제목, 일정 유형, 내용 title
 export const FormLabel = styled.label`
   ${({ theme }) => theme.typography.heading4};
   margin-bottom: 5px;
@@ -61,33 +58,29 @@ export const FormLabel = styled.label`
   text-align: left;
 `;
 
-export const CustomSizeDropdown = styled(Dropdown)`
-  font-size: 12px;
-  & ${DropdownHeader}, & ${DropdownList}, & ${DropdownItem} {
-    font-size: 12px;
-  }
-`;
-
+// 일정 제목 입력란
 export const MemoInput = styled.input`
   ${({ theme }) => theme.typography.body3};
   color: ${({ theme }) => theme.colors.grey1};
   width: 100%;
   height: 40px;
   padding: 10px 16px;
-  border-radius: 8px;
-  border: 1px solid #b2b2b2;
+  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.colors.grey2};
   box-sizing: border-box;
   &::placeholder {
     vertical-align: middle;
   }
 `;
 
+// 업무 내용 text
 export const MemoTextarea = styled.textarea`
+  ${({ theme }) => theme.typography.body3};
   width: 100%;
   height: 40px;
   padding: 10px 16px;
   border-radius: 8px;
-  border: 1px solid #b2b2b2;
+  border: 1px solid ${({ theme }) => theme.colors.grey2};
   resize: none;
   line-height: 20px;
   box-sizing: border-box;
@@ -100,7 +93,6 @@ export const MemoTextarea = styled.textarea`
 
 export const LargerTextarea = styled(MemoTextarea)`
   height: 90px;
-  ${({ theme }) => theme.typography.body3};
   vertical-align: middle;
 `;
 
@@ -117,17 +109,20 @@ export const DateWrapper = styled.div`
   width: 48%;
 `;
 
+// 시작일 종료일 title
 export const DateLabel = styled.label`
   ${({ theme }) => theme.typography.heading4};
   text-align: left;
 `;
 
+// 시작일 종료일 text
 export const DateInput = styled.input`
   width: 100%;
   height: 36px;
   padding: 8px 12px;
   border-radius: 8px;
-  border: 1px solid #b2b2b2;
+  ${({ theme }) => theme.typography.body3};
+  border: 1px solid ${({ theme }) => theme.colors.grey2};
   box-sizing: border-box;
 `;
 
@@ -204,12 +199,6 @@ export const MintButtonModal = styled(Button)`
     `}
 `;
 
-export const ActionButton = styled(EventModalButton)`
-  width: 120px;
-  height: 40px;
-  border-radius: 4px;
-`;
-
 export const DeleteButton = styled(Button)`
   ${(props) =>
     props.variant === 'outlined' &&
@@ -217,7 +206,7 @@ export const DeleteButton = styled(Button)`
   background-color: white;
       color: ${props.theme.colors.red};
       border: 1px solid ${props.theme.colors.red};
-font-size: ${props.theme.typography.menu1.fontSize};
+      font-size: ${props.theme.typography.menu1.fontSize};
        &:hover {
         background-color: ${props.theme.colors.red};
         color: white;

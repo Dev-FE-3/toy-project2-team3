@@ -1,14 +1,14 @@
 import styled from 'styled-components';
-import Button from '../../../shared/button/Button';
+import Button from '@/shared/button/Button';
 
 export const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  color: #2ac1bc;
-  background-color: #fff;
-  border-bottom: 1px solid #e0e0e0;
+  color: ${({ theme }) => theme.colors.point3}
+  background-color: ${({ theme }) => theme.colors.white}
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey3}
 `;
 
 export const TitleGroup = styled.div`
@@ -24,12 +24,12 @@ export const Title = styled.div`
 export const NavButton = styled.button`
   background: none;
   border: none;
-  color: #2ac1bc;
-  font-size: 18px;
+  color:  ${({ theme }) => theme.colors.point1}
+   ${({ theme }) => theme.typography.menu1}
   cursor: pointer;
   padding: 0 6px;
   &:hover {
-    background-color: #d4f3f2;
+    background-color: ${({ theme }) => theme.colors.point2};
     border-radius: 4px;
   }
 `;
@@ -53,8 +53,8 @@ export const MintButtonHeader = styled(Button)`
      border: 1px solid ${props.theme.colors.point1};
 
      &:hover {
-       background-color: #fff;
-       color: #2ac1bc;
+       background-color: ${props.theme.colors.white};
+       color: ${props.theme.colors.point1};
        border-radius: 8px;
        border: 1px solid ${props.theme.colors.point1};
      }

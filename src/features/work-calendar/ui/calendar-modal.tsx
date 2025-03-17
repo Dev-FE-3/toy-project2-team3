@@ -1,24 +1,7 @@
 import React, { ChangeEvent, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import Dropdown, { OptionType } from '../../../shared/dropdown/Dropdown';
-import {
-  ModalGlobalStyle,
-  ModalOverlay,
-  ModalContent,
-  ModalTitle,
-  FormRow,
-  FormLabel,
-  CustomSizeDropdown,
-  MemoInput,
-  LargerTextarea,
-  DateContainer,
-  DateWrapper,
-  DateLabel,
-  DateInput,
-  ButtonContainer,
-  MintButtonModal,
-  DeleteButton,
-} from '../styles/calendar-modal.style';
+import Dropdown, { OptionType } from '@/shared/dropdown/Dropdown';
+import * as S from '../styles/calendar-modal.style';
 
 interface MemoModalProps {
   isOpen: boolean;
@@ -92,14 +75,14 @@ const CalendarModal: React.FC<MemoModalProps> = ({
   // 모달 요소를 document.body에 포탈로 렌더링
   return ReactDOM.createPortal(
     <>
-      <ModalGlobalStyle />
-      <ModalOverlay role="dialog" aria-modal="true" onClick={onClose}>
-        <ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-          <ModalTitle>{isNewEvent ? '업무 추가' : '업무 수정'}</ModalTitle>
+      <S.ModalGlobalStyle />
+      <S.ModalOverlay role="dialog" aria-modal="true" onClick={onClose}>
+        <S.ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+          <S.ModalTitle>{isNewEvent ? '업무 추가' : '업무 수정'}</S.ModalTitle>
 
-          <FormRow>
-            <FormLabel htmlFor="title">일정 제목</FormLabel>
-            <MemoInput
+          <S.FormRow>
+            <S.FormLabel htmlFor="title">일정 제목</S.FormLabel>
+            <S.MemoInput
               id="title"
               type="text"
               value={titleText}
@@ -109,11 +92,11 @@ const CalendarModal: React.FC<MemoModalProps> = ({
               placeholder="업무 제목을 입력하세요"
               disabled={loading}
             />
-          </FormRow>
+          </S.FormRow>
 
-          <FormRow>
-            <FormLabel>일정 유형</FormLabel>
-            <CustomSizeDropdown
+          <S.FormRow>
+            <S.FormLabel>일정 유형</S.FormLabel>
+            <Dropdown
               title="일정 유형을 선택 해주세요"
               options={[
                 { label: '회의', value: '1' },
@@ -121,15 +104,15 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 { label: '휴가', value: '3' },
               ]}
               width="100%"
-              height="40px"
               defaultValue={getSelectedOption()}
               onSelect={(option) => onEventTypeChange(option.value as string)}
+              size="small"
             />
-          </FormRow>
+          </S.FormRow>
 
-          <FormRow>
-            <FormLabel htmlFor="content">내용</FormLabel>
-            <LargerTextarea
+          <S.FormRow>
+            <S.FormLabel htmlFor="content">내용</S.FormLabel>
+            <S.LargerTextarea
               id="content"
               value={contentText}
               onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
@@ -138,12 +121,12 @@ const CalendarModal: React.FC<MemoModalProps> = ({
               placeholder="업무 내용을 입력하세요"
               disabled={loading}
             />
-          </FormRow>
+          </S.FormRow>
 
-          <DateContainer>
-            <DateWrapper>
-              <DateLabel htmlFor="startDate">시작일</DateLabel>
-              <DateInput
+          <S.DateContainer>
+            <S.DateWrapper>
+              <S.DateLabel htmlFor="startDate">시작일</S.DateLabel>
+              <S.DateInput
                 id="startDate"
                 type="date"
                 value={startDate}
@@ -152,10 +135,10 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 }
                 disabled={loading}
               />
-            </DateWrapper>
-            <DateWrapper>
-              <DateLabel htmlFor="endDate">종료일</DateLabel>
-              <DateInput
+            </S.DateWrapper>
+            <S.DateWrapper>
+              <S.DateLabel htmlFor="endDate">종료일</S.DateLabel>
+              <S.DateInput
                 id="endDate"
                 type="date"
                 value={endDate}
@@ -164,39 +147,39 @@ const CalendarModal: React.FC<MemoModalProps> = ({
                 }
                 disabled={loading}
               />
-            </DateWrapper>
-          </DateContainer>
+            </S.DateWrapper>
+          </S.DateContainer>
 
-          <ButtonContainer>
+          <S.ButtonContainer>
             {isNewEvent ? (
-              <MintButtonModal
+              <S.MintButtonModal
                 typeStyle="rounded"
                 variant="outlined"
                 onClick={onClose}
                 disabled={loading}
               >
                 취소
-              </MintButtonModal>
+              </S.MintButtonModal>
             ) : (
-              <DeleteButton
+              <S.DeleteButton
                 typeStyle="rounded"
                 variant="outlined"
                 onClick={onDelete}
                 disabled={loading}
               >
                 삭제
-              </DeleteButton>
+              </S.DeleteButton>
             )}
-            <MintButtonModal
+            <S.MintButtonModal
               variant={isNewEvent ? 'filled' : 'outlined'}
               onClick={onSave}
               disabled={loading}
             >
               {loading ? '처리 중...' : isNewEvent ? '추가' : '저장'}
-            </MintButtonModal>
-          </ButtonContainer>
-        </ModalContent>
-      </ModalOverlay>
+            </S.MintButtonModal>
+          </S.ButtonContainer>
+        </S.ModalContent>
+      </S.ModalOverlay>
     </>,
     document.body
   );

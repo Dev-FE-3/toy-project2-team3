@@ -53,7 +53,7 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
   };
 
   // 월 정보 추출 함수
-  const getMonth = (salary: any) => {
+  const getMonth = (salary: SalaryData | null) => {
     if (!salary) return '';
     if (typeof salary.date === 'string' && salary.date.includes('년')) {
       return salary.date.split('년 ')[1].split('월')[0] + '월';
@@ -61,9 +61,7 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
     return '';
   };
 
-  const month = useMemo(() => {
-    return getMonth(selectedSalary);
-  }, [selectedSalary]);
+  const month = getMonth(selectedSalary);
 
   // 지급 항목 데이터
   const paymentData = useMemo(() => {

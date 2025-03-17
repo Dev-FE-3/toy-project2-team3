@@ -23,17 +23,18 @@ time, mark, audio, video {
   font: inherit;
   vertical-align: baseline;
 }
+html{
+  font-size: 62.5%;
+}
 
   html, body {
     height: 100%;
     width: 100%;
-    font-size: 62.5%;
   }
 
   #root{
-        height: 100%;
     width: 100%;
-    display: flex;
+    height:100%;
   }
   
 /* HTML5 display-role reset for older browsers */
@@ -45,7 +46,7 @@ footer, header, hgroup, main, menu, nav, section {
 *[hidden] {
     display: none;
 }
-  
+
 menu, ol, ul {
   list-style: none;
 }
