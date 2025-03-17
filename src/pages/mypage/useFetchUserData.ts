@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/firebase';
+import { onAuthStateChanged, User } from 'firebase/auth';
 
 // 사용자 데이터 타입 정의
 interface UserData {
@@ -20,12 +21,21 @@ export const useFetch = () => {
     email: '이메일 없음',
   });
 
-  const fetchUserData = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
+  const fetchUserData = async (user: User | null) => {
+    if (!user) {
+      setUserData({
+        name: '사용자',
+        position: '직책 없음',
+        joinedDate: '입사일 없음',
+        department: '부서 없음',
+        email: '이메일 없음',
+      });
+      return;
+    }
 
     const userDocRef = doc(db, 'users', user.uid);
     const docSnap = await getDoc(userDocRef);
+
     if (!docSnap.exists()) return;
 
     const data = docSnap.data();
@@ -42,8 +52,13 @@ export const useFetch = () => {
     });
   };
 
+  // Firebase 인증 상태 감지하여 사용자 데이터 가져오기
   useEffect(() => {
-    fetchUserData();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      fetchUserData(user);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return { userData };
