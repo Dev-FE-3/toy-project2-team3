@@ -60,8 +60,6 @@ const UserInfoSection = () => {
     return localStorage.getItem('profileImage') || profileDefault;
   });
 
-  console.log(typeof profileDefault);
-
   // 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
     const storedImage = localStorage.getItem('profileImage');
