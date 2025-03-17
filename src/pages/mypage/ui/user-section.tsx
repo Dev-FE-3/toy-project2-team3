@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as S from '@/pages/mypage/styles/user-section.styles';
-import { useFetch } from '@/pages/mypage/useFetchUserData';
+import { useFetchUserData } from '@/pages/mypage/useFetchUserData';
 import profileDefault from '@/assets/images/profile_default.svg';
 
 const EditIcon = ({ onClick }: { onClick: () => void }) => {
@@ -55,7 +55,7 @@ const compressImage = (
 
 const UserInfoSection = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const { userData } = useFetch();
+  const { userData } = useFetchUserData();
   const [profileImage, setProfileImage] = useState<string>(() => {
     return localStorage.getItem('profileImage') || profileDefault;
   });

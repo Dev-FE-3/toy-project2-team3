@@ -12,7 +12,7 @@ interface UserData {
   email: string;
 }
 
-export const useFetch = () => {
+export const useFetchUserData = () => {
   const [userData, setUserData] = useState<UserData>({
     name: '사용자',
     position: '직책 없음',
