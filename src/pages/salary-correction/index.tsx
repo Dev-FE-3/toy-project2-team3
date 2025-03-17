@@ -197,6 +197,7 @@ const SalaryCorrectionPage = (): JSX.Element => {
       toast.success('제출되었습니다');
     } catch (error) {
       console.log(error);
+      toast.error('제출에 실패했습니다');
     } finally {
       setIsSubmitting(false);
     }
