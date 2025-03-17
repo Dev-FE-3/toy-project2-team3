@@ -23,7 +23,7 @@ export const useLogin = () => {
 
   const handleLogin = async (data: LoginType) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
+      await signInWithEmailAndPassword(
         auth,
         data.email,
         data.password
