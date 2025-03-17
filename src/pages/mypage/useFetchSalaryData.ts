@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { setAvailableSalaryDates } from '@/redux/salary-slice';
 import { collection, getDocs } from 'firebase/firestore';
 import { auth, db } from '@/firebase';
-import { SalaryData } from '@/pages/mypage/ui/salary-section';
+import { SalaryData } from './salaryTypes';
 
 export const useFetchSalaryData = () => {
   const dispatch = useDispatch();

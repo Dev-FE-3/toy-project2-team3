@@ -5,24 +5,7 @@ import Dropdown from '@/shared/dropdown/Dropdown';
 import Button from '@/shared/button/Button';
 import { useFetchSalaryData } from '@/pages/mypage/useFetchSalaryData';
 import { formatCurrency } from '@/utils/formatCurrency';
-
-export interface SalaryData {
-  id: string;
-  date: string;
-  rawDate: number;
-  base: number;
-  bonus: number;
-  position: number;
-  overtime: number;
-  night: number;
-  health: number;
-  care: number;
-  job: number;
-  tax: number;
-  totalPayment: number;
-  totalDeduct: number;
-  actualPayment: number;
-}
+import { SalaryData } from '../salaryTypes';
 
 interface DropdownOption {
   label: string;
