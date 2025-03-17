@@ -62,13 +62,13 @@ export const ProfileEditButton = styled.button`
     transform: scale(1.2);
   }
 
-  svg {
-    width: 24px;
-    height: 24px;
+  img {
+    width: 22px;
+    height: 22px;
     transition: transform 0.2s ease-in-out;
   }
 
-  &:hover svg {
+  &:hover img {
     transform: scale(1.2);
   }
 `;

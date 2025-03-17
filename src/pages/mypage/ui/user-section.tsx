@@ -2,26 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as S from '@/pages/mypage/styles/user-section.styles';
 import { useFetchUserData } from '@/pages/mypage/useFetchUserData';
 import profileDefault from '@/assets/images/profile_default.svg';
-
-const EditIcon = ({ onClick }: { onClick: () => void }) => {
-  return (
-    <svg
-      onClick={() => {
-        onClick();
-      }}
-      xmlns="http://www.w3.org/2000/svg"
-      width="28"
-      height="28"
-      fill="none"
-      viewBox="0 0 28 28"
-    >
-      <path
-        fill="#2AC1BC"
-        d="M21.483 2.333c-.299 0-.597.115-.825.342l-2.333 2.333-1.65 1.65L3.5 19.833V24.5h4.667L25.325 7.342a1.166 1.166 0 0 0 0-1.65l-3.017-3.017a1.163 1.163 0 0 0-.825-.342Zm0 2.817 1.367 1.367-1.508 1.508-1.367-1.367 1.508-1.508Zm-3.158 3.158 1.367 1.367L7.201 22.167H5.833v-1.368L18.325 8.308Z"
-      />
-    </svg>
-  );
-};
+import editIcon from '@/assets/images/edit_icon.svg';
 
 const compressImage = (
   file: File,
@@ -115,7 +96,11 @@ const UserInfoSection = () => {
           />
         </S.ProfileImage>
         <S.ProfileEditButton>
-          <EditIcon onClick={() => fileInputRef.current?.click()} />
+          <img
+            src={editIcon}
+            alt="Edit"
+            onClick={() => fileInputRef.current?.click()}
+          />
         </S.ProfileEditButton>
         <input
           type="file"
