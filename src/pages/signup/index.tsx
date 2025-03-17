@@ -64,9 +64,13 @@ const SignUp = () => {
                     value: 8,
                     message: '비밀번호는 8자리 이상이어야 합니다.',
                   },
+                  maxLength: {
+                    value: 16,
+                    message: '비밀번호는 16자리 이하여야 합니다.',
+                  },
                 })}
                 type="password"
-                placeholder="사용할 비밀번호를 입력하세요(8자리 이상, 특수문자 포함)"
+                placeholder="사용할 비밀번호를 입력하세요(8자리 이상)"
                 hasError={!!errors.password}
               />
               {errors.password && (
@@ -83,7 +87,7 @@ const SignUp = () => {
                     '비밀번호가 일치하지 않습니다.',
                 })}
                 type="password"
-                placeholder="비밀번호를 다시 입력하세요(8자리 이상, 특수문자 포함)"
+                placeholder="비밀번호를 다시 입력하세요(8자리 이상)"
                 hasError={!!errors.pwdCheck}
               />
               {errors.pwdCheck && (
