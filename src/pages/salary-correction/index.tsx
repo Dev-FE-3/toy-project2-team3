@@ -175,10 +175,6 @@ const SalaryCorrectionPage = (): JSX.Element => {
     fetchCorrectionData();
   }, [user, searchParams]);
 
-  useEffect(() => {
-    console.log(correctionData);
-  }, [correctionData]);
-
   //제출하기 버튼 동작함수
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
