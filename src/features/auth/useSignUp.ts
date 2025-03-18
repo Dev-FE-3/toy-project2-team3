@@ -15,6 +15,12 @@ interface SignUpType {
   pwdCheck: string;
 }
 
+const SPECIFIC_DATES = Object.freeze([
+  new Date(2025, 0, 15),
+  new Date(2025, 1, 15),
+  new Date(2025, 2, 15),
+]);
+
 const useSignUp = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,15 +60,8 @@ const useSignUp = () => {
       // Firestore에 유저 정보 저장
       await setDoc(doc(db, 'users', user.uid), userData);
 
-      // 2025년 1월 15일, 2월 15일, 3월 15일 날짜 생성
-      const specificDates = [
-        new Date(2025, 0, 15),
-        new Date(2025, 1, 15),
-        new Date(2025, 2, 15),
-      ];
-
       // 각 날짜에 대해 Timestamp로 변환 후 저장
-      const salaryData = specificDates.map((date) => {
+      const salaryData = SPECIFIC_DATES.map((date) => {
         return {
           actualPayment: 4600000, // 실지급액
           base: 3000000, // 기본급
@@ -81,9 +80,11 @@ const useSignUp = () => {
       });
 
       // Firestore에 급여 내역 정보 저장
-      for (const data of salaryData) {
-        await addDoc(collection(db, 'users', user.uid, 'salary'), data);
-      }
+      await Promise.all(
+        salaryData.map((data) =>
+          addDoc(collection(db, 'users', user.uid, 'salary'), data)
+        )
+      );
 
       toast.success('회원가입 성공!');
       navigate('/');
