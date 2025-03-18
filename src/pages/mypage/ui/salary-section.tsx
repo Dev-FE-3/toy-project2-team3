@@ -34,17 +34,19 @@ const SalaryInfoSection = () => {
 
   // 드롭다운 옵션 구성
   const options: DropdownOption[] = useMemo(
-    () =>
-      salaryData.map((salary) => ({
+    () => [
+      { label: '전체', value: 'all' },
+      ...salaryData.map((salary) => ({
         label: salary.date,
         value: salary.date,
       })),
+    ],
     [salaryData]
   );
 
   //드롭다운 선택 시 필터링
   const handleDateChange = useCallback((selectedValue: string) => {
-    setSelectedDate(selectedValue);
+    setSelectedDate(selectedValue === 'all' ? null : selectedValue);
   }, []);
 
   const filteredData = useMemo(

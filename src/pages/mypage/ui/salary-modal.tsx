@@ -110,7 +110,14 @@ const Modal = ({ isOpen, onClose, salaryId }: ModalProps) => {
             <Lottie
               animationData={loadingAnimation}
               loop={true}
-              style={{ width: '180px', height: '180px' }}
+              style={{
+                width: '180px',
+                height: '180px',
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
             />
           </S.ModalBody>
           <S.ModalFooter>
