@@ -6,6 +6,8 @@ import Button from '@/shared/button/Button';
 import { useFetchSalaryData } from '@/pages/mypage/useFetchSalaryData';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { SalaryData } from '../salaryTypes';
+import Lottie from 'lottie-react';
+import loadingAnimation from '@/assets/animations/loading.json';
 
 interface DropdownOption {
   label: string;
@@ -13,12 +15,12 @@ interface DropdownOption {
 }
 
 const SalaryInfoSection = () => {
-  const { salaryData, isLoading, error } = useFetchSalaryData();
+  const { salaryData, isLoading, error } = useFetchSalaryData({
+    mode: 'overview',
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSalary, setSelectedSalary] = useState<SalaryData | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [isModalLoading, setIsModalLoading] = useState(false);
-  const [modalError, setModalError] = useState<string | null>(null);
 
   const handleModalOpen = useCallback((salaryDetail: SalaryData) => {
     setSelectedSalary(salaryDetail);
@@ -28,7 +30,6 @@ const SalaryInfoSection = () => {
   const handleModalClose = useCallback(() => {
     setIsModalOpen(false);
     setSelectedSalary(null);
-    setModalError(null);
   }, []);
 
   // 드롭다운 옵션 구성
@@ -59,13 +60,15 @@ const SalaryInfoSection = () => {
       <S.Title>급여 내역</S.Title>
       {isLoading ? (
         <S.MessageWrapper>
-          <S.Message>급여 데이터를 불러오는 중입니다...</S.Message>
+          <Lottie
+            animationData={loadingAnimation}
+            loop={true}
+            style={{ width: '180px', height: '180px' }}
+          />
         </S.MessageWrapper>
       ) : error ? (
         <S.MessageWrapper>
-          <S.Message>
-            데이터를 불러오는 중 오류가 발생했습니다: {error}
-          </S.Message>
+          <S.Message>데이터를 불러오는 중 오류가 발생했습니다</S.Message>
         </S.MessageWrapper>
       ) : salaryData.length > 0 ? (
         <>
@@ -80,9 +83,9 @@ const SalaryInfoSection = () => {
             <thead>
               <S.TableRow>
                 <S.TableHeader>급여일</S.TableHeader>
-                <S.TableHeader highlight>총 지급액</S.TableHeader>
+                <S.TableHeader highlight={true}>총 지급액</S.TableHeader>
                 <S.TableHeader>실지급액</S.TableHeader>
-                <S.TableHeader highlight>급여 명세서</S.TableHeader>
+                <S.TableHeader highlight={true}>급여 명세서</S.TableHeader>
               </S.TableRow>
             </thead>
 
@@ -90,7 +93,7 @@ const SalaryInfoSection = () => {
               {filteredData.slice(0, 3).map((salary, index) => (
                 <S.TableRow key={index}>
                   <S.TableData>{salary.date}</S.TableData>
-                  <S.TableData highlight>
+                  <S.TableData highlight={true}>
                     {formatCurrency(salary.totalPayment)}
                   </S.TableData>
                   <S.TableData>
@@ -116,9 +119,7 @@ const SalaryInfoSection = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        selectedSalary={selectedSalary}
-        isLoading={isModalLoading}
-        error={modalError}
+        salaryId={selectedSalary?.id || null}
       />
     </S.SalarySection>
   );

@@ -7,14 +7,13 @@ import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDate } from '@/utils/formatDate';
 import Lottie from 'lottie-react';
 import loadingAnimation from '@/assets/animations/loading.json';
+import { useFetchSalaryData } from '@/pages/mypage/useFetchSalaryData'; // 수정된 훅 가져오기
 
-// 모달 props 인터페이스
+// 모달 props 인터페이스 (salaryId만 전달받음)
 interface ModalProps {
   isOpen: boolean;
   onClose: (keepState?: boolean) => void;
-  selectedSalary: SalaryData | null;
-  isLoading?: boolean;
-  error?: string | null;
+  salaryId: string | null; // 선택된 급여 ID 전달
 }
 
 // 테이블 props 인터페이스
@@ -43,14 +42,17 @@ const SalaryTable = ({ title, data }: SalaryTableProps) => (
 );
 
 // 급여 명세서 모달 컴포넌트
-const Modal = ({
-  isOpen,
-  onClose,
-  selectedSalary,
-  isLoading = false,
-  error = null,
-}: ModalProps) => {
+const Modal = ({ isOpen, onClose, salaryId }: ModalProps) => {
   const navigate = useNavigate();
+
+  // useFetchSalaryData 훅 호출 (details 모드)
+  const { salaryData, isLoading, error } = useFetchSalaryData({
+    mode: 'details',
+    salaryId: salaryId || undefined,
+  });
+
+  // salaryData에서 첫 번째 항목을 selectedSalary로 사용
+  const selectedSalary = salaryData.length > 0 ? salaryData[0] : null;
   const formattedDate = formatDate(selectedSalary?.rawDate);
 
   // 정정 신청 처리 핸들러
@@ -130,7 +132,7 @@ const Modal = ({
             <S.Title>급여 명세서</S.Title>
           </S.ModalHeader>
           <S.ModalBody>
-            <p>에러 발생</p>
+            <p>에러 발생: {error}</p>
           </S.ModalBody>
           <S.ModalFooter>
             <Button onClick={() => onClose()} variant="outlined">
@@ -142,7 +144,7 @@ const Modal = ({
     );
   }
 
-  // 데이터가 없는 경우 (selectedSalary가 null이고 로딩/에러가 아닌 경우)
+  // 데이터가 없는 경우
   if (!selectedSalary) {
     return (
       <S.ModalOverlay>
@@ -176,7 +178,6 @@ const Modal = ({
         <S.ModalBody>
           <S.SalaryDetails>
             <SalaryTable title="지급항목" data={paymentData} />
-
             <SalaryTable title="공제항목" data={deductionData} />
           </S.SalaryDetails>
 
