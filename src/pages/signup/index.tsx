@@ -1,8 +1,10 @@
-import * as S from './style';
+import { useNavigate } from 'react-router-dom';
 
 import Button from '@/shared/button/Button';
 import useSignUp from '@/features/auth/useSignUp';
-import { useNavigate } from 'react-router-dom';
+import CommonModal from '@/shared/modal/Modal';
+
+import * as S from './style';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -16,7 +18,7 @@ const SignUp = () => {
     setIsModalOpen,
   } = useSignUp();
 
-  const handleClick = () => {
+  const handleModalCloseAndLoginRedirect = () => {
     setIsModalOpen(false);
     navigate('/login');
   };
@@ -109,17 +111,13 @@ const SignUp = () => {
 
       {/* 모달 */}
       {isModalOpen && (
-        <S.Modal>
-          <S.ModalContent>
-            <S.ModalMessage>이미 가입된 계정이 있습니다.</S.ModalMessage>
-            <S.ButtonWrapper>
-              <Button variant="outlined" onClick={() => setIsModalOpen(false)}>
-                닫기
-              </Button>
-              <Button onClick={handleClick}>로그인으로 이동</Button>
-            </S.ButtonWrapper>
-          </S.ModalContent>
-        </S.Modal>
+        <CommonModal
+          isopen={isModalOpen}
+          setIsOpen={setIsModalOpen}
+          message={'이미 가입된 계정입니다.'}
+          confirmText={'로그인으로 이동'}
+          onConfirm={handleModalCloseAndLoginRedirect}
+        ></CommonModal>
       )}
     </S.Container>
   );
