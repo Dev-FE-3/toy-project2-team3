@@ -30,7 +30,7 @@ export const TableRow = styled.tr`
   height: 50px;
 `;
 
-export const TableHeader = styled.th<{ highlight?: boolean }>`
+export const TableHeader = styled.th`
   padding: 0.75rem;
   ${({ theme }) => theme.typography.body2}
   font-weight: bold;
@@ -38,18 +38,18 @@ export const TableHeader = styled.th<{ highlight?: boolean }>`
   text-align: center;
   border-bottom: 1px solid ${({ theme }) => theme.colors.black};
   width: 25%;
-  color: ${(props) =>
-    props.highlight ? props.theme.colors.point1 : 'inherit'};
 `;
 
-export const TableData = styled.td<{ highlight?: boolean }>`
+export const TableData = styled.td`
   padding: 0.75rem;
   ${({ theme }) => theme.typography.body2}
   border-bottom: 1px solid ${({ theme }) => theme.colors.grey2};
   width: 25%;
   text-align: center;
-  color: ${(props) =>
-    props.highlight ? props.theme.colors.point1 : 'inherit'};
+`;
+
+export const HighlightText = styled.span`
+  color: ${({ theme }) => theme.colors.point1}; // 테마 적용
 `;
 
 export const SalaryControls = styled.div`

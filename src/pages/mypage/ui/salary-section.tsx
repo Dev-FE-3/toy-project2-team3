@@ -83,9 +83,13 @@ const SalaryInfoSection = () => {
             <thead>
               <S.TableRow>
                 <S.TableHeader>급여일</S.TableHeader>
-                <S.TableHeader highlight={true}>총 지급액</S.TableHeader>
+                <S.TableHeader>
+                  <S.HighlightText>총 지급액</S.HighlightText>
+                </S.TableHeader>
                 <S.TableHeader>실지급액</S.TableHeader>
-                <S.TableHeader highlight={true}>급여 명세서</S.TableHeader>
+                <S.TableHeader>
+                  <S.HighlightText>급여 명세서</S.HighlightText>
+                </S.TableHeader>
               </S.TableRow>
             </thead>
 
@@ -93,9 +97,12 @@ const SalaryInfoSection = () => {
               {filteredData.slice(0, 3).map((salary, index) => (
                 <S.TableRow key={index}>
                   <S.TableData>{salary.date}</S.TableData>
-                  <S.TableData highlight={true}>
-                    {formatCurrency(salary.totalPayment)}
+                  <S.TableData>
+                    <S.HighlightText>
+                      {formatCurrency(salary.totalPayment)}
+                    </S.HighlightText>
                   </S.TableData>
+
                   <S.TableData>
                     {formatCurrency(salary.actualPayment)}
                   </S.TableData>
