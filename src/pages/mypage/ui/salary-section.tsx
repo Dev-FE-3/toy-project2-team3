@@ -15,9 +15,7 @@ interface DropdownOption {
 }
 
 const SalaryInfoSection = () => {
-  const { salaryData, isLoading, error } = useFetchSalaryData({
-    mode: 'overview',
-  });
+  const { salaryData, isLoading, error } = useFetchSalaryData();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSalary, setSelectedSalary] = useState<SalaryData | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -128,7 +126,7 @@ const SalaryInfoSection = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        salaryId={selectedSalary?.id || null}
+        selectedSalary={selectedSalary}
       />
     </S.SalarySection>
   );

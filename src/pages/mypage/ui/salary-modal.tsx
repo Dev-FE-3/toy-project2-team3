@@ -5,15 +5,12 @@ import Button from '@/shared/button/Button';
 import { SalaryData } from '../salaryTypes';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDate } from '@/utils/formatDate';
-import Lottie from 'lottie-react';
-import loadingAnimation from '@/assets/animations/loading.json';
-import { useFetchSalaryData } from '@/pages/mypage/useFetchSalaryData'; // 수정된 훅 가져오기
 
 // 모달 props 인터페이스 (salaryId만 전달받음)
 interface ModalProps {
   isOpen: boolean;
   onClose: (keepState?: boolean) => void;
-  salaryId: string | null; // 선택된 급여 ID 전달
+  selectedSalary: SalaryData | null;
 }
 
 // 테이블 props 인터페이스
@@ -41,28 +38,16 @@ const SalaryTable = ({ title, data }: SalaryTableProps) => (
   </S.SalaryTable>
 );
 
-// 급여 명세서 모달 컴포넌트
-const Modal = ({ isOpen, onClose, salaryId }: ModalProps) => {
+const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
   const navigate = useNavigate();
-
-  // useFetchSalaryData 훅 호출 (details 모드)
-  const { salaryData, isLoading, error } = useFetchSalaryData({
-    mode: 'details',
-    salaryId: salaryId || undefined,
-  });
-
-  // salaryData에서 첫 번째 항목을 selectedSalary로 사용
-  const selectedSalary = salaryData.length > 0 ? salaryData[0] : null;
   const formattedDate = formatDate(selectedSalary?.rawDate);
 
-  // 정정 신청 처리 핸들러
   const handleCorrectionRequest = () => {
     onClose(true);
     const month = getMonth(selectedSalary);
     navigate(`/salary-correction?month=${encodeURIComponent(month)}`);
   };
 
-  // 월 정보 추출 함수
   const getMonth = (salary: SalaryData | null) => {
     if (!salary) return '';
     if (typeof salary.date === 'string' && salary.date.includes('년')) {
@@ -97,59 +82,6 @@ const Modal = ({ isOpen, onClose, salaryId }: ModalProps) => {
   }, [selectedSalary]);
 
   if (!isOpen) return null;
-
-  // 로딩
-  if (isLoading) {
-    return (
-      <S.ModalOverlay>
-        <S.ModalContent>
-          <S.ModalHeader>
-            <S.Title>급여 명세서</S.Title>
-          </S.ModalHeader>
-          <S.ModalBody>
-            <Lottie
-              animationData={loadingAnimation}
-              loop={true}
-              style={{
-                width: '180px',
-                height: '180px',
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-              }}
-            />
-          </S.ModalBody>
-          <S.ModalFooter>
-            <Button onClick={() => onClose()} variant="outlined">
-              닫기
-            </Button>
-          </S.ModalFooter>
-        </S.ModalContent>
-      </S.ModalOverlay>
-    );
-  }
-
-  // 에러
-  if (error) {
-    return (
-      <S.ModalOverlay>
-        <S.ModalContent>
-          <S.ModalHeader>
-            <S.Title>급여 명세서</S.Title>
-          </S.ModalHeader>
-          <S.ModalBody>
-            <p>에러 발생: {error}</p>
-          </S.ModalBody>
-          <S.ModalFooter>
-            <Button onClick={() => onClose()} variant="outlined">
-              닫기
-            </Button>
-          </S.ModalFooter>
-        </S.ModalContent>
-      </S.ModalOverlay>
-    );
-  }
 
   // 데이터가 없는 경우
   if (!selectedSalary) {
