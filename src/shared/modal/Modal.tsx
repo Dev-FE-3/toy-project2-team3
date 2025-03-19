@@ -1,3 +1,4 @@
+import ReactDOM from 'react-dom';
 import { styled } from 'styled-components';
 import Button from '../button/Button';
 
@@ -27,7 +28,6 @@ const ModalContent = styled.div`
   border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   text-align: center;
-
   display: flex;
   flex-direction: column;
   gap: 88px;
@@ -58,8 +58,8 @@ const CommonModal = ({
 }: ModalProps) => {
   if (!isOpen) return null;
 
-  return (
-    <Modal>
+  return ReactDOM.createPortal(
+    <Modal role="dialog" aria-modal="true">
       <ModalContent>
         <ModalMessage>{message}</ModalMessage>
         <ModalButtonWrapper>
@@ -75,7 +75,8 @@ const CommonModal = ({
           </Button>
         </ModalButtonWrapper>
       </ModalContent>
-    </Modal>
+    </Modal>,
+    document.getElementById('modal-root') as HTMLElement
   );
 };
 

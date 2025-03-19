@@ -9,6 +9,12 @@ import ThemeProvider from './providers/ThemeProvider';
 import GlobalStyle from './styles/createGlobalStyle';
 import { ToastContainer } from 'react-toastify';
 
+if (!document.getElementById('modal-root')) {
+  const modalRoot = document.createElement('div');
+  modalRoot.id = 'modal-root';
+  document.body.appendChild(modalRoot);
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
