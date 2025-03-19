@@ -124,8 +124,7 @@ const SalaryCorrectionPage = (): JSX.Element => {
   //파이어 베이스 post 처리 함수
   const postCorrectionFrom = async (correctionForm: FormDataType) => {
     if (!user?.uid) {
-      console.warn('사용자가 로그인되지 않았습니다.');
-      return;
+      throw new Error('사용자가 로그인되지 않았습니다.');
     }
     try {
       const correctionRef = collection(db, 'users', user.uid, 'correction');
