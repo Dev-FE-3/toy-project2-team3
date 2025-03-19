@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 import Button from '../button/Button';
 
 interface ModalProps {
-  isopen: boolean;
+  isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   message: string;
   confirmText: string;
@@ -50,13 +50,13 @@ const ModalButtonWrapper = styled.div`
 `;
 
 const CommonModal = ({
-  isopen,
+  isOpen,
   setIsOpen,
   message,
   onConfirm,
   confirmText,
 }: ModalProps) => {
-  if (!isopen) return null;
+  if (!isOpen) return null;
 
   return (
     <Modal>

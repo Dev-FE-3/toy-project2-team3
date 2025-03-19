@@ -112,7 +112,7 @@ const SignUp = () => {
       {/* 모달 */}
       {isModalOpen && (
         <CommonModal
-          isopen={isModalOpen}
+          isOpen={isModalOpen}
           setIsOpen={setIsModalOpen}
           message={'이미 가입된 계정입니다.'}
           confirmText={'로그인으로 이동'}

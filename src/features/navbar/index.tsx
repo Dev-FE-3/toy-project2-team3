@@ -112,7 +112,7 @@ const NavBar = (): JSX.Element => {
       {/* 모달 */}
       {isModalOpen && (
         <CommonModal
-          isopen={isModalOpen}
+          isOpen={isModalOpen}
           setIsOpen={setIsModalOpen}
           message={'로그아웃 하시겠습니까?'}
           confirmText={'로그아웃'}
