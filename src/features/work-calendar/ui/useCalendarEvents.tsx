@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import {
   EventData,
@@ -55,6 +55,8 @@ export const useCalendarEvents = ({
   const [endDate, setEndDate] = useState<string>('');
   const [isNewEvent, setIsNewEvent] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
+  const [eventId, setEventId] = useState<string | undefined>(undefined);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // 제목 텍스트 변경 핸들러
   const handleTitleChange = (text: string): void => {
@@ -206,6 +208,7 @@ export const useCalendarEvents = ({
     try {
       // 이벤트 데이터 생성
       const eventData: EventData = {
+        id: eventId,
         title: titleText,
         type: eventType,
         content: contentText,
@@ -283,6 +286,12 @@ export const useCalendarEvents = ({
       setModalOpen(false);
       setSelectedEvent(null);
     }
+
+    useEffect(() => {
+      if (!loading) {
+        setRefreshKey((prev) => prev + 1);
+      }
+    }, [loading]);
   };
 
   // 폼 초기화 함수
@@ -307,6 +316,7 @@ export const useCalendarEvents = ({
     setStartDate(event.startDate || '');
     setEndDate(event.endDate || '');
     setIsNewEvent(false);
+    setEventId(event.id);
   };
 
   // 반환 객체에 새 함수들 추가
