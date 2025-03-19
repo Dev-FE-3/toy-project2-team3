@@ -31,7 +31,7 @@ export const useFetchSalaryData = () => {
           id: doc.id,
           ...data, // 모든 필드 포함
           rawDate,
-          date: formatDate(rawDate),
+          date: formatDate(data.date),
         } as SalaryData;
       });
 
