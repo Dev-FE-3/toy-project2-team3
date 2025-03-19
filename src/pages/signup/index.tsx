@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 
 import Button from '@/shared/button/Button';
-import useSignUp from '@/hooks/useSignUp';
 import CommonModal from '@/shared/modal/Modal';
+import useSignUp from '@/hooks/useSignUp';
 
 import * as S from './style';
 
