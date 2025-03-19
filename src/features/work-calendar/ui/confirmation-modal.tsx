@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ModalGlobalStyle, ModalOverlay } from '../styles/calendar-modal.style';
-import * as S from '../styles/confirmation-modal.style';
+import {
+  ModalGlobalStyle,
+  ModalOverlay,
+} from '@/features/work-calendar/styles/calendar-modal.style';
+import * as S from '@/features/work-calendar/styles/confirmation-modal.style';
 
 import { ReactNode } from 'react';
 

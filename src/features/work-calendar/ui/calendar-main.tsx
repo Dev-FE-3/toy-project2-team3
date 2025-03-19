@@ -4,7 +4,7 @@ import CalendarModal from './calendar-modal';
 import CalendarHeader from './calendar-header';
 import ConfirmationModal from './confirmation-modal';
 import EventListModal from './event-list-modal';
-import * as S from '../styles/calendar-main.styles';
+import * as S from '@/features/work-calendar/styles/calendar-main.styles';
 import loadingAnimation from '@/assets/animations/loading.json';
 import Lottie from 'lottie-react';
 import {

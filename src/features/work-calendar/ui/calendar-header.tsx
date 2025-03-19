@@ -1,6 +1,5 @@
 import React from 'react';
-import * as S from '../styles/calendar-header.styles';
-
+import * as S from '@/features/work-calendar/styles/calendar-header.styles';
 interface CalendarHeaderProps {
   currentDate: Date;
   onPrevMonth: () => void;

@@ -1,5 +1,5 @@
 import { theme } from '@/shared/config/theme';
-import { EventData } from '../calendar-firebase-service';
+import { EventData } from '@/features/work-calendar/ui/calendar-firebase-service';
 
 export enum EventType {
   Meeting = '1',

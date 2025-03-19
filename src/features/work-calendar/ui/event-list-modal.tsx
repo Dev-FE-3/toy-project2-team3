@@ -3,8 +3,8 @@ import { getEventTypeName } from './calendar-utils/calendar-utils';
 import { theme } from '@/shared/config/theme';
 import ReactDOM from 'react-dom';
 import { toast } from 'react-toastify';
-import * as MS from '../styles/calendar-modal.style';
-import * as S from '../styles/event-list-modal.styles';
+import * as MS from '@/features/work-calendar/styles/calendar-modal.style';
+import * as S from '@/features/work-calendar/styles/event-list-modal.styles';
 
 // EventData 인터페이스 정의
 interface EventData {

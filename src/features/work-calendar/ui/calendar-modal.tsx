@@ -1,8 +1,7 @@
 import React, { ChangeEvent, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Dropdown, { OptionType } from '@/shared/dropdown/Dropdown';
-import * as S from '../styles/calendar-modal.style';
-
+import * as S from '@/features/work-calendar/styles/calendar-modal.style';
 interface MemoModalProps {
   isOpen: boolean;
   selectedDate: Date | null;
