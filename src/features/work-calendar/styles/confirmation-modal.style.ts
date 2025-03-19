@@ -29,6 +29,8 @@ export const ConfirmButtonContainer = styled(ButtonContainer)`
 
 export const CancelButton = styled(Button)`
   ${({ theme }) => `
+    width: 112px;
+    height: 40px;
     background-color: white;
     color: ${theme.colors.red};
     border: 1px solid ${theme.colors.red};
@@ -44,6 +46,8 @@ export const CancelButton = styled(Button)`
 
 export const ConfirmDeleteButton = styled(Button)`
   ${({ theme }) => `
+    width: 112px;
+    height: 40px;
     background-color: ${theme.colors.red};
     color: white;
     border: 1px solid ${theme.colors.red};

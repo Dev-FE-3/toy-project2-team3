@@ -39,7 +39,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               typeStyle="rounded"
               variant="outlined"
               onClick={onCancel}
-              style={{ width: '112px', height: '40px' }}
             >
               취소
             </S.CancelButton>
@@ -47,7 +46,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               typeStyle="rounded"
               variant="filled"
               onClick={onConfirm}
-              style={{ width: '112px', height: '40px' }}
             >
               삭제
             </S.ConfirmDeleteButton>

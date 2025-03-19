@@ -58,6 +58,12 @@ export const useCalendarEvents = ({
   const [eventId, setEventId] = useState<string | undefined>(undefined);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  useEffect(() => {
+    if (!loading) {
+      setRefreshKey((prev) => prev + 1);
+    }
+  }, [loading]);
+
   // 제목 텍스트 변경 핸들러
   const handleTitleChange = (text: string): void => {
     setTitleText(text);
@@ -286,12 +292,6 @@ export const useCalendarEvents = ({
       setModalOpen(false);
       setSelectedEvent(null);
     }
-
-    useEffect(() => {
-      if (!loading) {
-        setRefreshKey((prev) => prev + 1);
-      }
-    }, [loading]);
   };
 
   // 폼 초기화 함수

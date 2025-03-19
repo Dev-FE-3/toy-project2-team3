@@ -48,3 +48,11 @@ export const CalendarGrid = styled.div`
   border-left: none;
   gap: 2px;
 `;
+
+export const LoadingContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+`;
