@@ -3,7 +3,8 @@ import { useDispatch } from 'react-redux';
 import { setAvailableSalaryDates } from '@/redux/salary-slice';
 import { collection, getDocs } from 'firebase/firestore';
 import { auth, db } from '@/firebase';
-import { SalaryData } from './salaryTypes';
+import { SalaryData } from '@/pages/mypage/salaryTypes';
+import { formatDate } from '@/pages/mypage/ui/mypage-utils/formatDate';
 
 export const useFetchSalaryData = () => {
   const dispatch = useDispatch();
@@ -25,15 +26,12 @@ export const useFetchSalaryData = () => {
         const data = doc.data();
         const formattedDate = data.date.toDate();
         const rawDate = formattedDate.getTime();
-        const formattedDateString = `${formattedDate.getFullYear()}년 ${
-          formattedDate.getMonth() + 1
-        }월 ${formattedDate.getDate()}일`;
 
         return {
           id: doc.id,
           ...data, // 모든 필드 포함
           rawDate,
-          date: formattedDateString,
+          date: formatDate(rawDate),
         } as SalaryData;
       });
 
