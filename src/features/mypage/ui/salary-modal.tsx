@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as S from '@/pages/mypage/styles/salary-modal.styles';
+import * as S from '@/features/mypage/styles/salary-modal.styles';
 import Button from '@/shared/button/Button';
-import { SalaryData } from '../salaryTypes';
-import { formatCurrency } from '@/pages/mypage/ui/mypage-utils/formatCurrency';
-import { formatDate } from '@/pages/mypage/ui/mypage-utils/formatDate';
+import { SalaryData } from '../types/salaryTypes';
+import { formatCurrency } from '@/features/mypage/ui/utils/formatCurrency';
+import { formatDate } from '@/features/mypage/ui/utils/formatDate';
 
 // 모달 props 인터페이스 (salaryId만 전달받음)
 interface ModalProps {

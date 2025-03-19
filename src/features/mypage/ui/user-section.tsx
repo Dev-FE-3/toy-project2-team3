@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
-import * as S from '@/pages/mypage/styles/user-section.styles';
-import { useFetchUserData } from '@/pages/mypage/useFetchUserData';
+import * as S from '@/features/mypage/styles/user-section.styles';
+import { useFetchUserData } from '@/features/mypage/hooks/useFetchUserData';
 import profileDefault from '@/assets/images/profile_default.svg';
 import editIcon from '@/assets/images/edit_icon.svg';
 

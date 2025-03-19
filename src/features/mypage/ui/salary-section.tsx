@@ -1,11 +1,11 @@
 import { useState, useMemo, useCallback } from 'react';
-import * as S from '@/pages/mypage/styles/salary-section.styles';
-import Modal from '@/pages/mypage/ui/salary-modal';
+import * as S from '@/features/mypage/styles/salary-section.styles';
+import Modal from '@/features/mypage/ui/salary-modal';
 import Dropdown from '@/shared/dropdown/Dropdown';
 import Button from '@/shared/button/Button';
-import { useFetchSalaryData } from '@/pages/mypage/useFetchSalaryData';
-import { formatCurrency } from '@/pages/mypage/ui/mypage-utils/formatCurrency';
-import { SalaryData } from '../salaryTypes';
+import { useFetchSalaryData } from '@/features/mypage/hooks/useFetchSalaryData';
+import { formatCurrency } from '@/features/mypage/ui/utils/formatCurrency';
+import { SalaryData } from '../types/salaryTypes';
 import Lottie from 'lottie-react';
 import loadingAnimation from '@/assets/animations/loading.json';
 
