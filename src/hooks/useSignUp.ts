@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { FirebaseError } from 'firebase/app';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '@/firebase';
 
@@ -11,6 +10,7 @@ import {
   initializeUserPayroll,
   saveUserProfile,
 } from '@/utils/firestoreHelpers';
+import { handleFirebaseError } from '@/utils/firebaseErrorHandler';
 
 interface SignUpType {
   email: string;
@@ -47,26 +47,7 @@ const useSignUp = () => {
       toast.success('회원가입 성공!');
       navigate('/');
     } catch (error) {
-      const firebaseError = error as FirebaseError;
-
-      switch (firebaseError.code) {
-        case 'auth/email-already-in-use':
-          setIsModalOpen(true);
-          break;
-        case 'auth/invalid-email':
-          setError('email', { message: '이메일 형식이 잘못되었습니다.' });
-          break;
-        case 'auth/weak-password':
-          setError('password', {
-            message: '비밀번호를 6자 이상 입력해 주세요.',
-          });
-          break;
-        default:
-          setError('email', {
-            message: '회원가입 중 문제가 발생했습니다. 다시 시도해 주세요.',
-          });
-          break;
-      }
+      handleFirebaseError(error, setError, setIsModalOpen);
     }
   };
 
