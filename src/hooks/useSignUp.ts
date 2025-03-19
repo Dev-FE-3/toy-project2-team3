@@ -5,8 +5,12 @@ import { toast } from 'react-toastify';
 
 import { FirebaseError } from 'firebase/app';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { addDoc, collection, doc, setDoc, Timestamp } from 'firebase/firestore';
-import { auth, db } from '@/firebase';
+import { auth } from '@/firebase';
+
+import {
+  initializeUserPayroll,
+  saveUserProfile,
+} from '@/utils/firestoreHelpers';
 
 interface SignUpType {
   email: string;
@@ -14,12 +18,6 @@ interface SignUpType {
   password: string;
   pwdCheck: string;
 }
-
-const SPECIFIC_DATES = Object.freeze([
-  new Date(2025, 0, 15),
-  new Date(2025, 1, 15),
-  new Date(2025, 2, 15),
-]);
 
 const useSignUp = () => {
   const navigate = useNavigate();
@@ -30,9 +28,7 @@ const useSignUp = () => {
     formState: { errors },
     setError,
     watch,
-  } = useForm<SignUpType>({
-    mode: 'onChange',
-  });
+  } = useForm<SignUpType>({ mode: 'onChange' });
 
   const handleSignUp = async (data: SignUpType) => {
     try {
@@ -44,47 +40,9 @@ const useSignUp = () => {
 
       if (createdUser.user) {
         await updateProfile(createdUser.user, { displayName: data.name });
+        await saveUserProfile(createdUser.user);
+        await initializeUserPayroll(createdUser.user.uid);
       }
-
-      const user = createdUser.user;
-
-      // 기본 인사 정보데이터
-      const userData = {
-        name: user.displayName,
-        email: user.email,
-        position: 'Frontend', // 직책
-        department: '개발팀', // 부서
-        joinDate: new Date(), // 입사일
-      };
-
-      // Firestore에 유저 정보 저장
-      await setDoc(doc(db, 'users', user.uid), userData);
-
-      // 각 날짜에 대해 Timestamp로 변환 후 저장
-      const salaryData = SPECIFIC_DATES.map((date) => {
-        return {
-          actualPayment: 4600000, // 실지급액
-          base: 3000000, // 기본급
-          bonus: 500000, // 상여금
-          care: -50000, // 예시로 공제 항목 설정
-          date: Timestamp.fromDate(date), // 날짜를 Timestamp로 변환
-          health: -150000, // 예시로 공제 항목 설정
-          job: -80000, // 예시로 공제 항목 설정
-          night: 100000, // 예시로 야근수당 설정
-          overtime: 200000, // 예시로 초과근무수당 설정
-          position: 300000, // 직급
-          tax: -120000, // 세금
-          totalDeduct: -400000, // 공제합계
-          totalPayment: 5000000, // 지급합계
-        };
-      });
-
-      // Firestore에 급여 내역 정보 저장
-      await Promise.all(
-        salaryData.map((data) =>
-          addDoc(collection(db, 'users', user.uid, 'salary'), data)
-        )
-      );
 
       toast.success('회원가입 성공!');
       navigate('/');
