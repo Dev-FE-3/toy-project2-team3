@@ -99,10 +99,7 @@ const EventListModal: React.FC<EventListModalProps> = ({
                   </S.EventItem>
                 ))}
                 <S.EventListModalButtonWrapper>
-                  <S.AddNewEventButton
-                    onClick={handleAddNewEvent}
-                    style={{ marginTop: '15px', marginBottom: '15px' }}
-                  >
+                  <S.AddNewEventButton onClick={handleAddNewEvent}>
                     + 새 일정 추가하기
                   </S.AddNewEventButton>
                 </S.EventListModalButtonWrapper>
