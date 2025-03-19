@@ -18,7 +18,7 @@ import {
 import { useCalendarEvents } from './useCalendarEvents';
 
 // Firebase 및 Auth 임포트
-import { auth } from '../../../firebase';
+import { auth } from '@/firebase';
 
 // 캘린더 유틸리티 함수들 가져오기
 import {

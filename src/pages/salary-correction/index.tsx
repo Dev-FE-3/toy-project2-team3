@@ -1,5 +1,5 @@
 import { JSX, useEffect, useState, useMemo } from 'react';
-import * as S from '../../pages/salary-correction/style';
+import * as S from '@/pages/salary-correction/style';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Dropdown, { OptionType } from '@/shared/dropdown/Dropdown';
 import Button from '@/shared/button/Button';
