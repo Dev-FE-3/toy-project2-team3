@@ -4,7 +4,7 @@ import Modal from '@/features/mypage/ui/salary-modal';
 import Dropdown from '@/shared/dropdown/Dropdown';
 import Button from '@/shared/button/Button';
 import { useFetchSalaryData } from '@/features/mypage/hooks/useFetchSalaryData';
-import { formatCurrency } from '@/features/mypage/ui/utils/formatCurrency';
+import { formatCurrency } from '@/utils/formatCurrency';
 import { SalaryData } from '../types/salaryTypes';
 import Lottie from 'lottie-react';
 import loadingAnimation from '@/assets/animations/loading.json';

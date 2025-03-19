@@ -4,7 +4,7 @@ import { setAvailableSalaryDates } from '@/redux/salary-slice';
 import { collection, getDocs } from 'firebase/firestore';
 import { auth, db } from '@/firebase';
 import { SalaryData } from '@/features/mypage/types/salaryTypes';
-import { formatDate } from '@/features/mypage/ui/utils/formatDate';
+import { formatDate } from '@/utils/formatDate';
 
 export const useFetchSalaryData = () => {
   const dispatch = useDispatch();
