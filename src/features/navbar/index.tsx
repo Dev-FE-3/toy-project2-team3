@@ -117,7 +117,7 @@ const NavBar = (): JSX.Element => {
           message={'로그아웃 하시겠습니까?'}
           confirmText={'로그아웃'}
           onConfirm={handleLogout}
-        ></CommonModal>
+        />
       )}
     </>
   );
