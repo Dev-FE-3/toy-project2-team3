@@ -3,6 +3,8 @@ import * as S from '@/features/mypage/styles/user-section.styles';
 import { useFetchUserData } from '@/features/mypage/hooks/useFetchUserData';
 import profileDefault from '@/assets/images/profile_default.svg';
 import editIcon from '@/assets/images/edit_icon.svg';
+import Lottie from 'lottie-react';
+import loadingAnimation from '@/assets/animations/loading.json';
 
 const compressImage = (
   file: File,
@@ -36,7 +38,7 @@ const compressImage = (
 
 const UserInfoSection = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const { userData } = useFetchUserData();
+  const { userData, isLoading, error } = useFetchUserData();
   const [profileImage, setProfileImage] = useState<string>(() => {
     return localStorage.getItem('profileImage') || profileDefault;
   });
@@ -58,13 +60,36 @@ const UserInfoSection = () => {
 
     try {
       const compressedBase64 = await compressImage(file, 800, 0.7);
-      const compressedSize = compressedBase64.length * 0.75; // base64를 바이트로 근사 계산
       localStorage.setItem('profileImage', compressedBase64);
       setProfileImage(compressedBase64);
     } catch (error) {
       console.error('이미지 압축 실패:', error);
     }
   };
+
+  if (isLoading) {
+    return (
+      <S.InfoSection>
+        <S.Exception>
+          <Lottie
+            animationData={loadingAnimation}
+            loop={true}
+            style={{ width: '180px', height: '180px' }}
+          />
+        </S.Exception>
+      </S.InfoSection>
+    );
+  }
+
+  if (error) {
+    return (
+      <S.InfoSection>
+        <S.Exception>
+          <span>{error}</span>
+        </S.Exception>
+      </S.InfoSection>
+    );
+  }
 
   return (
     <S.InfoSection>

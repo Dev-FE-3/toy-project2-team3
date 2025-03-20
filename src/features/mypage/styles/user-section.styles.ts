@@ -100,3 +100,12 @@ export const Title = styled.h2`
   top: -50px;
   left: 0;
 `;
+
+export const Exception = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+`;
