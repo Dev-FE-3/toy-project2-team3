@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import * as S from '@/features/mypage/styles/salary-modal.styles';
 import Button from '@/shared/button/Button';
 import { SalaryData } from '@/features/mypage/types/salaryTypes';
-import { formatCurrency } from '@/utils/formatCurrency';
-import { formatDate } from '@/utils/formatDate';
+import { formatCurrency } from '@/features/mypage/utils/formatCurrency';
+import { formatDate } from '@/features/mypage/utils/formatDate';
 
 // 모달 props 인터페이스 (salaryId만 전달받음)
 interface ModalProps {

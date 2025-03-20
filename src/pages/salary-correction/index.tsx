@@ -8,7 +8,7 @@ import { RootState } from '@/redux/store';
 import { auth, db } from '@/firebase';
 import { collection, getDocs, Timestamp, addDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
-import { formatDate } from '@/utils/formatDate';
+import { formatDate } from '@/features/mypage/utils/formatDate';
 
 interface FormDataType {
   salaryLabel: OptionType | null;
