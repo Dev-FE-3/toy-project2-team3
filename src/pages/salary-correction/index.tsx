@@ -8,6 +8,7 @@ import { RootState } from '@/redux/store';
 import { auth, db } from '@/firebase';
 import { collection, getDocs, Timestamp, addDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
+import { formatDate } from '@/features/mypage/utils/formatDate';
 
 interface FormDataType {
   salaryLabel: OptionType | null;
@@ -123,8 +124,7 @@ const SalaryCorrectionPage = (): JSX.Element => {
   //파이어 베이스 post 처리 함수
   const postCorrectionFrom = async (correctionForm: FormDataType) => {
     if (!user?.uid) {
-      console.warn('사용자가 로그인되지 않았습니다.');
-      return;
+      throw new Error('사용자가 로그인되지 않았습니다.');
     }
     try {
       const correctionRef = collection(db, 'users', user.uid, 'correction');
@@ -144,12 +144,8 @@ const SalaryCorrectionPage = (): JSX.Element => {
 
   //타임스탬프 -> 날짜 형식 문자열로 변환
   const formatTimestampToDate = (timestamp: Timestamp): string => {
-    const date = timestamp.toDate();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // 1월부터 시작하도록 +1
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}년 ${month}월 ${day}일`;
+    const rawDate = timestamp.toDate().getTime();
+    return formatDate(rawDate);
   };
 
   useEffect(() => {
@@ -174,10 +170,6 @@ const SalaryCorrectionPage = (): JSX.Element => {
   useEffect(() => {
     fetchCorrectionData();
   }, [user, searchParams]);
-
-  useEffect(() => {
-    console.log(correctionData);
-  }, [correctionData]);
 
   //제출하기 버튼 동작함수
   const handleSubmit = async (event: React.FormEvent) => {
@@ -204,6 +196,7 @@ const SalaryCorrectionPage = (): JSX.Element => {
       toast.success('제출되었습니다');
     } catch (error) {
       console.log(error);
+      toast.error('제출에 실패했습니다');
     } finally {
       setIsSubmitting(false);
     }

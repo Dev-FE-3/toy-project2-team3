@@ -1,14 +1,12 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as S from '@/pages/mypage/styles/salary-modal.styles';
+import * as S from '@/features/mypage/styles/salary-modal.styles';
 import Button from '@/shared/button/Button';
-import { SalaryData } from '@/pages/mypage/ui/salary-section';
-import { formatCurrency } from '@/utils/formatCurrency';
-import { formatDate } from '@/utils/formatDate';
-import Lottie from 'lottie-react';
-import loadingAnimation from '@/assets/animations/loading.json';
+import { SalaryData } from '@/features/mypage/types/salaryTypes';
+import { formatCurrency } from '@/features/mypage/utils/formatCurrency';
+import { formatDate } from '@/features/mypage/utils/formatDate';
 
-// 모달 props 인터페이스
+// 모달 props 인터페이스 (salaryId만 전달받음)
 interface ModalProps {
   isOpen: boolean;
   onClose: (keepState?: boolean) => void;
@@ -40,20 +38,17 @@ const SalaryTable = ({ title, data }: SalaryTableProps) => (
   </S.SalaryTable>
 );
 
-// 급여 명세서 모달 컴포넌트
 const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
   const navigate = useNavigate();
   const formattedDate = formatDate(selectedSalary?.rawDate);
 
-  // 정정 신청 처리 핸들러
   const handleCorrectionRequest = () => {
     onClose(true);
     const month = getMonth(selectedSalary);
     navigate(`/salary-correction?month=${encodeURIComponent(month)}`);
   };
 
-  // 월 정보 추출 함수
-  const getMonth = (salary: any) => {
+  const getMonth = (salary: SalaryData | null) => {
     if (!salary) return '';
     if (typeof salary.date === 'string' && salary.date.includes('년')) {
       return salary.date.split('년 ')[1].split('월')[0] + '월';
@@ -61,9 +56,7 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
     return '';
   };
 
-  const month = useMemo(() => {
-    return getMonth(selectedSalary);
-  }, [selectedSalary]);
+  const month = getMonth(selectedSalary);
 
   // 지급 항목 데이터
   const paymentData = useMemo(() => {
@@ -90,7 +83,7 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
 
   if (!isOpen) return null;
 
-  // 급여 데이터가 업는 경우 로딩 메세지
+  // 데이터가 없는 경우
   if (!selectedSalary) {
     return (
       <S.ModalOverlay>
@@ -99,11 +92,7 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
             <S.Title>급여 명세서</S.Title>
           </S.ModalHeader>
           <S.ModalBody>
-            <Lottie
-              animationData={loadingAnimation}
-              loop={true}
-              style={{ width: '180px', height: '180px' }}
-            />
+            <p>선택된 급여 데이터가 없습니다.</p>
           </S.ModalBody>
           <S.ModalFooter>
             <Button onClick={() => onClose()} variant="outlined">
@@ -128,7 +117,6 @@ const Modal = ({ isOpen, onClose, selectedSalary }: ModalProps) => {
         <S.ModalBody>
           <S.SalaryDetails>
             <SalaryTable title="지급항목" data={paymentData} />
-
             <SalaryTable title="공제항목" data={deductionData} />
           </S.SalaryDetails>
 

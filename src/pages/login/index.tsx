@@ -1,6 +1,6 @@
 import * as S from './style';
 import Button from '@/shared/button/Button';
-import { useLogin } from '@/features/auth/useLogin';
+import { useLogin } from '@/features/auth/hooks/useLogin';
 
 const Login = () => {
   const { register, handleSubmit, handleLogin, errors } = useLogin();
@@ -22,6 +22,7 @@ const Login = () => {
                   },
                 })}
                 placeholder="이메일 주소를 입력하세요"
+                hasError={!!errors.email}
               />
               {errors.email && (
                 <S.ErrorText>{errors.email.message}</S.ErrorText>
@@ -35,6 +36,7 @@ const Login = () => {
                 })}
                 type="password"
                 placeholder="비밀번호를 입력하세요"
+                hasError={!!errors.password}
               />
               {errors.password && (
                 <S.ErrorText>{errors.password.message}</S.ErrorText>

@@ -43,6 +43,11 @@ export const ProfileImage = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.grey2};
 `;
 
+export const Img = styled.img`
+  width: 100%;
+  height: 100%;
+`;
+
 export const ProfileEditButton = styled.button`
   width: 45px;
   height: 45px;
@@ -62,13 +67,13 @@ export const ProfileEditButton = styled.button`
     transform: scale(1.2);
   }
 
-  svg {
-    width: 24px;
-    height: 24px;
+  img {
+    width: 22px;
+    height: 22px;
     transition: transform 0.2s ease-in-out;
   }
 
-  &:hover svg {
+  &:hover img {
     transform: scale(1.2);
   }
 `;
@@ -99,4 +104,17 @@ export const Title = styled.h2`
   position: absolute;
   top: -50px;
   left: 0;
+`;
+
+export const NameHighlight = styled.span`
+  color: ${({ theme }) => theme.colors.point1};
+`;
+
+export const Exception = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
 `;
