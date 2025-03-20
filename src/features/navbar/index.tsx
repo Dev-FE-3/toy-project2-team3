@@ -1,12 +1,11 @@
 import { JSX, useState } from 'react';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
-
 import { toast } from 'react-toastify';
 
 import styled from 'styled-components';
 
 import { auth } from '@/firebase';
-import Button from '@/shared/button/Button';
+import CommonModal from '@/shared/modal/Modal';
 
 const NavBox = styled.nav`
   box-sizing: border-box;
@@ -73,46 +72,6 @@ const PageContainer = styled.section`
   height: auto;
 `;
 
-export const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const ModalContent = styled.div`
-  background: white;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  text-align: center;
-
-  display: flex;
-  flex-direction: column;
-  gap: 88px;
-  width: 480px;
-`;
-
-export const ModalMessage = styled.p`
-  font-size: 2.4rem;
-  font-weight: 700;
-  line-height: 133%;
-  letter-spacing: -0.24px;
-  display: flex;
-  justify-content: start;
-`;
-
-export const ModalButtonWrapper = styled.div`
-  display: flex;
-  gap: 8px;
-  justify-content: end;
-`;
-
 const NavBar = (): JSX.Element => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -152,17 +111,13 @@ const NavBar = (): JSX.Element => {
 
       {/* 모달 */}
       {isModalOpen && (
-        <Modal>
-          <ModalContent>
-            <ModalMessage>로그아웃 하시겠습니까?</ModalMessage>
-            <ModalButtonWrapper>
-              <Button variant="outlined" onClick={() => setIsModalOpen(false)}>
-                닫기
-              </Button>
-              <Button onClick={handleLogout}>로그아웃</Button>
-            </ModalButtonWrapper>
-          </ModalContent>
-        </Modal>
+        <CommonModal
+          isOpen={isModalOpen}
+          setIsOpen={setIsModalOpen}
+          message={'로그아웃 하시겠습니까?'}
+          confirmText={'로그아웃'}
+          onConfirm={handleLogout}
+        />
       )}
     </>
   );

@@ -47,12 +47,14 @@ export const Label = styled.label`
   margin-left: 0.4rem;
 `;
 
-export const Input = styled.input`
+export const Input = styled.input<{ hasError?: boolean }>`
   width: 100%;
   box-sizing: border-box;
 
   border-radius: 8px;
-  border: 1px solid #b2b2b2;
+  border: 1px solid
+    ${({ hasError, theme }) =>
+      hasError ? theme.colors.red : theme.colors.grey2};
   padding: 11px 16px;
 
   ${({ theme }) => theme.typography.body3}
