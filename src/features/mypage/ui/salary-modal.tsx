@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as S from '@/features/mypage/styles/salary-modal.styles';
 import Button from '@/shared/button/Button';
-import { SalaryData } from '../types/salaryTypes';
+import { SalaryData } from '@/features/mypage/types/salaryTypes';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDate } from '@/utils/formatDate';
 
