@@ -1,5 +1,8 @@
 import React from 'react';
-import { getEventTypeName } from './calendar-utils/calendar-utils';
+import {
+  getEventTypeName,
+  formatDateDisplay,
+} from './calendar-utils/calendar-utils';
 import { theme } from '@/shared/config/theme';
 import ReactDOM from 'react-dom';
 import { toast } from 'react-toastify';
@@ -38,16 +41,6 @@ const getEventColor = (typeValue: string): string => {
     default:
       return theme.colors.grey1;
   }
-};
-
-// 날짜 형식 변환 (YYYY-MM-DD -> YYYY년 MM월 DD일)
-const formatDateDisplay = (dateString: string): string => {
-  if (!dateString) return '';
-
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return '';
-
-  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
 };
 
 const EventListModal: React.FC<EventListModalProps> = ({
