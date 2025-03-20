@@ -14,8 +14,8 @@ export const SalarySection = styled.section`
 export const Title = styled.h2`
   ${({ theme }) => theme.typography.heading2}
   margin-bottom: 1rem;
-  position: absolute;
-  top: -50px;
+  position: relative;
+  top: 0;
   left: 0;
 `;
 
@@ -46,6 +46,10 @@ export const TableData = styled.td`
   border-bottom: 1px solid ${({ theme }) => theme.colors.grey2};
   width: 25%;
   text-align: center;
+`;
+
+export const HighlightText = styled.span`
+  color: ${({ theme }) => theme.colors.point1}; // 테마 적용
 `;
 
 export const SalaryControls = styled.div`

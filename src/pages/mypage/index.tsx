@@ -1,7 +1,7 @@
 import React from 'react';
-import * as S from '@/pages/mypage/styles/mypage.styles';
-import UserInfoSection from '@/pages/mypage/ui/user-section';
-import SalaryInfoSection from '@/pages/mypage/ui/salary-section';
+import * as S from '@/pages/mypage/styles';
+import UserInfoSection from '@/features/mypage/ui/user-section';
+import SalaryInfoSection from '@/features/mypage/ui/salary-section';
 
 const MyPage: React.FC = () => {
   return (

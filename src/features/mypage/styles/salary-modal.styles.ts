@@ -14,6 +14,7 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContent = styled.div`
+  min-width: 610px;
   background: ${({ theme }) => theme.colors.white};
   border-radius: 16px;
   padding: 3.6rem 4rem 2.8rem;

@@ -1,27 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
-import * as S from '@/pages/mypage/styles/user-section.styles';
-import { useFetch } from '@/pages/mypage/useFetchUserData';
+import * as S from '@/features/mypage/styles/user-section.styles';
+import { useFetchUserData } from '@/features/mypage/hooks/useFetchUserData';
 import profileDefault from '@/assets/images/profile_default.svg';
-
-const EditIcon = ({ onClick }: { onClick: () => void }) => {
-  return (
-    <svg
-      onClick={() => {
-        onClick();
-      }}
-      xmlns="http://www.w3.org/2000/svg"
-      width="28"
-      height="28"
-      fill="none"
-      viewBox="0 0 28 28"
-    >
-      <path
-        fill="#2AC1BC"
-        d="M21.483 2.333c-.299 0-.597.115-.825.342l-2.333 2.333-1.65 1.65L3.5 19.833V24.5h4.667L25.325 7.342a1.166 1.166 0 0 0 0-1.65l-3.017-3.017a1.163 1.163 0 0 0-.825-.342Zm0 2.817 1.367 1.367-1.508 1.508-1.367-1.367 1.508-1.508Zm-3.158 3.158 1.367 1.367L7.201 22.167H5.833v-1.368L18.325 8.308Z"
-      />
-    </svg>
-  );
-};
+import editIcon from '@/assets/images/edit_icon.svg';
+import Lottie from 'lottie-react';
+import loadingAnimation from '@/assets/animations/loading.json';
 
 const compressImage = (
   file: File,
@@ -55,7 +38,7 @@ const compressImage = (
 
 const UserInfoSection = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const { userData } = useFetch();
+  const { userData, isLoading, error } = useFetchUserData();
   const [profileImage, setProfileImage] = useState<string>(() => {
     return localStorage.getItem('profileImage') || profileDefault;
   });
@@ -77,7 +60,6 @@ const UserInfoSection = () => {
 
     try {
       const compressedBase64 = await compressImage(file, 800, 0.7);
-      const compressedSize = compressedBase64.length * 0.75; // base64를 바이트로 근사 계산
       localStorage.setItem('profileImage', compressedBase64);
       setProfileImage(compressedBase64);
     } catch (error) {
@@ -85,10 +67,37 @@ const UserInfoSection = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <S.InfoSection>
+        <S.Title>
+          안녕하세요, <S.NameHighlight>{userData.name}</S.NameHighlight>님!
+        </S.Title>
+        <S.Exception>
+          <Lottie
+            animationData={loadingAnimation}
+            loop={true}
+            style={{ width: '180px', height: '180px' }}
+          />
+        </S.Exception>
+      </S.InfoSection>
+    );
+  }
+
+  if (error) {
+    return (
+      <S.InfoSection>
+        <S.Exception>
+          <span>{error}</span>
+        </S.Exception>
+      </S.InfoSection>
+    );
+  }
+
   return (
     <S.InfoSection>
       <S.Title>
-        안녕하세요, <span style={{ color: '#14b8a6' }}>{userData.name}</span>님!
+        안녕하세요, <S.NameHighlight>{userData.name}</S.NameHighlight>님!
       </S.Title>
       <S.ProfileContainer>
         <div>
@@ -108,14 +117,14 @@ const UserInfoSection = () => {
           </S.InfoWrapper>
         </div>
         <S.ProfileImage>
-          <img
-            src={profileImage || profileDefault}
-            alt="Profile"
-            style={{ width: '100%', height: '100%' }}
-          />
+          <S.Img src={profileImage || profileDefault} alt="Profile" />
         </S.ProfileImage>
         <S.ProfileEditButton>
-          <EditIcon onClick={() => fileInputRef.current?.click()} />
+          <img
+            src={editIcon}
+            alt="Edit"
+            onClick={() => fileInputRef.current?.click()}
+          />
         </S.ProfileEditButton>
         <input
           type="file"
