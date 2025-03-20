@@ -9,8 +9,8 @@ import { auth } from '@/firebase';
 import {
   initializeUserPayroll,
   saveUserProfile,
-} from '@/utils/firestoreHelpers';
-import { handleFirebaseError } from '@/utils/firebaseErrorHandler';
+} from '@/features/auth/utils/firestoreHelpers';
+import { handleFirebaseError } from '@/shared/utils/firebaseErrorHandler';
 
 interface SignUpType {
   email: string;

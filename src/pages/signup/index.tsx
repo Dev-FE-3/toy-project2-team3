@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Button from '@/shared/button/Button';
 import CommonModal from '@/shared/modal/Modal';
-import useSignUp from '@/hooks/useSignUp';
+import useSignUp from '@/features/auth/hooks/useSignUp';
 
 import * as S from './style';
 

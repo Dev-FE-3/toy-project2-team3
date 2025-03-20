@@ -1,6 +1,6 @@
 import * as S from './style';
 import Button from '@/shared/button/Button';
-import { useLogin } from '@/hooks/useLogin';
+import { useLogin } from '@/features/auth/hooks/useLogin';
 
 const Login = () => {
   const { register, handleSubmit, handleLogin, errors } = useLogin();
