@@ -8,13 +8,16 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isDelete?: boolean;
 }
 
-// 기본 스타일
-const StyledButton = styled.button<{
-  $typeStyle?: 'rounded' | 'square';
+// styled-components용 props 타입
+interface StyledButtonProps {
   $width?: number | string;
   $variant?: 'filled' | 'outlined';
+  $typeStyle?: 'rounded' | 'square';
   $isDelete?: boolean;
-}>`
+}
+
+// 기본 스타일
+const StyledButton = styled.button<StyledButtonProps>`
   box-sizing: border-box;
   white-space: nowrap;
   min-height: 40px;
