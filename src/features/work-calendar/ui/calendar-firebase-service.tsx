@@ -193,12 +193,15 @@ export const deleteEventsForMonth = async (
     const deletedIds: string[] = [];
 
     // 이벤트 삭제
-    for (const document of eventsSnapshot.docs) {
-      await deleteDoc(
+    const deletePromises = eventsSnapshot.docs.map((document) => {
+      const deletePromise = deleteDoc(
         doc(db, USERS_COLLECTION, userId, 'calendarEvents', document.id)
       );
       deletedIds.push(document.id);
-    }
+      return deletePromise;
+    });
+
+    await Promise.all(deletePromises);
 
     return { deletedIds };
   } catch (error) {
