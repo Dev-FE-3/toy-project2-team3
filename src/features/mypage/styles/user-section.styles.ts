@@ -43,6 +43,11 @@ export const ProfileImage = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.grey2};
 `;
 
+export const Img = styled.img`
+  width: 100%;
+  height: 100%;
+`;
+
 export const ProfileEditButton = styled.button`
   width: 45px;
   height: 45px;
@@ -99,6 +104,10 @@ export const Title = styled.h2`
   position: absolute;
   top: -50px;
   left: 0;
+`;
+
+export const NameHighlight = styled.span`
+  color: ${({ theme }) => theme.colors.point1};
 `;
 
 export const Exception = styled.div`

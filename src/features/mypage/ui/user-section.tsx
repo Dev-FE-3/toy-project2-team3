@@ -70,6 +70,9 @@ const UserInfoSection = () => {
   if (isLoading) {
     return (
       <S.InfoSection>
+        <S.Title>
+          안녕하세요, <S.NameHighlight>{userData.name}</S.NameHighlight>님!
+        </S.Title>
         <S.Exception>
           <Lottie
             animationData={loadingAnimation}
@@ -94,7 +97,7 @@ const UserInfoSection = () => {
   return (
     <S.InfoSection>
       <S.Title>
-        안녕하세요, <span style={{ color: '#14b8a6' }}>{userData.name}</span>님!
+        안녕하세요, <S.NameHighlight>{userData.name}</S.NameHighlight>님!
       </S.Title>
       <S.ProfileContainer>
         <div>
@@ -114,11 +117,7 @@ const UserInfoSection = () => {
           </S.InfoWrapper>
         </div>
         <S.ProfileImage>
-          <img
-            src={profileImage || profileDefault}
-            alt="Profile"
-            style={{ width: '100%', height: '100%' }}
-          />
+          <S.Img src={profileImage || profileDefault} alt="Profile" />
         </S.ProfileImage>
         <S.ProfileEditButton>
           <img
