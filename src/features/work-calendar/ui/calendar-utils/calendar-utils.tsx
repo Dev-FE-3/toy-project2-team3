@@ -1,5 +1,6 @@
 import { theme } from '@/shared/config/theme';
 import { EventData } from '@/features/work-calendar/ui/calendar-firebase-service';
+import dayjs from 'dayjs';
 
 export enum EventType {
   Meeting = '1',
@@ -22,16 +23,15 @@ export const formatDateDisplay = (dateString: string): string => {
   if (!dateString) return '';
 
   try {
-    const date = new Date(dateString);
+    // dayjs로 날짜 파싱 및 포맷팅
+    const formatted = dayjs(dateString).format('YYYY년 M월 D일');
 
-    if (isNaN(date.getTime())) {
+    // 유효하지 않은 날짜인 경우 (예: 'Invalid Date')
+    if (formatted === 'Invalid Date') {
       return '';
     }
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
 
-    return `${year}년 ${month}월 ${day}일`;
+    return formatted;
   } catch (error) {
     console.error('날짜 변환 오류: ', error);
     return '';
