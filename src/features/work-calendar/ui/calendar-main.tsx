@@ -759,17 +759,6 @@ const CalendarMain: React.FC = () => {
   // 요일 이름 배열
   const weekdays: string[] = ['일', '월', '화', '수', '목', '금', '토'];
 
-  useEffect(() => {
-    if (modalOpen) {
-      // 모달이 열리면 timeout을 이용해 overflow: hidden 속성을 덮어씀
-      const timer = setTimeout(() => {
-        document.body.style.overflow = 'scroll';
-      }, 0);
-
-      return () => clearTimeout(timer);
-    }
-  }, [modalOpen]);
-
   return (
     <S.PageContainer $isModalOpen={modalOpen}>
       <S.Title>업무관리</S.Title>
