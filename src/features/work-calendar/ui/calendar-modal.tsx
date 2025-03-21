@@ -77,7 +77,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
       <S.ModalGlobalStyle />
       <S.ModalOverlay role="dialog" aria-modal="true" onClick={onClose}>
         <S.ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-          <S.ModalTitle>{isNewEvent ? '업무 추가' : '업무 수정'}</S.ModalTitle>
+          <S.ModalTitle>{isNewEvent ? '일정 추가' : '일정 수정'}</S.ModalTitle>
 
           <S.FormRow>
             <S.FormLabel htmlFor="title">일정 제목</S.FormLabel>
@@ -88,7 +88,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 onTitleChange(e.target.value)
               }
-              placeholder="업무 제목을 입력하세요"
+              placeholder="일정 제목을 입력하세요"
               disabled={loading}
             />
           </S.FormRow>
@@ -117,7 +117,7 @@ const CalendarModal: React.FC<MemoModalProps> = ({
               onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                 onContentChange(e.target.value)
               }
-              placeholder="업무 내용을 입력하세요"
+              placeholder="일정 내용을 입력하세요"
               disabled={loading}
             />
           </S.FormRow>
