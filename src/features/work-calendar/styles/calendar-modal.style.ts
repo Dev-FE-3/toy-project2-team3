@@ -35,7 +35,7 @@ export const ModalContent = styled.article`
   box-sizing: border-box;
 `;
 
-// 모달 title (업무 추가)
+// 모달 title (일정 추가)
 export const ModalTitle = styled.div`
   ${({ theme }) => theme.typography.heading3};
   margin: 0 0 10px 0;
@@ -73,7 +73,7 @@ export const MemoInput = styled.input`
   }
 `;
 
-// 업무 내용 text
+// 일정 내용 text
 export const MemoTextarea = styled.textarea`
   ${({ theme }) => theme.typography.body3};
   width: 100%;

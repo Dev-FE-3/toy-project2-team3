@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ModalGlobalStyle, ModalOverlay } from '../styles/calendar-modal.style';
-import * as S from '../styles/confirmation-modal.style';
+import {
+  ModalGlobalStyle,
+  ModalOverlay,
+} from '@/features/work-calendar/styles/calendar-modal.style';
+import * as S from '@/features/work-calendar/styles/confirmation-modal.style';
 
 import { ReactNode } from 'react';
 
@@ -36,7 +39,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               typeStyle="rounded"
               variant="outlined"
               onClick={onCancel}
-              style={{ width: '112px', height: '40px' }}
             >
               취소
             </S.CancelButton>
@@ -44,7 +46,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               typeStyle="rounded"
               variant="filled"
               onClick={onConfirm}
-              style={{ width: '112px', height: '40px' }}
             >
               삭제
             </S.ConfirmDeleteButton>

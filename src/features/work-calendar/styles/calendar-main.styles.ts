@@ -6,7 +6,6 @@ export const PageContainer = styled.div<{ $isModalOpen?: boolean }>`
   width: 1240px;
   margin: 50px auto;
   position: relative;
-  margin-top: 150px;
 `;
 
 // 업무관리 타이틀
@@ -47,4 +46,12 @@ export const CalendarGrid = styled.div`
   border-top: none;
   border-left: none;
   gap: 2px;
+`;
+
+export const LoadingContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
 `;

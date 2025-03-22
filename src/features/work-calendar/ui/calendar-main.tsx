@@ -7,42 +7,16 @@ import EventListModal from './event-list-modal';
 import { toast } from 'react-toastify';
 import * as S from '../styles/calendar-main.styles';
 import loadingAnimation from '@/assets/animations/loading.json';
-
-// Firebase 임포트
-import { db } from '@/firebase';
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  Timestamp,
-} from 'firebase/firestore';
-
-import { auth } from '../../../firebase';
 import Lottie from 'lottie-react';
+import { auth } from '../../../firebase';
 
-const USERS_COLLECTION = 'users';
-
-// 타입 정의
-interface EventData {
-  id?: string;
-  title: string;
-  type: string;
-  content: string;
-  startDate: string;
-  endDate: string;
-  dateKey: string;
-  createdAt?: Timestamp;
-  updatedAt?: Timestamp;
-}
-
-interface EventsData {
-  [dateKey: string]: EventData[];
-}
+// Firebase 로직 분리를 위한 커스텀 훅 import
+import {
+  useCalendar,
+  EventData,
+  EventsData,
+  formatDateKey,
+} from '@/features/work-calendar/ui/calendar-firebase-service';
 
 // 날짜 범위에 있는 이벤트를 표시하기 위한 인터페이스
 interface DateEventInfo {
@@ -75,9 +49,6 @@ const CalendarMain: React.FC = () => {
   const [isNewEvent, setIsNewEvent] = useState<boolean>(true);
   // 일정 삭제 확인 모달의 열림/닫힘 상태
   const [confirmModalOpen, setConfirmModalOpen] = useState<boolean>(false);
-  // 데이터 로딩 중 상태 표시
-  // true일 때 로딩 인디케이터 표시, Firebase 데이터 요청 중에 활성화됨
-  const [loading, setLoading] = useState<boolean>(true);
   // 전체 삭제 모드인지(true), 개별 일정 삭제 모드인지(false) 구분
   // "모든 일정 삭제" 버튼 클릭 시 true로 설정됨
   const [isDeleteAll, setIsDeleteAll] = useState<boolean>(false);
@@ -89,6 +60,17 @@ const CalendarMain: React.FC = () => {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   // 전체 이벤트 데이터 (시작일과 종료일 기준 범위 계산용)
   const [allEventsData, setAllEventsData] = useState<EventData[]>([]);
+
+  // useCalendar 훅 사용
+  const {
+    loadCalendarData,
+    addEvent,
+    updateEvent,
+    deleteEvent,
+    deleteEventsForMonth,
+    loading,
+    error,
+  } = useCalendar(currentUserId || '');
 
   // 한 달의 일수 계산
   const getDaysInMonth = (year: number, month: number): number => {
@@ -108,11 +90,6 @@ const CalendarMain: React.FC = () => {
       date.getMonth() === today.getMonth() &&
       date.getFullYear() === today.getFullYear()
     );
-  };
-
-  // 날짜 키 포맷 (Firestore 저장용)
-  const formatDateKey = (date: Date): string => {
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   };
 
   // 달력 그리드에 표시할 날짜 배열 생성
@@ -193,54 +170,25 @@ const CalendarMain: React.FC = () => {
     }
   }, []);
 
-  // Firebase에서 데이터 로드하기
-  const loadCalendarData = async () => {
+  // 데이터 로드 및 상태 업데이트
+  const fetchCalendarData = async () => {
     if (!currentUserId) return;
-    setLoading(true);
+
     try {
-      // 이벤트 데이터 가져오기
-      const eventsCollection = collection(
-        db,
-        USERS_COLLECTION,
-        currentUserId,
-        'calendarEvents'
-      );
-      const eventsSnapshot = await getDocs(eventsCollection);
-      const eventsData: EventsData = {};
-      const allEvents: EventData[] = [];
-
-      eventsSnapshot.forEach((doc) => {
-        const eventData = doc.data() as EventData;
-        // dateKey를 기준으로 사용
-        const dateKey =
-          eventData.dateKey || formatDateKey(new Date(eventData.startDate));
-
-        if (!eventsData[dateKey]) {
-          eventsData[dateKey] = [];
-        }
-
-        const eventWithId = {
-          ...eventData,
-          id: doc.id,
-        };
-
-        eventsData[dateKey].push(eventWithId);
-        allEvents.push(eventWithId);
-      });
-
-      setEvents(eventsData);
-      setAllEventsData(allEvents);
+      const result = await loadCalendarData();
+      if (result) {
+        setEvents(result.eventsData);
+        setAllEventsData(result.allEvents);
+      }
     } catch (error) {
       console.error('캘린더 데이터 로드 중 오류:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
-  // 컴포넌트 마운트 시 Firebase에서 데이터 로드
+  // 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
     if (currentUserId) {
-      loadCalendarData();
+      fetchCalendarData();
     }
   }, [currentUserId]);
 
@@ -386,7 +334,7 @@ const CalendarMain: React.FC = () => {
     setEndDate(date);
   };
 
-  // Firebase에 이벤트 저장
+  // 이벤트 저장
   const saveEvent = async (): Promise<void> => {
     if (!currentUserId) {
       toast.error('로그인이 필요합니다.');
@@ -498,8 +446,6 @@ const CalendarMain: React.FC = () => {
       }
     }
 
-    setLoading(true);
-
     try {
       // 이벤트 데이터 생성
       const eventData: EventData = {
@@ -511,28 +457,13 @@ const CalendarMain: React.FC = () => {
         dateKey: dateKey,
       };
 
-      const eventsCollectionRef = collection(
-        db,
-        USERS_COLLECTION,
-        currentUserId,
-        'calendarEvents'
-      );
-
       // 업데이트된 이벤트 상태
       const updatedEvents = { ...events };
       const updatedAllEvents = [...allEventsData];
 
       if (isNewEvent) {
         // 새 이벤트 추가
-        const newEventRef = await addDoc(eventsCollectionRef, {
-          ...eventData,
-          createdAt: Timestamp.now(),
-        });
-
-        const newEvent = {
-          ...eventData,
-          id: newEventRef.id,
-        };
+        const newEvent = await addEvent(eventData);
 
         // 해당 날짜 배열이 없으면 초기화
         if (!updatedEvents[dateKey]) {
@@ -544,24 +475,7 @@ const CalendarMain: React.FC = () => {
         updatedAllEvents.push(newEvent);
       } else if (selectedEvent && selectedEvent.id) {
         // 기존 이벤트 업데이트
-        await updateDoc(
-          doc(
-            db,
-            USERS_COLLECTION,
-            currentUserId,
-            'calendarEvents',
-            selectedEvent.id
-          ),
-          {
-            ...eventData,
-            updatedAt: Timestamp.now(),
-          }
-        );
-
-        const updatedEvent = {
-          ...eventData,
-          id: selectedEvent.id,
-        };
+        const updatedEvent = await updateEvent(selectedEvent.id, eventData);
 
         // 이전 dateKey에서 이벤트 제거
         const oldDateKey = selectedEvent.dateKey;
@@ -595,12 +509,10 @@ const CalendarMain: React.FC = () => {
       // 상태 업데이트
       setEvents(updatedEvents);
       setAllEventsData(updatedAllEvents);
-    } catch (error) {
-      console.error('Firebase에 데이터 저장 중 오류:', error);
-    } finally {
-      setLoading(false);
       setModalOpen(false);
       setSelectedEvent(null);
+    } catch (error) {
+      console.error('이벤트 저장 중 오류:', error);
     }
   };
 
@@ -614,49 +526,14 @@ const CalendarMain: React.FC = () => {
   const clearAllData = async (): Promise<void> => {
     if (!currentUserId) return;
 
-    setLoading(true);
-
     try {
       // 현재 표시중인 달의 시작일과 끝일 계산
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
-      const lastDayOfMonth = new Date(year, month + 1, 0);
 
-      // 날짜 형식 변환 (YYYY-MM-DD)
-      const firstDayFormatted = `${year}-${(month + 1).toString().padStart(2, '0')}-01`;
-      const lastDayFormatted = `${year}-${(month + 1).toString().padStart(2, '0')}-${lastDayOfMonth.getDate().toString().padStart(2, '0')}`;
-
-      const eventsCollectionRef = collection(
-        db,
-        USERS_COLLECTION,
-        currentUserId,
-        'calendarEvents'
-      );
-
-      // 이벤트 쿼리 - 시작일이 현재 달에 속하는 이벤트만 필터링
-      const eventsQuery = query(
-        eventsCollectionRef,
-        where('startDate', '>=', firstDayFormatted),
-        where('startDate', '<=', lastDayFormatted)
-      );
-      const eventsSnapshot = await getDocs(eventsQuery);
-
-      // 삭제될 이벤트 ID 목록
-      const deletedIds: string[] = [];
-
-      // 이벤트 삭제
-      for (const document of eventsSnapshot.docs) {
-        await deleteDoc(
-          doc(
-            db,
-            USERS_COLLECTION,
-            currentUserId,
-            'calendarEvents',
-            document.id
-          )
-        );
-        deletedIds.push(document.id);
-      }
+      // 삭제 실행
+      const result = await deleteEventsForMonth(year, month);
+      const deletedIds = result.deletedIds;
 
       // 이벤트 상태 업데이트 (현재 달의 데이터만 제거)
       const updatedEvents = { ...events };
@@ -676,13 +553,13 @@ const CalendarMain: React.FC = () => {
       setEvents(updatedEvents);
       setAllEventsData(updatedAllEvents);
     } catch (error) {
-      console.error('Firebase에서 현재 달의 데이터 삭제 중 오류:', error);
+      console.error('월별 이벤트 삭제 중 오류:', error);
     } finally {
-      setLoading(false);
       setConfirmModalOpen(false);
       setIsDeleteAll(false);
     }
   };
+
   const handleDeleteClick = (): void => {
     setConfirmModalOpen(true);
     setModalOpen(false);
@@ -707,21 +584,10 @@ const CalendarMain: React.FC = () => {
       await clearAllData();
     } else if (selectedEvent && selectedEvent.id) {
       // 개별 일정 삭제 로직
-      setLoading(true);
-
       try {
         const dateKey = selectedEvent.dateKey;
-
         // Firebase에서 삭제
-        await deleteDoc(
-          doc(
-            db,
-            USERS_COLLECTION,
-            currentUserId,
-            'calendarEvents',
-            selectedEvent.id
-          )
-        );
+        await deleteEvent(selectedEvent.id);
 
         // 상태 업데이트 - 배열에서 해당 이벤트만 제거
         const updatedEvents = { ...events };
@@ -744,9 +610,8 @@ const CalendarMain: React.FC = () => {
         setEvents(updatedEvents);
         setAllEventsData(updatedAllEvents);
       } catch (error) {
-        console.error('Firebase에서 데이터 삭제 중 오류:', error);
+        console.error('일정 삭제 중 오류:', error);
       } finally {
-        setLoading(false);
         setConfirmModalOpen(false);
         setSelectedEvent(null);
       }
@@ -758,17 +623,6 @@ const CalendarMain: React.FC = () => {
 
   // 요일 이름 배열
   const weekdays: string[] = ['일', '월', '화', '수', '목', '금', '토'];
-
-  useEffect(() => {
-    if (modalOpen) {
-      // 모달이 열리면 timeout을 이용해 overflow: hidden 속성을 덮어씀
-      const timer = setTimeout(() => {
-        document.body.style.overflow = 'scroll';
-      }, 0);
-
-      return () => clearTimeout(timer);
-    }
-  }, [modalOpen]);
 
   return (
     <S.PageContainer $isModalOpen={modalOpen}>
@@ -790,21 +644,13 @@ const CalendarMain: React.FC = () => {
           </S.WeekdaysContainer>
 
           {loading ? (
-            <div
-              style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignContent: 'center',
-              }}
-            >
+            <S.LoadingContainer>
               <Lottie
                 animationData={loadingAnimation}
                 loop={true}
                 style={{ width: '180px', height: '180px' }}
               />
-            </div>
+            </S.LoadingContainer>
           ) : (
             <S.CalendarGrid>
               {calendarDays.map((dayData, index) => {

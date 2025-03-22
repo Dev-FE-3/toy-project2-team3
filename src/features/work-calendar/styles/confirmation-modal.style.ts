@@ -28,31 +28,39 @@ export const ConfirmButtonContainer = styled(ButtonContainer)`
 `;
 
 export const CancelButton = styled(Button)`
-  ${({ theme }) => `
-    background-color: white;
-    color: ${theme.colors.red};
-    border: 1px solid ${theme.colors.red};
-    font-size: ${theme.typography.menu1.fontSize};
-    font-weight: ${theme.typography.menu1.fontWeight};
-    &:hover {
-      background-color: ${theme.colors.red};
-      color: white;
-      border: 1px solid ${theme.colors.red};
-    }
-  `}
-`;
-
-export const ConfirmDeleteButton = styled(Button)`
-  ${({ theme }) => `
-    background-color: ${theme.colors.red};
-    color: white;
-    border: 1px solid ${theme.colors.red};
-    font-size: ${theme.typography.menu1.fontSize};
-    font-weight: ${theme.typography.menu1.fontWeight};
-    &:hover {
+  && {
+    width: 112px;
+    height: 40px;
+    ${({ theme }) => `
       background-color: white;
       color: ${theme.colors.red};
       border: 1px solid ${theme.colors.red};
-    }
-  `}
+      font-size: ${theme.typography.menu1.fontSize};
+      font-weight: ${theme.typography.menu1.fontWeight};
+      &:hover {
+        background-color: ${theme.colors.red};
+        color: white;
+        border: 1px solid ${theme.colors.red};
+      }
+    `}
+  }
+`;
+
+export const ConfirmDeleteButton = styled(Button)`
+  && {
+    width: 112px;
+    height: 40px;
+    ${({ theme }) => `
+      background-color: ${theme.colors.red};
+      color: white;
+      border: 1px solid ${theme.colors.red};
+      font-size: ${theme.typography.menu1.fontSize};
+      font-weight: ${theme.typography.menu1.fontWeight};
+      &:hover {
+        background-color: white;
+        color: ${theme.colors.red};
+        border: 1px solid ${theme.colors.red};
+      }
+    `}
+  }
 `;

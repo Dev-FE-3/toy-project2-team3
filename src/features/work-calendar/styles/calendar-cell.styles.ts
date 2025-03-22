@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { theme } from '../../../shared/config/theme';
+import { theme } from '@/shared/config/theme';
 
 // 날짜 셀 컨테이너
 export const CalendarCellStyled = styled.div<{

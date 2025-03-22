@@ -1,9 +1,10 @@
 import React from 'react';
+import { getEventTypeName, formatDateDisplay } from './calendar-utils';
 import { theme } from '@/shared/config/theme';
 import ReactDOM from 'react-dom';
 import { toast } from 'react-toastify';
-import * as MS from '../styles/calendar-modal.style';
-import * as S from '../styles/event-list-modal.styles';
+import * as MS from '@/features/work-calendar/styles/calendar-modal.style';
+import * as S from '@/features/work-calendar/styles/event-list-modal.styles';
 
 // EventData 인터페이스 정의
 interface EventData {
@@ -25,22 +26,8 @@ interface EventListModalProps {
   onClose: () => void;
 }
 
-// 이벤트 타입 이름 가져오기
-const getEventTypeName = (typeValue: string): string => {
-  switch (typeValue) {
-    case '1':
-      return '회의';
-    case '2':
-      return '출장';
-    case '3':
-      return '휴가';
-    default:
-      return '';
-  }
-};
-
 // 이벤트 타입 색상 가져오기
-const getEventTypeColor = (typeValue: string): string => {
+const getEventColor = (typeValue: string): string => {
   switch (typeValue) {
     case '1':
       return theme.colors.orange;
@@ -51,14 +38,6 @@ const getEventTypeColor = (typeValue: string): string => {
     default:
       return theme.colors.grey1;
   }
-};
-
-// 날짜 형식 변환 (YYYY-MM-DD -> YYYY년 MM월 DD일)
-const formatDateDisplay = (dateString: string): string => {
-  if (!dateString) return '';
-
-  const [year, month, day] = dateString.split('-');
-  return `${year}년 ${month}월 ${day}일`;
 };
 
 const EventListModal: React.FC<EventListModalProps> = ({
@@ -99,7 +78,7 @@ const EventListModal: React.FC<EventListModalProps> = ({
                   >
                     <S.EventTitle>{event.title}</S.EventTitle>
                     <S.EventTypeTag
-                      style={{ backgroundColor: getEventTypeColor(event.type) }}
+                      style={{ backgroundColor: getEventColor(event.type) }}
                     >
                       {getEventTypeName(event.type)}
                     </S.EventTypeTag>
@@ -110,10 +89,7 @@ const EventListModal: React.FC<EventListModalProps> = ({
                   </S.EventItem>
                 ))}
                 <S.EventListModalButtonWrapper>
-                  <S.AddNewEventButton
-                    onClick={handleAddNewEvent}
-                    style={{ marginTop: '15px', marginBottom: '15px' }}
-                  >
+                  <S.AddNewEventButton onClick={handleAddNewEvent}>
                     + 새 일정 추가하기
                   </S.AddNewEventButton>
                 </S.EventListModalButtonWrapper>
