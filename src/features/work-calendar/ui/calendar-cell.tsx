@@ -1,9 +1,6 @@
 import React, { useEffect } from 'react';
 import * as S from '@/features/work-calendar/styles/calendar-cell.styles';
-import {
-  getEventColor,
-  formatTitlePreview,
-} from './calendar-utils/calendar-utils';
+import { getEventColor, formatTitlePreview } from './calendar-utils';
 
 // EventData 인터페이스 정의
 interface EventData {

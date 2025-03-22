@@ -6,7 +6,6 @@ export const PageContainer = styled.div<{ $isModalOpen?: boolean }>`
   width: 1240px;
   margin: 50px auto;
   position: relative;
-  margin-top: 150px;
 `;
 
 // 업무관리 타이틀

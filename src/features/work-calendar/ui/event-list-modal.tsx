@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  getEventTypeName,
-  formatDateDisplay,
-} from './calendar-utils/calendar-utils';
+import { getEventTypeName, formatDateDisplay } from './calendar-utils';
 import { theme } from '@/shared/config/theme';
 import ReactDOM from 'react-dom';
 import { toast } from 'react-toastify';

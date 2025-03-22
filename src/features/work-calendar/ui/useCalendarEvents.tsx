@@ -1,339 +1,476 @@
-import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+// src/hooks/useCalendarFirebase.ts
+import { useState, useCallback } from 'react';
 import {
-  EventData,
-  EventsData,
-  formatDateKey,
-  addEvent,
-  updateEvent,
-} from './calendar-firebase-service';
-import { getEventsForDate } from './calendar-utils/calendar-utils';
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  query,
+  where,
+  Timestamp,
+} from 'firebase/firestore';
+import { db } from '@/firebase';
 
-interface UseCalendarEventsProps {
-  events: EventsData;
-  allEventsData: EventData[];
-  setEvents: React.Dispatch<React.SetStateAction<EventsData>>;
-  setAllEventsData: React.Dispatch<React.SetStateAction<EventData[]>>;
-  setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedEvent: React.Dispatch<React.SetStateAction<EventData | null>>;
-  selectedDate: Date | null;
-  currentUserId: string | null;
-}
+const USERS_COLLECTION = 'users';
 
-interface UseCalendarEventsReturn {
-  titleText: string;
-  contentText: string;
-  eventType: string;
+// 타입 정의
+export interface EventData {
+  id?: string;
+  title: string;
+  type: string;
+  content: string;
   startDate: string;
   endDate: string;
-  handleTitleChange: (text: string) => void;
-  handleContentChange: (text: string) => void;
-  handleEventTypeChange: (type: string) => void;
-  handleStartDateChange: (date: string) => void;
-  handleEndDateChange: (date: string) => void;
-  saveEvent: () => Promise<void>;
-  loading: boolean;
-  initializeForm: (date: Date) => void;
-  setEventData: (event: EventData) => void;
+  dateKey: string;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
 
-export const useCalendarEvents = ({
-  events,
-  allEventsData,
-  setEvents,
-  setAllEventsData,
-  setModalOpen,
-  setSelectedEvent,
-  selectedDate,
-  currentUserId,
-}: UseCalendarEventsProps): UseCalendarEventsReturn => {
-  // 상태 관리
-  const [titleText, setTitleText] = useState<string>('');
-  const [contentText, setContentText] = useState<string>('');
-  const [eventType, setEventType] = useState<string>('');
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
-  const [isNewEvent, setIsNewEvent] = useState<boolean>(true);
+export interface EventsData {
+  [dateKey: string]: EventData[];
+}
+
+interface CalendarResult {
+  eventsData: EventsData;
+  allEvents: EventData[];
+}
+
+interface DeleteResult {
+  deletedIds: string[];
+}
+
+// 날짜 키 포맷 (Firestore 저장용)
+export const formatDateKey = (date: Date): string => {
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+};
+
+// 기존 함수 유지 (훅 내부에서 사용될 함수)
+const _loadCalendarData = async (userId: string): Promise<CalendarResult> => {
+  if (!userId) {
+    throw new Error('사용자 ID가 필요합니다');
+  }
+
+  try {
+    // 이벤트 데이터 가져오기
+    const eventsCollection = collection(
+      db,
+      USERS_COLLECTION,
+      userId,
+      'calendarEvents'
+    );
+    const eventsSnapshot = await getDocs(eventsCollection);
+
+    const { eventsData, allEvents } = eventsSnapshot.docs.reduce(
+      (acc, doc) => {
+        const eventData = doc.data() as EventData;
+
+        const dateKey =
+          eventData.dateKey || formatDateKey(new Date(eventData.startDate));
+
+        const eventWithId = {
+          ...eventData,
+          id: doc.id,
+        };
+
+        if (!acc.eventsData[dateKey]) {
+          acc.eventsData[dateKey] = [];
+        }
+        acc.eventsData[dateKey].push(eventWithId);
+
+        acc.allEvents.push(eventWithId);
+
+        return acc;
+      },
+      { eventsData: {} as EventsData, allEvents: [] as EventData[] }
+    );
+
+    return { eventsData, allEvents };
+  } catch (error) {
+    console.error('캘린더 데이터 로드 중 오류:', error);
+    throw error;
+  }
+};
+
+// 데이터 로드 훅 (내부적으로 _loadCalendarData 사용)
+export const useLoadCalendarData = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [eventId, setEventId] = useState<string | undefined>(undefined);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [error, setError] = useState<Error | null>(null);
+  const [data, setData] = useState<CalendarResult | null>(null);
 
-  useEffect(() => {
-    if (!loading) {
-      setRefreshKey((prev) => prev + 1);
-    }
-  }, [loading]);
+  const loadCalendarData = useCallback(
+    async (userId: string): Promise<CalendarResult> => {
+      setLoading(true);
+      setError(null);
 
-  // 제목 텍스트 변경 핸들러
-  const handleTitleChange = (text: string): void => {
-    setTitleText(text);
-  };
-
-  // 내용 텍스트 변경 핸들러
-  const handleContentChange = (text: string): void => {
-    setContentText(text);
-  };
-
-  // 이벤트 타입 변경 핸들러
-  const handleEventTypeChange = (type: string): void => {
-    setEventType(type);
-  };
-
-  // 시작일 변경 핸들러
-  const handleStartDateChange = (date: string): void => {
-    setStartDate(date);
-  };
-
-  // 종료일 변경 핸들러
-  const handleEndDateChange = (date: string): void => {
-    setEndDate(date);
-  };
-
-  // 특정 날짜에 표시할 이벤트 정보 계산 (날짜 범위 포함)
-  const getEventsForSelectedDate = (date: Date) => {
-    return getEventsForDate(date, allEventsData);
-  };
-
-  // Firebase에 이벤트 저장
-  const saveEvent = async (): Promise<void> => {
-    if (!currentUserId) {
-      toast.error('로그인이 필요합니다.');
-      return;
-    }
-
-    // 필수값 검증
-    if (!titleText.trim()) {
-      toast.error('일정 제목을 입력해주세요.');
-      return;
-    }
-
-    if (!eventType) {
-      toast.error('일정 유형을 선택해주세요.');
-      return;
-    }
-
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-
-      if (start > end) {
-        toast.error('종료일은 시작일보다 이후여야 합니다.');
-        return;
+      try {
+        const result = await _loadCalendarData(userId);
+        setData(result);
+        setLoading(false);
+        return result;
+      } catch (error) {
+        const err = error as Error;
+        console.error('캘린더 데이터 로드 중 오류:', err);
+        setError(err);
+        setLoading(false);
+        throw err;
       }
-    }
+    },
+    []
+  );
 
-    if (!selectedDate) {
-      return;
-    }
-
-    // 시작일 기준으로 dateKey 생성
-    let dateKey;
-    if (startDate) {
-      const startDateObj = new Date(startDate);
-      dateKey = formatDateKey(startDateObj);
-    } else {
-      dateKey = formatDateKey(selectedDate);
-    }
-
-    // 새 일정 추가 시 일정 개수 제한 체크
-    if (isNewEvent) {
-      const startDateObj = new Date(startDate);
-      const startDateKey = formatDateKey(startDateObj);
-      const startDateEvents = events[startDateKey] || [];
-      const startEventsInRange = getEventsForSelectedDate(startDateObj);
-
-      // 이벤트 ID를 기반으로 중복 제거
-      const uniqueEventIds = new Set<string>();
-      startDateEvents.forEach(
-        (event) => event.id && uniqueEventIds.add(event.id)
-      );
-      startEventsInRange.forEach(
-        (item) => item.event.id && uniqueEventIds.add(item.event.id)
-      );
-      const totalStartEvents = uniqueEventIds.size;
-
-      if (totalStartEvents >= 3) {
-        toast.error(
-          `시작일(${startDate})에 이미 3개의 일정이 있어 추가할 수 없습니다.`
-        );
-        return;
-      }
-
-      if (endDate !== startDate) {
-        const endDateObj = new Date(endDate);
-        const endDateKey = formatDateKey(endDateObj);
-        const endDateEvents = events[endDateKey] || [];
-        const endEventsInRange = getEventsForSelectedDate(endDateObj);
-        const totalEndEvents = endDateEvents.length + endEventsInRange.length;
-
-        if (totalEndEvents >= 3) {
-          toast.error(
-            `종료일(${endDate})에 이미 3개의 일정이 있어 추가할 수 없습니다.`
-          );
-          return;
-        }
-
-        // 시작일과 종료일 사이의 모든 날짜 체크
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        const currentDate = new Date(start);
-
-        while (currentDate <= end) {
-          if (
-            formatDateKey(currentDate) !== startDateKey &&
-            formatDateKey(currentDate) !== formatDateKey(end)
-          ) {
-            const curDateKey = formatDateKey(currentDate);
-            const curDateEvents = events[curDateKey] || [];
-            const curEventsInRange = getEventsForSelectedDate(
-              new Date(currentDate)
-            );
-            const totalCurEvents =
-              curDateEvents.length + curEventsInRange.length;
-
-            if (totalCurEvents >= 3) {
-              const curDateFormatted = `${currentDate.getFullYear()}-${String(
-                currentDate.getMonth() + 1
-              ).padStart(
-                2,
-                '0'
-              )}-${String(currentDate.getDate()).padStart(2, '0')}`;
-              toast.error(
-                `일정 범위 내 날짜(${curDateFormatted})에 이미 3개의 일정이 있어 추가할 수 없습니다`
-              );
-              return;
-            }
-          }
-          currentDate.setDate(currentDate.getDate() + 1);
-        }
-      }
-    }
-
-    setLoading(true);
-
-    try {
-      // 이벤트 데이터 생성
-      const eventData: EventData = {
-        id: eventId,
-        title: titleText,
-        type: eventType,
-        content: contentText,
-        startDate: startDate,
-        endDate: endDate,
-        dateKey: dateKey,
-      };
-
-      // 업데이트된 이벤트 상태
-      const updatedEvents = { ...events };
-      const updatedAllEvents = [...allEventsData];
-
-      if (isNewEvent) {
-        // 새 이벤트 추가
-        const newEvent = await addEvent(currentUserId, eventData);
-
-        // 해당 날짜 배열이 없으면 초기화
-        if (!updatedEvents[dateKey]) {
-          updatedEvents[dateKey] = [];
-        }
-
-        // 상태 업데이트 - 배열에 새 이벤트 추가
-        updatedEvents[dateKey].push(newEvent);
-        updatedAllEvents.push(newEvent);
-      } else {
-        const selectedEvent = updatedAllEvents.find(
-          (event) => event.id === eventData.id
-        );
-
-        if (selectedEvent && selectedEvent.id) {
-          // 기존 이벤트 업데이트
-          const updatedEvent = await updateEvent(
-            currentUserId,
-            selectedEvent.id,
-            eventData
-          );
-
-          // 이전 dateKey에서 이벤트 제거
-          const oldDateKey = selectedEvent.dateKey;
-          if (updatedEvents[oldDateKey]) {
-            updatedEvents[oldDateKey] = updatedEvents[oldDateKey].filter(
-              (event) => event.id !== selectedEvent.id
-            );
-
-            // 배열이 비어있으면 키 자체를 제거
-            if (updatedEvents[oldDateKey].length === 0) {
-              delete updatedEvents[oldDateKey];
-            }
-          }
-
-          // 새 dateKey에 이벤트 추가
-          if (!updatedEvents[dateKey]) {
-            updatedEvents[dateKey] = [];
-          }
-
-          updatedEvents[dateKey].push(updatedEvent);
-
-          // 전체 이벤트 목록에서도 업데이트
-          const eventIndex = updatedAllEvents.findIndex(
-            (e) => e.id === selectedEvent.id
-          );
-          if (eventIndex !== -1) {
-            updatedAllEvents[eventIndex] = updatedEvent;
-          }
-        }
-      }
-
-      // 상태 업데이트
-      setEvents(updatedEvents);
-      setAllEventsData(updatedAllEvents);
-    } catch (error) {
-      console.error('Firebase에 데이터 저장 중 오류:', error);
-    } finally {
-      setLoading(false);
-      setModalOpen(false);
-      setSelectedEvent(null);
-    }
-  };
-
-  // 폼 초기화 함수
-  const initializeForm = (date: Date): void => {
-    const formattedDate = `${date.getFullYear()}-${String(
-      date.getMonth() + 1
-    ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-
-    setTitleText('');
-    setContentText('');
-    setEventType('');
-    setStartDate(formattedDate);
-    setEndDate(formattedDate);
-    setIsNewEvent(true);
-  };
-
-  // 이벤트 데이터 설정 함수
-  const setEventData = (event: EventData): void => {
-    setTitleText(event.title || '');
-    setContentText(event.content || '');
-    setEventType(event.type || '');
-    setStartDate(event.startDate || '');
-    setEndDate(event.endDate || '');
-    setIsNewEvent(false);
-    setEventId(event.id);
-  };
-
-  // 반환 객체에 새 함수들 추가
   return {
-    titleText,
-    contentText,
-    eventType,
-    startDate,
-    endDate,
-    handleTitleChange,
-    handleContentChange,
-    handleEventTypeChange,
-    handleStartDateChange,
-    handleEndDateChange,
-    saveEvent,
+    loadCalendarData,
+    data,
     loading,
-    initializeForm,
-    setEventData,
+    error,
+  };
+};
+
+// 기존 함수 그대로 export (외부 컴포넌트에서 직접 사용할 함수)
+export const loadCalendarData = async (
+  userId: string
+): Promise<CalendarResult> => {
+  return _loadCalendarData(userId);
+};
+
+// 이벤트 추가 함수 (기존 함수 유지)
+export const addEvent = async (
+  userId: string,
+  eventData: EventData
+): Promise<EventData> => {
+  if (!userId) {
+    throw new Error('사용자 ID가 필요합니다');
+  }
+
+  try {
+    const eventsCollectionRef = collection(
+      db,
+      USERS_COLLECTION,
+      userId,
+      'calendarEvents'
+    );
+
+    const newEventRef = await addDoc(eventsCollectionRef, {
+      ...eventData,
+      createdAt: Timestamp.now(),
+    });
+
+    return {
+      ...eventData,
+      id: newEventRef.id,
+    };
+  } catch (error) {
+    console.error('이벤트 추가 중 오류:', error);
+    throw error;
+  }
+};
+
+// 이벤트 추가 훅 (내부적으로 addEvent 사용)
+export const useAddEvent = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [addedEvent, setAddedEvent] = useState<EventData | null>(null);
+
+  const addEventHook = useCallback(
+    async (userId: string, eventData: EventData): Promise<EventData> => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const result = await addEvent(userId, eventData);
+        setAddedEvent(result);
+        setLoading(false);
+        return result;
+      } catch (error) {
+        const err = error as Error;
+        setError(err);
+        setLoading(false);
+        throw err;
+      }
+    },
+    []
+  );
+
+  return {
+    addEvent: addEventHook,
+    addedEvent,
+    loading,
+    error,
+  };
+};
+
+// 이벤트 업데이트 함수 (기존 함수 유지)
+export const updateEvent = async (
+  userId: string,
+  eventId: string,
+  eventData: EventData
+): Promise<EventData> => {
+  if (!userId || !eventId) {
+    throw new Error('사용자 ID와 이벤트 ID가 필요합니다');
+  }
+
+  try {
+    await updateDoc(
+      doc(db, USERS_COLLECTION, userId, 'calendarEvents', eventId),
+      {
+        ...eventData,
+        updatedAt: Timestamp.now(),
+      }
+    );
+
+    return {
+      ...eventData,
+      id: eventId,
+    };
+  } catch (error) {
+    console.error('이벤트 업데이트 중 오류:', error);
+    throw error;
+  }
+};
+
+// 이벤트 업데이트 훅 (내부적으로 updateEvent 사용)
+export const useUpdateEvent = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [updatedEvent, setUpdatedEvent] = useState<EventData | null>(null);
+
+  const updateEventHook = useCallback(
+    async (
+      userId: string,
+      eventId: string,
+      eventData: EventData
+    ): Promise<EventData> => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const result = await updateEvent(userId, eventId, eventData);
+        setUpdatedEvent(result);
+        setLoading(false);
+        return result;
+      } catch (error) {
+        const err = error as Error;
+        setError(err);
+        setLoading(false);
+        throw err;
+      }
+    },
+    []
+  );
+
+  return {
+    updateEvent: updateEventHook,
+    updatedEvent,
+    loading,
+    error,
+  };
+};
+
+// 이벤트 삭제 함수 (기존 함수 유지)
+export const deleteEvent = async (
+  userId: string,
+  eventId: string
+): Promise<{ success: boolean }> => {
+  if (!userId || !eventId) {
+    throw new Error('사용자 ID와 이벤트 ID가 필요합니다');
+  }
+
+  try {
+    await deleteDoc(
+      doc(db, USERS_COLLECTION, userId, 'calendarEvents', eventId)
+    );
+    return { success: true };
+  } catch (error) {
+    console.error('이벤트 삭제 중 오류:', error);
+    throw error;
+  }
+};
+
+// 이벤트 삭제 훅 (내부적으로 deleteEvent 사용)
+export const useDeleteEvent = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [deleteResult, setDeleteResult] = useState<{ success: boolean } | null>(
+    null
+  );
+
+  const deleteEventHook = useCallback(
+    async (userId: string, eventId: string): Promise<{ success: boolean }> => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const result = await deleteEvent(userId, eventId);
+        setDeleteResult(result);
+        setLoading(false);
+        return result;
+      } catch (error) {
+        const err = error as Error;
+        setError(err);
+        setLoading(false);
+        throw err;
+      }
+    },
+    []
+  );
+
+  return {
+    deleteEvent: deleteEventHook,
+    deleteResult,
+    loading,
+    error,
+  };
+};
+
+// 특정 월의 모든 이벤트 삭제 함수 (기존 함수 유지)
+export const deleteEventsForMonth = async (
+  userId: string,
+  year: number,
+  month: number
+): Promise<DeleteResult> => {
+  if (!userId) {
+    throw new Error('사용자 ID가 필요합니다');
+  }
+
+  try {
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+
+    // 날짜 형식 변환 (YYYY-MM-DD)
+    const firstDayFormatted = `${year}-${(month + 1).toString().padStart(2, '0')}-01`;
+    const lastDayFormatted = `${year}-${(month + 1).toString().padStart(2, '0')}-${lastDayOfMonth.getDate().toString().padStart(2, '0')}`;
+
+    const eventsCollectionRef = collection(
+      db,
+      USERS_COLLECTION,
+      userId,
+      'calendarEvents'
+    );
+
+    // 이벤트 쿼리 - 시작일이 현재 달에 속하는 이벤트만 필터링
+    const eventsQuery = query(
+      eventsCollectionRef,
+      where('startDate', '>=', firstDayFormatted),
+      where('startDate', '<=', lastDayFormatted)
+    );
+    const eventsSnapshot = await getDocs(eventsQuery);
+
+    // 삭제될 이벤트 ID 목록
+    const deletedIds: string[] = [];
+
+    // 이벤트 삭제
+    const deletePromises = eventsSnapshot.docs.map((document) => {
+      const deletePromise = deleteDoc(
+        doc(db, USERS_COLLECTION, userId, 'calendarEvents', document.id)
+      );
+      deletedIds.push(document.id);
+      return deletePromise;
+    });
+
+    await Promise.all(deletePromises);
+
+    return { deletedIds };
+  } catch (error) {
+    console.error('월별 이벤트 삭제 중 오류:', error);
+    throw error;
+  }
+};
+
+// 월별 이벤트 삭제 훅 (내부적으로 deleteEventsForMonth 사용)
+export const useDeleteEventsForMonth = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [monthDeleteResult, setMonthDeleteResult] =
+    useState<DeleteResult | null>(null);
+
+  const deleteEventsForMonthHook = useCallback(
+    async (
+      userId: string,
+      year: number,
+      month: number
+    ): Promise<DeleteResult> => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const result = await deleteEventsForMonth(userId, year, month);
+        setMonthDeleteResult(result);
+        setLoading(false);
+        return result;
+      } catch (error) {
+        const err = error as Error;
+        setError(err);
+        setLoading(false);
+        throw err;
+      }
+    },
+    []
+  );
+
+  return {
+    deleteEventsForMonth: deleteEventsForMonthHook,
+    monthDeleteResult,
+    loading,
+    error,
+  };
+};
+
+// 통합 훅 (선택적으로 사용)
+export const useCalendar = (userId: string) => {
+  const {
+    loadCalendarData: loadDataHook,
+    data,
+    loading: loadingData,
+    error: loadError,
+  } = useLoadCalendarData();
+  const {
+    addEvent: addEventHook,
+    loading: addingEvent,
+    error: addError,
+  } = useAddEvent();
+  const {
+    updateEvent: updateEventHook,
+    loading: updatingEvent,
+    error: updateError,
+  } = useUpdateEvent();
+  const {
+    deleteEvent: deleteEventHook,
+    loading: deletingEvent,
+    error: deleteError,
+  } = useDeleteEvent();
+  const {
+    deleteEventsForMonth: deleteMonthHook,
+    loading: deletingMonth,
+    error: deleteMonthError,
+  } = useDeleteEventsForMonth();
+
+  // 모든 로딩 상태 결합
+  const loading =
+    loadingData ||
+    addingEvent ||
+    updatingEvent ||
+    deletingEvent ||
+    deletingMonth;
+
+  // 모든 에러 중 가장 최근 것
+  const error =
+    deleteMonthError || deleteError || updateError || addError || loadError;
+
+  // 통합 데이터 및 메서드 반환
+  return {
+    // 기존 함수명 유지하면서 userId 자동 적용
+    loadCalendarData: () => loadDataHook(userId),
+    addEvent: (eventData: EventData) => addEventHook(userId, eventData),
+    updateEvent: (eventId: string, eventData: EventData) =>
+      updateEventHook(userId, eventId, eventData),
+    deleteEvent: (eventId: string) => deleteEventHook(userId, eventId),
+    deleteEventsForMonth: (year: number, month: number) =>
+      deleteMonthHook(userId, year, month),
+
+    // 데이터 및 상태
+    data,
+    loading,
+    error,
   };
 };
